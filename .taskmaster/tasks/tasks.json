@@ -1,0 +1,679 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Project Repository",
+        "description": "Initialize the project repository with the necessary structure and tools for development.",
+        "details": "Create a Git repository and set up the project structure with directories for frontend, backend, and infrastructure. Initialize package managers for frontend (npm/yarn) and backend (pipenv/poetry). Set up Docker for containerization and Kubernetes for orchestration. Configure CI/CD pipelines using GitHub Actions or GitLab CI.",
+        "testStrategy": "Verify repository structure and CI/CD pipelines by running initial build and deployment scripts.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Создание Git-репозитория",
+            "description": "Инициализация нового Git-репозитория для проекта.",
+            "dependencies": [],
+            "details": "Создайте новый репозиторий на GitHub или GitLab. Клонируйте его на локальную машину. Добавьте файл .gitignore для исключения ненужных файлов из отслеживания.",
+            "status": "done",
+            "testStrategy": "Проверьте возможность клонирования репозитория и выполнения базовых команд Git, таких как commit и push."
+          },
+          {
+            "id": 2,
+            "title": "Настройка структуры проекта",
+            "description": "Создание базовой структуры директорий для фронтенда, бэкенда и инфраструктуры.",
+            "dependencies": [],
+            "details": "Создайте директории frontend, backend и infrastructure в корне репозитория. В каждой директории создайте файл README.md с кратким описанием назначения.",
+            "status": "done",
+            "testStrategy": "Проверьте наличие и правильность структуры директорий и файлов README.md."
+          },
+          {
+            "id": 3,
+            "title": "Инициализация менеджеров пакетов",
+            "description": "Настройка менеджеров пакетов для фронтенда и бэкенда.",
+            "dependencies": [],
+            "details": "В директории frontend инициализируйте npm или yarn, создав package.json. В директории backend инициализируйте pipenv или poetry для управления зависимостями Python.",
+            "status": "done",
+            "testStrategy": "Проверьте установку и инициализацию менеджеров пакетов, убедитесь, что зависимости могут быть установлены без ошибок."
+          },
+          {
+            "id": 4,
+            "title": "Настройка Docker и Kubernetes",
+            "description": "Настройка Docker для контейнеризации и Kubernetes для оркестрации.",
+            "dependencies": [],
+            "details": "Создайте Dockerfile для фронтенда и бэкенда. Настройте docker-compose.yml для локальной разработки. Создайте базовые манифесты Kubernetes для деплоя приложения.",
+            "status": "done",
+            "testStrategy": "Проверьте сборку и запуск контейнеров Docker. Убедитесь, что манифесты Kubernetes корректно деплоят приложение в кластер."
+          },
+          {
+            "id": 5,
+            "title": "Конфигурация CI/CD",
+            "description": "Настройка CI/CD пайплайнов с использованием GitHub Actions или GitLab CI.",
+            "dependencies": [],
+            "details": "Создайте конфигурационные файлы для CI/CD в корне репозитория. Настройте автоматическое тестирование и деплой при каждом коммите в основную ветку.",
+            "status": "done",
+            "testStrategy": "Проверьте выполнение CI/CD пайплайнов при коммите, убедитесь в успешном прохождении тестов и деплое."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Implement Audio File Upload and Processing",
+        "description": "Develop the functionality to upload and process audio files in various formats.",
+        "details": "Implement a web interface for drag & drop audio file uploads and an API endpoint for programmatic uploads. Use Python FastAPI for backend implementation. Support audio formats WAV, MP3, OGG, FLAC. Implement speaker diarization using a suitable library (e.g., pyAudioAnalysis).",
+        "testStrategy": "Test file uploads with different formats and sizes. Verify speaker diarization accuracy and processing time.",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Разработка веб-интерфейса для загрузки аудиофайлов",
+            "description": "Создать веб-интерфейс, позволяющий пользователям перетаскивать и загружать аудиофайлы различных форматов.",
+            "dependencies": [],
+            "details": "Использовать HTML5 и JavaScript для создания интерфейса перетаскивания файлов. Обеспечить поддержку форматов WAV, MP3, OGG, FLAC. Реализовать визуальную индикацию процесса загрузки.",
+            "status": "pending",
+            "testStrategy": "Проверить загрузку файлов всех поддерживаемых форматов и размеров, убедиться в корректной работе интерфейса."
+          },
+          {
+            "id": 2,
+            "title": "Реализация API для программной загрузки аудиофайлов",
+            "description": "Создать API на базе FastAPI для загрузки аудиофайлов программным способом.",
+            "dependencies": [
+              "2.1"
+            ],
+            "details": "Использовать FastAPI для создания REST API, поддерживающего загрузку файлов. Обеспечить обработку запросов POST с файлами в формате multipart/form-data.",
+            "status": "pending",
+            "testStrategy": "Проверить загрузку файлов через API с использованием различных инструментов, таких как Postman."
+          },
+          {
+            "id": 3,
+            "title": "Обработка аудиофайлов и поддержка различных форматов",
+            "description": "Реализовать обработку загруженных аудиофайлов и обеспечить поддержку форматов WAV, MP3, OGG, FLAC.",
+            "dependencies": [
+              "2.2"
+            ],
+            "details": "Использовать библиотеки, такие как pydub или librosa, для обработки аудиофайлов. Обеспечить конвертацию и нормализацию аудиоданных для дальнейшего анализа.",
+            "status": "pending",
+            "testStrategy": "Проверить обработку файлов всех поддерживаемых форматов, убедиться в корректности конвертации и нормализации."
+          },
+          {
+            "id": 4,
+            "title": "Реализация функции диаризации говорящих",
+            "description": "Внедрить функцию диаризации говорящих в загруженных аудиофайлах.",
+            "dependencies": [
+              "2.3"
+            ],
+            "details": "Использовать библиотеку pyAudioAnalysis или аналогичную для реализации диаризации. Настроить параметры для оптимальной точности распознавания говорящих.",
+            "status": "pending",
+            "testStrategy": "Проверить точность диаризации на тестовых аудиофайлах с различным количеством говорящих."
+          },
+          {
+            "id": 5,
+            "title": "Интеграция обработки аудиофайлов в систему",
+            "description": "Обеспечить интеграцию всех компонентов обработки аудиофайлов в единую систему.",
+            "dependencies": [
+              "2.4"
+            ],
+            "details": "Объединить веб-интерфейс, API и обработку аудиофайлов в единую систему. Обеспечить логирование и обработку ошибок на всех этапах.",
+            "status": "pending",
+            "testStrategy": "Провести комплексное тестирование всей системы, убедиться в корректной работе всех компонентов и их взаимодействии."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Integrate ASR with OpenAI Whisper API",
+        "description": "Integrate the ASR functionality using OpenAI Whisper API for speech-to-text conversion.",
+        "details": "Use the OpenAI Whisper API to transcribe audio files. Implement an adapter pattern to allow for future integration with alternative ASR providers. Ensure support for Russian and English languages. Handle API rate limiting and error responses gracefully.",
+        "testStrategy": "Test transcription accuracy and performance with sample audio files in Russian and English. Validate error handling and rate limiting.",
+        "priority": "medium",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Настройка доступа к OpenAI Whisper API",
+            "description": "Настроить доступ к OpenAI Whisper API, включая получение необходимых ключей API и настройку окружения для взаимодействия с API.",
+            "dependencies": [],
+            "details": "Зарегистрируйтесь на платформе OpenAI, получите ключ API и настройте переменные окружения для безопасного хранения ключей. Убедитесь, что у вас есть доступ к документации API для дальнейшей интеграции.",
+            "status": "pending",
+            "testStrategy": "Проверить доступ к API с помощью простого запроса и убедиться, что он возвращает ожидаемый ответ."
+          },
+          {
+            "id": 2,
+            "title": "Реализация адаптера для OpenAI Whisper API",
+            "description": "Разработать адаптер, который будет взаимодействовать с OpenAI Whisper API для преобразования речи в текст.",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Создайте класс адаптера, который будет отправлять аудиофайлы в OpenAI Whisper API и обрабатывать ответы. Используйте шаблон проектирования 'Адаптер', чтобы обеспечить возможность замены API в будущем.",
+            "status": "pending",
+            "testStrategy": "Тестировать адаптер с различными аудиофайлами, чтобы убедиться в корректности преобразования речи в текст."
+          },
+          {
+            "id": 3,
+            "title": "Поддержка русского и английского языков",
+            "description": "Обеспечить поддержку русского и английского языков в процессе преобразования речи в текст.",
+            "dependencies": [
+              "3.2"
+            ],
+            "details": "Настройте адаптер для передачи параметров языка в API. Убедитесь, что API корректно обрабатывает запросы на обоих языках и возвращает правильные результаты.",
+            "status": "pending",
+            "testStrategy": "Проверить точность транскрипции для аудиофайлов на русском и английском языках."
+          },
+          {
+            "id": 4,
+            "title": "Обработка лимитов API и ошибок",
+            "description": "Реализовать обработку лимитов API и ошибок, возникающих при взаимодействии с OpenAI Whisper API.",
+            "dependencies": [
+              "3.2"
+            ],
+            "details": "Добавьте логику для обработки ошибок, таких как превышение лимитов запросов и сетевые сбои. Реализуйте механизм повторных попыток и логирование ошибок для последующего анализа.",
+            "status": "pending",
+            "testStrategy": "Симулировать различные ошибки API и проверить, как система их обрабатывает, включая повторные попытки и логирование."
+          },
+          {
+            "id": 5,
+            "title": "Интеграция с системой обработки аудиофайлов",
+            "description": "Интегрировать адаптер с существующей системой обработки аудиофайлов для автоматизации процесса преобразования речи в текст.",
+            "dependencies": [
+              "3.3",
+              "3.4"
+            ],
+            "details": "Свяжите адаптер с системой, отвечающей за загрузку и предварительную обработку аудиофайлов. Убедитесь, что результаты транскрипции корректно передаются в последующие этапы обработки данных.",
+            "status": "pending",
+            "testStrategy": "Проверить полную цепочку обработки аудиофайлов, начиная с загрузки и заканчивая получением текста, чтобы убедиться в корректной интеграции."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Develop Script Compliance Checker",
+        "description": "Create a system to check call compliance with predefined scripts using AI.",
+        "details": "Develop a visual script editor for creating call scripts. Implement AI-based script compliance checking using LLMs (e.g., OpenAI GPT-4). Define script stages and rules for compliance. Use semantic analysis to evaluate script adherence.",
+        "testStrategy": "Create test scripts and validate compliance checking with sample calls. Verify semantic analysis accuracy and rule enforcement.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Разработка визуального редактора сценариев",
+            "description": "Создать визуальный редактор для создания и редактирования сценариев звонков.",
+            "dependencies": [],
+            "details": "Используйте современные веб-технологии, такие как React или Angular, для создания интуитивно понятного интерфейса. Обеспечьте возможность добавления, удаления и изменения этапов сценария. Подумайте о поддержке drag-and-drop для упрощения взаимодействия.",
+            "status": "pending",
+            "testStrategy": "Проведите тестирование пользовательского интерфейса с участием тестировщиков для проверки удобства использования и функциональности редактора."
+          },
+          {
+            "id": 2,
+            "title": "Определение этапов сценария и правил соответствия",
+            "description": "Определить этапы сценария и правила, которым должны соответствовать звонки.",
+            "dependencies": [
+              "4.1"
+            ],
+            "details": "Совместно с бизнес-аналитиками и экспертами по содержанию разработайте структуру сценария, включая ключевые этапы и правила для каждого этапа. Документируйте эти правила для последующей реализации.",
+            "status": "pending",
+            "testStrategy": "Проведите ревизию с заинтересованными сторонами для проверки полноты и точности определенных этапов и правил."
+          },
+          {
+            "id": 3,
+            "title": "Реализация AI-модуля проверки соответствия сценария",
+            "description": "Разработать модуль на основе ИИ для проверки соответствия звонков заданным сценариям.",
+            "dependencies": [
+              "4.2"
+            ],
+            "details": "Используйте LLM, например, OpenAI GPT-4, для анализа звонков. Обучите модель на основе определенных этапов и правил. Обеспечьте интеграцию с визуальным редактором для автоматической проверки соответствия.",
+            "status": "pending",
+            "testStrategy": "Создайте тестовые сценарии и звонки для проверки точности и надежности модуля ИИ."
+          },
+          {
+            "id": 4,
+            "title": "Разработка системы семантического анализа",
+            "description": "Реализовать систему семантического анализа для оценки соответствия звонков сценариям.",
+            "dependencies": [
+              "4.3"
+            ],
+            "details": "Используйте методы обработки естественного языка (NLP) для анализа текста звонков. Обеспечьте возможность выявления ключевых фраз и их соответствия этапам сценария.",
+            "status": "pending",
+            "testStrategy": "Проведите тестирование с использованием реальных данных звонков для проверки точности семантического анализа."
+          },
+          {
+            "id": 5,
+            "title": "Интеграция и тестирование системы проверки соответствия",
+            "description": "Интегрировать все компоненты системы и провести комплексное тестирование.",
+            "dependencies": [
+              "4.4"
+            ],
+            "details": "Объедините визуальный редактор, модуль ИИ и систему семантического анализа в единое решение. Проведите интеграционное тестирование для проверки взаимодействия всех компонентов.",
+            "status": "pending",
+            "testStrategy": "Проведите тестирование с участием конечных пользователей для проверки общей функциональности и выявления возможных проблем."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Implement KPI Monitoring and Dashboard",
+        "description": "Develop KPI monitoring and dashboard for call center performance metrics.",
+        "details": "Implement backend logic to calculate KPIs such as AHT, Talk/Listen Ratio, and Script Compliance Score. Develop a frontend dashboard using React/Next.js and Recharts to display KPI metrics. Implement threshold alerts and historical comparisons.",
+        "testStrategy": "Test KPI calculations with sample data. Validate dashboard rendering and alert triggering under various conditions.",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Разработка логики расчета KPI",
+            "description": "Реализовать серверную логику для расчета ключевых показателей эффективности (KPI), таких как среднее время обработки (AHT), соотношение разговора/прослушивания и оценка соответствия скрипту.",
+            "dependencies": [],
+            "details": "Используйте Python и библиотеки для обработки данных, такие как Pandas, для расчета KPI. Разработайте функции для обработки данных вызовов и вычисления каждого KPI. Убедитесь, что логика может обрабатывать большие объемы данных.",
+            "status": "pending",
+            "testStrategy": "Тестируйте расчеты KPI с использованием тестовых данных, чтобы убедиться в их точности и производительности."
+          },
+          {
+            "id": 2,
+            "title": "Разработка API для получения и обработки данных",
+            "description": "Создать API для получения данных вызовов и предоставления рассчитанных KPI.",
+            "dependencies": [
+              "5.1"
+            ],
+            "details": "Используйте FastAPI для создания REST API, который будет принимать данные вызовов и возвращать рассчитанные KPI. Обеспечьте безопасность API с помощью токенов аутентификации.",
+            "status": "pending",
+            "testStrategy": "Проведите автоматизированные тесты API для проверки корректности получения и обработки данных."
+          },
+          {
+            "id": 3,
+            "title": "Разработка интерфейса панели мониторинга",
+            "description": "Создать интерфейс панели мониторинга с использованием React/Next.js для отображения KPI.",
+            "dependencies": [
+              "5.2"
+            ],
+            "details": "Используйте React и Next.js для создания пользовательского интерфейса. Включите компоненты для отображения графиков и диаграмм с использованием библиотеки Recharts. Обеспечьте адаптивный дизайн для различных устройств.",
+            "status": "pending",
+            "testStrategy": "Проверьте рендеринг панели мониторинга на различных устройствах и браузерах, чтобы убедиться в корректности отображения."
+          },
+          {
+            "id": 4,
+            "title": "Реализация оповещений о пороговых значениях",
+            "description": "Добавить функциональность для оповещений при превышении пороговых значений KPI.",
+            "dependencies": [
+              "5.3"
+            ],
+            "details": "Реализуйте логику для мониторинга KPI и отправки уведомлений, если значения превышают установленные пороги. Используйте WebSocket или другие технологии для мгновенных уведомлений.",
+            "status": "pending",
+            "testStrategy": "Проверьте срабатывание оповещений при различных сценариях превышения порогов."
+          },
+          {
+            "id": 5,
+            "title": "Реализация исторических сравнений KPI",
+            "description": "Добавить возможность сравнения текущих KPI с историческими данными.",
+            "dependencies": [
+              "5.3"
+            ],
+            "details": "Разработайте функциональность для хранения исторических данных KPI и их сравнения с текущими значениями. Используйте базы данных, такие как PostgreSQL, для хранения и обработки данных.",
+            "status": "pending",
+            "testStrategy": "Проверьте корректность исторических сравнений, используя тестовые данные за разные периоды."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Develop Emotion Analysis Module",
+        "description": "Implement emotion analysis to determine the emotional tone of calls.",
+        "details": "Develop an emotion analysis engine using NLP techniques to classify emotional tone as positive, neutral, or negative. Detect critical moments such as conflict or gratitude. Visualize emotional changes over time in a call.",
+        "testStrategy": "Test emotion classification accuracy with labeled datasets. Validate visualization of emotional timelines and detection of critical moments.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Разработка модели анализа эмоций",
+            "description": "Создать модель анализа эмоций с использованием методов обработки естественного языка (NLP) для классификации эмоционального тона как положительного, нейтрального или отрицательного.",
+            "dependencies": [],
+            "details": "Используйте библиотеки NLP, такие как NLTK или spaCy, для обработки текста. Обучите модель на размеченных данных, содержащих примеры эмоциональных тонов. Используйте алгоритмы машинного обучения, такие как SVM или нейронные сети, для классификации эмоций.",
+            "status": "pending",
+            "testStrategy": "Проверьте точность классификации эмоций на тестовом наборе данных с известными метками."
+          },
+          {
+            "id": 2,
+            "title": "Обнаружение критических моментов",
+            "description": "Реализовать функциональность для обнаружения критических моментов, таких как конфликт или выражение благодарности, в ходе звонка.",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Разработайте правила или используйте методы машинного обучения для идентификации ключевых фраз или изменений в тоне, которые могут указывать на критические моменты. Обучите модель на данных, содержащих примеры таких моментов.",
+            "status": "pending",
+            "testStrategy": "Проверьте способность системы обнаруживать критические моменты на наборе данных с размеченными примерами."
+          },
+          {
+            "id": 3,
+            "title": "Визуализация изменений эмоций",
+            "description": "Создать визуализацию изменений эмоционального тона в ходе звонка.",
+            "dependencies": [
+              "6.1",
+              "6.2"
+            ],
+            "details": "Используйте библиотеки визуализации данных, такие как D3.js или Chart.js, для создания графиков, отображающих изменения эмоционального тона во времени. Обеспечьте возможность интерактивного просмотра данных.",
+            "status": "pending",
+            "testStrategy": "Проверьте корректность визуализации на примерах звонков с известными изменениями эмоционального тона."
+          },
+          {
+            "id": 4,
+            "title": "Интеграция с системой обработки звонков",
+            "description": "Интегрировать модуль анализа эмоций с существующей системой обработки звонков.",
+            "dependencies": [
+              "6.1",
+              "6.2",
+              "6.3"
+            ],
+            "details": "Обеспечьте возможность передачи данных звонков в модуль анализа эмоций и получения результатов анализа. Используйте REST API или другие подходящие методы интеграции.",
+            "status": "pending",
+            "testStrategy": "Проверьте корректность передачи данных и получения результатов анализа в реальных условиях работы системы."
+          },
+          {
+            "id": 5,
+            "title": "Оптимизация и тестирование производительности",
+            "description": "Оптимизировать производительность модуля анализа эмоций и провести тестирование на производительность.",
+            "dependencies": [
+              "6.4"
+            ],
+            "details": "Проанализируйте узкие места в производительности и оптимизируйте код для повышения скорости обработки. Проведите нагрузочное тестирование, чтобы убедиться в способности системы обрабатывать большое количество звонков.",
+            "status": "pending",
+            "testStrategy": "Используйте инструменты для нагрузочного тестирования, такие как Apache JMeter, для оценки производительности системы при различных нагрузках."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Create AI-Generated Call Summaries",
+        "description": "Implement AI-generated summaries for each call using LLMs.",
+        "details": "Use LLMs like OpenAI GPT-4 to generate concise summaries of calls. Extract key entities and categorize calls by topic. Implement tagging for search and categorization.",
+        "testStrategy": "Test summary generation with various call scenarios. Validate entity extraction and topic categorization accuracy.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Разработка модуля извлечения ключевых сущностей",
+            "description": "Создать модуль для извлечения ключевых сущностей из текстов звонков с использованием LLM, таких как OpenAI GPT-4.",
+            "dependencies": [],
+            "details": "Используйте API GPT-4 для анализа текстов звонков и извлечения ключевых сущностей, таких как имена, даты, суммы и т.д. Реализуйте функцию, которая принимает текст звонка и возвращает список извлеченных сущностей.",
+            "status": "pending",
+            "testStrategy": "Проверить извлечение сущностей на различных примерах звонков, включая разные сценарии и форматы."
+          },
+          {
+            "id": 2,
+            "title": "Реализация генерации кратких резюме звонков",
+            "description": "Создать функцию для генерации кратких резюме звонков с использованием LLM.",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Разработайте алгоритм, который использует GPT-4 для создания краткого резюме звонка на основе его текста. Убедитесь, что резюме включает основные моменты и выводы.",
+            "status": "pending",
+            "testStrategy": "Тестировать генерацию резюме на звонках с различной продолжительностью и содержанием, оценивая полноту и точность резюме."
+          },
+          {
+            "id": 3,
+            "title": "Категоризация звонков по темам",
+            "description": "Создать систему для автоматической категоризации звонков по темам на основе их содержания.",
+            "dependencies": [
+              "7.2"
+            ],
+            "details": "Используйте LLM для анализа текста звонка и определения его основной темы. Реализуйте функцию, которая возвращает категорию звонка, например, 'техническая поддержка', 'продажи' и т.д.",
+            "status": "pending",
+            "testStrategy": "Проверить точность категоризации на наборе звонков, заранее размеченных по темам."
+          },
+          {
+            "id": 4,
+            "title": "Внедрение системы тегирования для поиска и категоризации",
+            "description": "Разработать систему тегирования звонков для облегчения поиска и категоризации.",
+            "dependencies": [
+              "7.3"
+            ],
+            "details": "Создайте механизм, который автоматически присваивает теги звонкам на основе извлеченных сущностей и категорий. Реализуйте интерфейс для поиска звонков по тегам.",
+            "status": "pending",
+            "testStrategy": "Тестировать функциональность поиска и корректность присвоения тегов на различных примерах звонков."
+          },
+          {
+            "id": 5,
+            "title": "Интеграция и тестирование полного процесса",
+            "description": "Интегрировать все разработанные модули и протестировать полный процесс генерации резюме звонков.",
+            "dependencies": [
+              "7.4"
+            ],
+            "details": "Объедините все модули в единую систему, обеспечив их взаимодействие. Проведите комплексное тестирование, чтобы убедиться в корректности работы всех функций.",
+            "status": "pending",
+            "testStrategy": "Провести тестирование на реальных данных, проверяя корректность работы всех этапов: извлечение сущностей, генерация резюме, категоризация и тегирование."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Design Web Interface for Call Management",
+        "description": "Develop a web interface for managing calls and viewing analytics.",
+        "details": "Design and implement a responsive web interface using React/Next.js. Include features like call list, call detail view, script editor, and KPI dashboard. Ensure usability and performance across devices.",
+        "testStrategy": "Conduct usability testing with end-users. Validate interface responsiveness and performance metrics.",
+        "priority": "medium",
+        "dependencies": [
+          5,
+          6,
+          7
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Создание макета пользовательского интерфейса",
+            "description": "Разработать макет пользовательского интерфейса для управления звонками, включая список звонков, детальный просмотр звонка, редактор скриптов и панель KPI.",
+            "dependencies": [],
+            "details": "Используйте инструменты проектирования, такие как Figma или Adobe XD, для создания интерактивного прототипа. Убедитесь, что макет соответствует принципам UX/UI и адаптируется под различные устройства.",
+            "status": "pending",
+            "testStrategy": "Провести тестирование макета с пользователями для получения обратной связи и внесения улучшений."
+          },
+          {
+            "id": 2,
+            "title": "Разработка компонента списка звонков",
+            "description": "Создать компонент списка звонков, который будет отображать все звонки с возможностью фильтрации и сортировки.",
+            "dependencies": [
+              "8.1"
+            ],
+            "details": "Используйте React для создания компонента. Обеспечьте возможность фильтрации по дате, статусу и другим параметрам. Реализуйте пагинацию для улучшения производительности.",
+            "status": "pending",
+            "testStrategy": "Провести тестирование функциональности фильтрации и сортировки с различными наборами данных."
+          },
+          {
+            "id": 3,
+            "title": "Разработка компонента детального просмотра звонка",
+            "description": "Создать компонент для отображения детальной информации о выбранном звонке, включая транскрипцию и метаданные.",
+            "dependencies": [
+              "8.2"
+            ],
+            "details": "Используйте React для создания компонента. Обеспечьте отображение транскрипции, времени звонка, участников и других метаданных. Добавьте возможность прослушивания записи звонка.",
+            "status": "pending",
+            "testStrategy": "Проверить корректность отображения данных и функциональность проигрывания записи."
+          },
+          {
+            "id": 4,
+            "title": "Разработка редактора скриптов",
+            "description": "Создать визуальный редактор для создания и редактирования скриптов звонков.",
+            "dependencies": [
+              "8.1"
+            ],
+            "details": "Используйте React и библиотеки для работы с текстом, такие как Draft.js или Slate, для создания редактора. Обеспечьте возможность сохранения и загрузки скриптов.",
+            "status": "pending",
+            "testStrategy": "Провести тестирование редактора на предмет удобства использования и корректности сохранения данных."
+          },
+          {
+            "id": 5,
+            "title": "Разработка панели KPI",
+            "description": "Создать панель KPI для отображения ключевых показателей эффективности звонков.",
+            "dependencies": [
+              "8.1"
+            ],
+            "details": "Используйте React и библиотеки для визуализации данных, такие как Chart.js или D3.js, для создания панели. Обеспечьте отображение метрик, таких как средняя продолжительность звонка, количество успешных звонков и т.д.",
+            "status": "pending",
+            "testStrategy": "Проверить корректность отображения данных и производительность панели при больших объемах данных."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Implement API and Webhook Integrations",
+        "description": "Develop REST API and webhook integrations for external systems.",
+        "details": "Implement REST API endpoints for uploading calls, retrieving results, and managing scripts. Develop webhook notifications for call analysis completion and alerts. Ensure API security and rate limiting.",
+        "testStrategy": "Test API endpoints with automated tests. Validate webhook delivery and handling in external systems.",
+        "priority": "medium",
+        "dependencies": [
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Разработка REST API для загрузки вызовов",
+            "description": "Создать REST API эндпоинты для загрузки данных вызовов в систему.",
+            "dependencies": [],
+            "details": "Использовать FastAPI для создания эндпоинтов. Обеспечить поддержку загрузки данных в формате JSON. Реализовать валидацию входных данных и обработку ошибок.",
+            "status": "pending",
+            "testStrategy": "Проверить загрузку данных с помощью автоматизированных тестов, включая тесты на валидацию и обработку ошибок."
+          },
+          {
+            "id": 2,
+            "title": "Разработка REST API для получения результатов",
+            "description": "Создать REST API эндпоинты для получения результатов анализа вызовов.",
+            "dependencies": [
+              "9.1"
+            ],
+            "details": "Реализовать эндпоинты для получения результатов в формате JSON. Обеспечить фильтрацию и сортировку данных по различным критериям.",
+            "status": "pending",
+            "testStrategy": "Проверить корректность получения и фильтрации данных с помощью автоматизированных тестов."
+          },
+          {
+            "id": 3,
+            "title": "Разработка REST API для управления скриптами",
+            "description": "Создать REST API эндпоинты для управления скриптами вызовов.",
+            "dependencies": [
+              "9.1"
+            ],
+            "details": "Реализовать CRUD операции для скриптов. Обеспечить возможность добавления, обновления, удаления и получения скриптов.",
+            "status": "pending",
+            "testStrategy": "Проверить все CRUD операции с помощью автоматизированных тестов."
+          },
+          {
+            "id": 4,
+            "title": "Разработка webhook уведомлений о завершении анализа вызова",
+            "description": "Создать webhook уведомления, которые будут отправляться при завершении анализа вызова.",
+            "dependencies": [
+              "9.2"
+            ],
+            "details": "Реализовать механизм отправки HTTP POST запросов на указанные URL при завершении анализа. Обеспечить повторную отправку в случае неудачи.",
+            "status": "pending",
+            "testStrategy": "Проверить доставку уведомлений с помощью тестов, включая обработку ошибок и повторные попытки."
+          },
+          {
+            "id": 5,
+            "title": "Обеспечение безопасности API и ограничение скорости запросов",
+            "description": "Реализовать меры безопасности для API и ограничение скорости запросов.",
+            "dependencies": [
+              "9.1",
+              "9.2",
+              "9.3"
+            ],
+            "details": "Внедрить аутентификацию и авторизацию с использованием JWT. Реализовать ограничение скорости запросов с помощью библиотеки, например, `fastapi-limiter`.",
+            "status": "pending",
+            "testStrategy": "Провести тестирование безопасности, включая проверку аутентификации и ограничения скорости запросов."
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Set Up Security and Compliance Measures",
+        "description": "Implement security and compliance measures for data protection.",
+        "details": "Implement data encryption at rest and in transit using AES-256 and TLS 1.3. Set up RBAC for user access control. Ensure compliance with 152-ФЗ for data handling. Implement audit logging and PII masking in transcriptions.",
+        "testStrategy": "Conduct security audits and penetration testing. Validate compliance with legal requirements and data protection standards.",
+        "priority": "medium",
+        "dependencies": [
+          9
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Data Encryption at Rest",
+            "description": "Set up AES-256 encryption for data stored in databases and file systems.",
+            "dependencies": [],
+            "details": "Configure database encryption settings to use AES-256 for all stored data. Ensure that file systems storing sensitive data are encrypted using AES-256. Verify that encryption keys are securely managed and rotated regularly.",
+            "status": "pending",
+            "testStrategy": "Verify that data is encrypted by attempting to access it without decryption keys and ensuring it is unreadable."
+          },
+          {
+            "id": 2,
+            "title": "Implement Data Encryption in Transit",
+            "description": "Ensure all data transmitted over networks is encrypted using TLS 1.3.",
+            "dependencies": [
+              "10.1"
+            ],
+            "details": "Configure all network communications to use TLS 1.3. Update server and client configurations to enforce secure protocols and ciphers. Test connections to ensure they are encrypted.",
+            "status": "pending",
+            "testStrategy": "Use network analysis tools to confirm that data packets are encrypted and cannot be intercepted in plaintext."
+          },
+          {
+            "id": 3,
+            "title": "Set Up Role-Based Access Control (RBAC)",
+            "description": "Implement RBAC to manage user permissions and access to data.",
+            "dependencies": [
+              "10.2"
+            ],
+            "details": "Define roles and permissions based on user responsibilities. Implement RBAC in the application layer to restrict access to sensitive data and operations. Regularly review and update roles and permissions.",
+            "status": "pending",
+            "testStrategy": "Test access control by attempting to perform actions with different roles and verifying that permissions are correctly enforced."
+          },
+          {
+            "id": 4,
+            "title": "Ensure Compliance with 152-ФЗ",
+            "description": "Align data handling processes with the requirements of the Russian Federal Law 152-ФЗ.",
+            "dependencies": [
+              "10.3"
+            ],
+            "details": "Review data handling procedures to ensure compliance with 152-ФЗ. Implement necessary changes in data collection, storage, and processing to meet legal requirements. Document compliance measures and conduct regular audits.",
+            "status": "pending",
+            "testStrategy": "Conduct a compliance audit to verify that all processes meet 152-ФЗ requirements."
+          },
+          {
+            "id": 5,
+            "title": "Implement Audit Logging and PII Masking",
+            "description": "Set up audit logging for data access and implement PII masking in transcriptions.",
+            "dependencies": [
+              "10.4"
+            ],
+            "details": "Configure logging mechanisms to record all access and modifications to sensitive data. Implement PII masking techniques in transcriptions to protect personal information. Ensure logs are securely stored and accessible for audits.",
+            "status": "pending",
+            "testStrategy": "Review logs to ensure all access is recorded. Test PII masking by processing sample transcriptions and verifying that personal information is obscured."
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2026-02-22T18:21:15.045Z",
+      "updated": "2026-02-22T18:37:01.693Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
