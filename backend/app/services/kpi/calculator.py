@@ -1,0 +1,304 @@
+"""KPI calculation service.
+
+Computes call center KPI metrics from processed calls:
+- AHT (Average Handle Time)
+- Talk/Listen Ratio
+- Average Script Compliance Score
+- Sentiment Distribution
+- Call Resolution Rate
+- Average Calls Per Agent
+"""
+
+import logging
+from datetime import datetime
+
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models.call import Call, CallStatus
+from app.models.emotion import EmotionAnalysis, SentimentType
+from app.models.script import ScriptAnalysis
+from app.models.summary import CallSummary
+
+logger = logging.getLogger(__name__)
+
+# Default thresholds for KPI alerts
+DEFAULT_THRESHOLDS = {
+    "aht": {"min": 60, "max": 600, "unit": "sec"},
+    "avg_script_score": {"min": 70, "max": None, "unit": "%"},
+    "resolution_rate": {"min": 60, "max": None, "unit": "%"},
+    "negative_sentiment_pct": {"min": None, "max": 30, "unit": "%"},
+}
+
+
+async def calculate_dashboard_kpis(
+    db: AsyncSession,
+    organization_id,
+    period_start: datetime,
+    period_end: datetime,
+    agent_id=None,
+) -> dict:
+    """Calculate all KPI metrics for the dashboard.
+
+    Returns a dict with keys: total_calls, completed_calls, failed_calls,
+    metrics, agents, sentiment_distribution, category_distribution.
+    """
+    # Base query for the period
+    base_filter = [
+        Call.organization_id == organization_id,
+        Call.created_at >= period_start,
+        Call.created_at <= period_end,
+    ]
+    if agent_id:
+        base_filter.append(Call.agent_id == agent_id)
+
+    # Total calls
+    total_q = select(func.count()).select_from(Call).where(*base_filter)
+    total_calls = (await db.execute(total_q)).scalar() or 0
+
+    # Completed calls
+    completed_q = select(func.count()).select_from(Call).where(
+        *base_filter, Call.status == CallStatus.COMPLETED
+    )
+    completed_calls = (await db.execute(completed_q)).scalar() or 0
+
+    # Failed calls
+    failed_q = select(func.count()).select_from(Call).where(
+        *base_filter, Call.status == CallStatus.FAILED
+    )
+    failed_calls = (await db.execute(failed_q)).scalar() or 0
+
+    # AHT (Average Handle Time)
+    aht_q = select(func.avg(Call.duration_seconds)).where(
+        *base_filter, Call.status == CallStatus.COMPLETED, Call.duration_seconds.isnot(None)
+    )
+    aht = (await db.execute(aht_q)).scalar() or 0.0
+
+    # Average Script Compliance Score
+    script_score_q = (
+        select(func.avg(ScriptAnalysis.overall_score))
+        .join(Call, ScriptAnalysis.call_id == Call.id)
+        .where(*base_filter)
+    )
+    avg_script_score = (await db.execute(script_score_q)).scalar()
+
+    # Sentiment distribution
+    sentiment_q = (
+        select(EmotionAnalysis.overall_sentiment, func.count())
+        .join(Call, EmotionAnalysis.call_id == Call.id)
+        .where(*base_filter)
+        .group_by(EmotionAnalysis.overall_sentiment)
+    )
+    sentiment_rows = (await db.execute(sentiment_q)).all()
+    sentiment_distribution = {str(row[0].value): row[1] for row in sentiment_rows}
+
+    # Category distribution from summaries
+    category_q = (
+        select(CallSummary.category, func.count())
+        .join(Call, CallSummary.call_id == Call.id)
+        .where(*base_filter, CallSummary.category.isnot(None))
+        .group_by(CallSummary.category)
+    )
+    category_rows = (await db.execute(category_q)).all()
+    category_distribution = {row[0]: row[1] for row in category_rows}
+
+    # Resolution rate from summaries
+    resolved_q = (
+        select(func.count())
+        .select_from(CallSummary)
+        .join(Call, CallSummary.call_id == Call.id)
+        .where(*base_filter, CallSummary.outcome == "resolved")
+    )
+    resolved_count = (await db.execute(resolved_q)).scalar() or 0
+
+    total_with_summary_q = (
+        select(func.count())
+        .select_from(CallSummary)
+        .join(Call, CallSummary.call_id == Call.id)
+        .where(*base_filter)
+    )
+    total_with_summary = (await db.execute(total_with_summary_q)).scalar() or 0
+    resolution_rate = (resolved_count / total_with_summary * 100) if total_with_summary > 0 else 0.0
+
+    # Negative sentiment percentage
+    negative_count = sentiment_distribution.get("negative", 0)
+    total_sentiments = sum(sentiment_distribution.values()) if sentiment_distribution else 0
+    negative_pct = (negative_count / total_sentiments * 100) if total_sentiments > 0 else 0.0
+
+    # Build metrics list
+    metrics = [
+        _build_metric("aht", "Average Handle Time", round(aht, 1), "sec"),
+        _build_metric(
+            "avg_script_score",
+            "Avg Script Compliance",
+            round(avg_script_score, 1) if avg_script_score is not None else None,
+            "%",
+        ),
+        _build_metric("resolution_rate", "Resolution Rate", round(resolution_rate, 1), "%"),
+        _build_metric("negative_sentiment_pct", "Negative Sentiment", round(negative_pct, 1), "%"),
+        _build_metric(
+            "completion_rate",
+            "Completion Rate",
+            round(completed_calls / total_calls * 100, 1) if total_calls > 0 else 0.0,
+            "%",
+        ),
+    ]
+
+    # Per-agent breakdown
+    agents = []
+    if not agent_id:
+        agent_q = (
+            select(
+                Call.agent_id,
+                func.count().label("cnt"),
+                func.avg(Call.duration_seconds).label("avg_dur"),
+            )
+            .where(*base_filter, Call.agent_id.isnot(None), Call.status == CallStatus.COMPLETED)
+            .group_by(Call.agent_id)
+        )
+        agent_rows = (await db.execute(agent_q)).all()
+        for row in agent_rows:
+            agent_metrics = [
+                _build_metric("calls", "Total Calls", row.cnt, ""),
+                _build_metric("aht", "Avg Handle Time", round(row.avg_dur or 0, 1), "sec"),
+            ]
+            agents.append({
+                "agent_id": row.agent_id,
+                "agent_label": f"Agent {str(row.agent_id)[:8]}",
+                "total_calls": row.cnt,
+                "metrics": agent_metrics,
+            })
+
+    return {
+        "total_calls": total_calls,
+        "completed_calls": completed_calls,
+        "failed_calls": failed_calls,
+        "metrics": metrics,
+        "agents": agents,
+        "sentiment_distribution": sentiment_distribution,
+        "category_distribution": category_distribution,
+    }
+
+
+async def calculate_kpi_trend(
+    db: AsyncSession,
+    organization_id,
+    metric_name: str,
+    period_start: datetime,
+    period_end: datetime,
+    granularity: str = "day",
+) -> list[dict]:
+    """Calculate KPI trend data points grouped by day/week/month."""
+    if granularity == "week":
+        trunc_func = func.date_trunc("week", Call.created_at)
+    elif granularity == "month":
+        trunc_func = func.date_trunc("month", Call.created_at)
+    else:
+        trunc_func = func.date_trunc("day", Call.created_at)
+
+    base_filter = [
+        Call.organization_id == organization_id,
+        Call.created_at >= period_start,
+        Call.created_at <= period_end,
+        Call.status == CallStatus.COMPLETED,
+    ]
+
+    if metric_name == "aht":
+        q = (
+            select(trunc_func.label("period"), func.avg(Call.duration_seconds).label("val"))
+            .where(*base_filter, Call.duration_seconds.isnot(None))
+            .group_by("period")
+            .order_by("period")
+        )
+    elif metric_name == "call_volume":
+        q = (
+            select(trunc_func.label("period"), func.count().label("val"))
+            .where(*base_filter)
+            .group_by("period")
+            .order_by("period")
+        )
+    elif metric_name == "avg_script_score":
+        q = (
+            select(trunc_func.label("period"), func.avg(ScriptAnalysis.overall_score).label("val"))
+            .select_from(ScriptAnalysis)
+            .join(Call, ScriptAnalysis.call_id == Call.id)
+            .where(*base_filter)
+            .group_by("period")
+            .order_by("period")
+        )
+    else:
+        return []
+
+    rows = (await db.execute(q)).all()
+    return [{"date": row.period.strftime("%Y-%m-%d"), "value": round(float(row.val or 0), 1)} for row in rows]
+
+
+async def check_kpi_alerts(
+    db: AsyncSession,
+    organization_id,
+    period_start: datetime,
+    period_end: datetime,
+    thresholds: dict | None = None,
+) -> list[dict]:
+    """Check KPI values against thresholds and return triggered alerts."""
+    t = thresholds or DEFAULT_THRESHOLDS
+    kpis = await calculate_dashboard_kpis(db, organization_id, period_start, period_end)
+    alerts = []
+
+    for metric in kpis["metrics"]:
+        name = metric["name"]
+        if name not in t:
+            continue
+
+        value = metric["value"]
+        if value is None:
+            continue
+
+        rules = t[name]
+        if rules.get("min") is not None and value < rules["min"]:
+            alerts.append({
+                "metric_name": name,
+                "label": metric["label"],
+                "current_value": value,
+                "threshold": rules["min"],
+                "direction": "below",
+                "severity": "warning" if value >= rules["min"] * 0.8 else "critical",
+                "message": f"{metric['label']} ({value}{metric['unit']}) is below minimum threshold ({rules['min']}{metric['unit']})",
+            })
+
+        if rules.get("max") is not None and value > rules["max"]:
+            alerts.append({
+                "metric_name": name,
+                "label": metric["label"],
+                "current_value": value,
+                "threshold": rules["max"],
+                "direction": "above",
+                "severity": "warning" if value <= rules["max"] * 1.2 else "critical",
+                "message": f"{metric['label']} ({value}{metric['unit']}) exceeds maximum threshold ({rules['max']}{metric['unit']})",
+            })
+
+    return alerts
+
+
+def _build_metric(name: str, label: str, value, unit: str) -> dict:
+    """Build a KPI metric dict with threshold status."""
+    thresholds = DEFAULT_THRESHOLDS.get(name, {})
+    status = "normal"
+
+    if value is not None:
+        t_min = thresholds.get("min")
+        t_max = thresholds.get("max")
+        if t_min is not None and value < t_min:
+            status = "critical" if value < t_min * 0.8 else "warning"
+        elif t_max is not None and value > t_max:
+            status = "critical" if value > t_max * 1.2 else "warning"
+
+    return {
+        "name": name,
+        "label": label,
+        "value": value if value is not None else 0.0,
+        "unit": unit,
+        "threshold_min": thresholds.get("min"),
+        "threshold_max": thresholds.get("max"),
+        "status": status,
+    }
