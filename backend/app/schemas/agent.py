@@ -8,6 +8,7 @@ class AgentCreate(BaseModel):
     name: str
     email: str | None = None
     team: str | None = None
+    team_id: uuid.UUID | None = None
 
 
 class AgentResponse(BaseModel):
@@ -16,6 +17,7 @@ class AgentResponse(BaseModel):
     name: str
     email: str | None
     team: str | None
+    team_id: uuid.UUID | None = None
     is_active: bool
     created_at: datetime
     updated_at: datetime

@@ -2,6 +2,7 @@ import enum
 import uuid
 
 from sqlalchemy import BigInteger, Enum, Float, ForeignKey, String, Text
+
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -27,7 +28,12 @@ class CallDirection(str, enum.Enum):
 class Call(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "calls"
 
-    organization_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False, index=True)
+    organization_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     agent_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True, index=True)
     external_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
@@ -51,6 +57,8 @@ class Call(Base, UUIDMixin, TimestampMixin):
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # Relationships
+    organization: Mapped["Organization"] = relationship(back_populates="calls")
     transcription: Mapped["Transcription | None"] = relationship(back_populates="call", uselist=False)
     summary: Mapped["CallSummary | None"] = relationship(back_populates="call", uselist=False)
     emotion_analysis: Mapped["EmotionAnalysis | None"] = relationship(back_populates="call", uselist=False)
+    kpi: Mapped["CallKPI | None"] = relationship(back_populates="call", uselist=False)

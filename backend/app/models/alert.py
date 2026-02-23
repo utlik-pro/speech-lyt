@@ -3,7 +3,7 @@ from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, String, Boolean, Float, Integer, Text, func
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, TimestampMixin, UUIDMixin
 
@@ -14,8 +14,12 @@ class AlertRule(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "alert_rules"
 
     organization_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), nullable=False, index=True
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
+
     created_by: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="SET NULL"),
@@ -39,6 +43,9 @@ class AlertRule(Base, UUIDMixin, TimestampMixin):
         DateTime(timezone=True), nullable=True
     )
 
+    # Relationships
+    organization: Mapped["Organization"] = relationship(back_populates="alert_rules")
+
 
 class AlertHistory(Base, UUIDMixin):
     """Log of triggered alerts."""
@@ -52,7 +59,10 @@ class AlertHistory(Base, UUIDMixin):
         index=True,
     )
     organization_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), nullable=False, index=True
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
 
     metric_name: Mapped[str] = mapped_column(String(100), nullable=False)

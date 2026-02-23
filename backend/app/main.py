@@ -6,6 +6,8 @@ from app.api.v1.alerts import router as alerts_router
 from app.api.v1.analytics import router as analytics_router
 from app.api.v1.api_keys import router as api_keys_router
 from app.api.v1.auth import router as auth_router
+from app.api.v1.integrations import router as integrations_router
+from app.api.v1.reports import router as reports_router
 from app.api.v1.calls import router as calls_router
 from app.api.v1.kpi import router as kpi_router
 from app.api.v1.projects import router as projects_router
@@ -46,6 +48,8 @@ app.include_router(qa_router, prefix=settings.API_PREFIX)
 app.include_router(alerts_router, prefix=settings.API_PREFIX)
 app.include_router(webhooks_router, prefix=settings.API_PREFIX)
 app.include_router(api_keys_router, prefix=settings.API_PREFIX)
+app.include_router(integrations_router, prefix=settings.API_PREFIX)
+app.include_router(reports_router, prefix=settings.API_PREFIX)
 
 
 @app.get("/health")

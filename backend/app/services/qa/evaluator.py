@@ -19,7 +19,7 @@ from app.models.qa import QAEvaluation, QAScorecard
 from app.models.script import ScriptAnalysis
 from app.models.summary import CallSummary
 from app.models.transcription import Transcription
-from app.services.conversation_stats import compute_conversation_stats
+from app.services.conversation_stats import calculate_conversation_stats
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ async def auto_evaluate(
     transcription = transcription_q.scalar_one_or_none()
     if transcription and transcription.segments:
         try:
-            conv_stats = compute_conversation_stats(
+            conv_stats = calculate_conversation_stats(
                 transcription.segments,
                 call.duration_seconds,
             )

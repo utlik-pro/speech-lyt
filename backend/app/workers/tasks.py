@@ -179,6 +179,17 @@ async def _process_call_async(call_id: str):
             except Exception as e:
                 logger.warning(f"Webhook dispatch failed for call {call_id}: {e}")
 
+            # Sync to external integrations (Asterisk, FreeSWITCH, Bitrix24, amoCRM)
+            try:
+                from app.services.integration_sync import sync_call_to_all_integrations
+
+                await sync_call_to_all_integrations(
+                    call_id=str(call.id),
+                    organization_id=call.organization_id,
+                )
+            except Exception as e:
+                logger.warning(f"Integration sync failed for call {call_id}: {e}")
+
         finally:
             Path(wav_path).unlink(missing_ok=True)
 

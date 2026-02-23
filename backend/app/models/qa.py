@@ -14,7 +14,10 @@ class QAScorecard(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "qa_scorecards"
 
     organization_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), nullable=False, index=True
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -25,6 +28,8 @@ class QAScorecard(Base, UUIDMixin, TimestampMixin):
     #   "description": "...", "auto_source": "script_analysis|emotion|summary|conversation_stats|manual"}]
     criteria: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
 
+    # Relationships
+    organization: Mapped["Organization"] = relationship(back_populates="qa_scorecards")
     evaluations: Mapped[list["QAEvaluation"]] = relationship(
         back_populates="scorecard", cascade="all, delete-orphan"
     )

@@ -14,9 +14,11 @@ from app.core.database import async_session
 from app.models.agent import Agent
 from app.models.call import Call, CallDirection, CallStatus
 from app.models.emotion import EmotionAnalysis, SentimentType
+from app.models.organization import Organization
 from app.models.project import Project
 from app.models.script import Script, ScriptAnalysis, ScriptStage, ScriptType
 from app.models.summary import CallSummary
+from app.models.team import Team
 from app.models.transcription import Transcription
 
 # ── Constants ──────────────────────────────────────────────────────────────────
@@ -374,6 +376,7 @@ async def seed():
             await db.execute(delete(ScriptStage).where(ScriptStage.script_id.in_(old_script_ids)))
             await db.execute(delete(Script).where(Script.organization_id == DANA_PROJECT_ID))
             await db.execute(delete(Agent).where(Agent.organization_id == DANA_PROJECT_ID))
+            await db.execute(delete(Team).where(Team.organization_id == DANA_PROJECT_ID))
             await db.flush()
             print("  Old data deleted.")
 
@@ -383,6 +386,19 @@ async def seed():
             db.add(Project(id=DEFAULT_PROJECT_ID, name="Default", description="Default project", color="#3B82F6"))
             await db.flush()
             print("Created Default project")
+
+        # Create Organization (required for FK constraints)
+        existing_org = await db.execute(select(Organization).where(Organization.id == DANA_PROJECT_ID))
+        if not existing_org.scalar_one_or_none():
+            org = Organization(
+                id=DANA_PROJECT_ID,
+                name="Дана Холдинг",
+                plan="pro",
+                settings={"timezone": "Europe/Minsk", "language": "ru"},
+            )
+            db.add(org)
+            await db.flush()
+            print(f"Created organization: {org.name}")
 
         # Create Дана Холдинг project (if not exists)
         existing_proj = await db.execute(select(Project).where(Project.id == DANA_PROJECT_ID))
@@ -399,6 +415,19 @@ async def seed():
         else:
             print("Project Дана Холдинг already exists, keeping it.")
 
+        # Create teams
+        team_names = sorted(set(a["team"] for a in AGENTS_DATA))
+        teams_map = {}
+        for team_name in team_names:
+            team = Team(
+                organization_id=DANA_PROJECT_ID,
+                name=team_name,
+            )
+            db.add(team)
+            await db.flush()
+            teams_map[team_name] = team.id
+        print(f"Created {len(teams_map)} teams: {', '.join(team_names)}")
+
         # Create agents
         for ad in AGENTS_DATA:
             agent = Agent(
@@ -407,6 +436,7 @@ async def seed():
                 name=ad["name"],
                 email=ad["email"],
                 team=ad["team"],
+                team_id=teams_map.get(ad["team"]),
                 is_active=True,
             )
             db.add(agent)

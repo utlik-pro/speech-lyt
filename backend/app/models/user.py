@@ -20,8 +20,12 @@ class User(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "users"
 
     organization_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), nullable=False, index=True
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
+
     email: Mapped[str] = mapped_column(
         String(255), unique=True, nullable=False, index=True
     )
@@ -39,3 +43,6 @@ class User(Base, UUIDMixin, TimestampMixin):
         ForeignKey("agents.id", ondelete="SET NULL"),
         nullable=True,
     )
+
+    # Relationships
+    organization: Mapped["Organization"] = relationship(back_populates="users")

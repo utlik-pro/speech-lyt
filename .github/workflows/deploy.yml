@@ -1,0 +1,48 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/configmap.yaml
+          kubectl apply -f k8s/backend-deployment.yaml
+          kubectl apply -f k8s/worker-deployment.yaml
+          kubectl apply -f k8s/frontend-deployment.yaml
+          kubectl apply -f k8s/ingress.yaml
+
+      - name: Update images
+        run: |
+          IMAGE_TAG=${{ github.event.workflow_run.head_sha }}
+          kubectl -n speechlyt set image deployment/backend \
+            backend=ghcr.io/${{ github.repository }}/speechlyt-backend:${IMAGE_TAG}
+          kubectl -n speechlyt set image deployment/worker \
+            worker=ghcr.io/${{ github.repository }}/speechlyt-worker:${IMAGE_TAG}
+          kubectl -n speechlyt set image deployment/frontend \
+            frontend=ghcr.io/${{ github.repository }}/speechlyt-frontend:${IMAGE_TAG}
+
+      - name: Wait for rollout
+        run: |
+          kubectl -n speechlyt rollout status deployment/backend --timeout=120s
+          kubectl -n speechlyt rollout status deployment/worker --timeout=120s
+          kubectl -n speechlyt rollout status deployment/frontend --timeout=120s

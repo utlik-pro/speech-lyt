@@ -24,6 +24,8 @@ elasticsearch = "^8.17.0"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 tenacity = "^9.0.0"
+openpyxl = "^3.1.0"
+reportlab = "^4.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.0"

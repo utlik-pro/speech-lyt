@@ -2,6 +2,7 @@ import enum
 import uuid
 
 from sqlalchemy import Boolean, Enum, Float, ForeignKey, Integer, String, Text
+
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -19,7 +20,10 @@ class Script(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "scripts"
 
     organization_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), nullable=False, index=True
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     type: Mapped[ScriptType] = mapped_column(
@@ -29,6 +33,7 @@ class Script(Base, UUIDMixin, TimestampMixin):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     # Relationships
+    organization: Mapped["Organization"] = relationship(back_populates="scripts")
     stages: Mapped[list["ScriptStage"]] = relationship(
         back_populates="script",
         cascade="all, delete-orphan",
