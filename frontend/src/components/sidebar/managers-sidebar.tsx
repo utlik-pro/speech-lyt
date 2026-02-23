@@ -5,7 +5,7 @@ import { SidebarSection } from "@/components/collapsible-sidebar";
 
 interface ManagersSidebarProps {
   entries: Array<{
-    agent_id: string;
+    manager_id: string;
     name: string;
     team: string | null;
     total_calls: number;

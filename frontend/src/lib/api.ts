@@ -446,7 +446,7 @@ export interface ManagerLeaderboardResponse {
 }
 
 export interface ManagerStatsResponse {
-  agent: ManagerResponse;
+  manager: ManagerResponse;
   total_calls: number;
   completed_calls: number;
   avg_handle_time: number;

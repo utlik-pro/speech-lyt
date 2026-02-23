@@ -63,7 +63,7 @@ export default function ManagerDetailPage() {
     );
   }
 
-  const { agent } = stats;
+  const { manager } = stats;
 
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-zinc-950">
@@ -97,10 +97,10 @@ export default function ManagerDetailPage() {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                {agent.name}
+                {manager.name}
               </h2>
               <p className="text-sm text-zinc-500">
-                {agent.team || "No team"} {agent.email && `· ${agent.email}`}
+                {manager.team || "No team"} {manager.email && `· ${manager.email}`}
               </p>
             </div>
           </div>
