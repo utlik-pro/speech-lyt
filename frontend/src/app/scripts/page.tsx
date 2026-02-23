@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Headphones,
   Plus,
   Trash2,
   FileText,
@@ -12,7 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ProjectSelector from "@/components/project-selector";
+import AppHeader from "@/components/app-header";
 import {
   listScripts,
   createScript,
@@ -136,32 +135,7 @@ export default function ScriptsPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-zinc-950">
-      {/* Header */}
-      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <Headphones className="h-6 w-6 text-blue-600" />
-            <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-              SpeechLyt
-            </h1>
-            <ProjectSelector />
-          </div>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link href="/" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
-              Calls
-            </Link>
-            <Link href="/dashboard" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
-              Dashboard
-            </Link>
-            <Link href="/agents" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
-              Agents
-            </Link>
-            <Link href="/scripts" className="font-medium text-blue-600 dark:text-blue-400">
-              Scripts
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <AppHeader />
 
       <main className="mx-auto max-w-5xl space-y-6 px-6 py-8">
         <div className="flex items-center justify-between">
@@ -364,9 +338,12 @@ export default function ScriptsPage() {
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-medium text-zinc-900 dark:text-zinc-100">
+                    <Link
+                      href={`/scripts/${script.id}`}
+                      className="font-medium text-zinc-900 hover:text-blue-600 dark:text-zinc-100 dark:hover:text-blue-400"
+                    >
                       {script.name}
-                    </h3>
+                    </Link>
                     <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
                       <span className="rounded bg-zinc-100 px-1.5 py-0.5 dark:bg-zinc-800">
                         {script.type}

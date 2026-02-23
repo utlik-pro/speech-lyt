@@ -73,6 +73,16 @@ async def agent_leaderboard(
         )
 
 
+@router.get("/{agent_id}/info", response_model=AgentResponse)
+async def agent_info(agent_id: uuid.UUID):
+    """Get basic agent info (lightweight, no stats computation)."""
+    async with async_session() as db:
+        agent = await db.get(Agent, agent_id)
+        if not agent:
+            raise HTTPException(status_code=404, detail="Agent not found")
+        return AgentResponse.model_validate(agent)
+
+
 @router.get("/{agent_id}", response_model=AgentStatsResponse)
 async def agent_detail(
     agent_id: uuid.UUID,

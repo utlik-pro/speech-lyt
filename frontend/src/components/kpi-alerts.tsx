@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import type { KPIAlert } from "@/lib/api";
-import { AlertTriangle, AlertCircle } from "lucide-react";
+import { AlertTriangle, AlertCircle, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function KPIAlerts({ alerts }: { alerts: KPIAlert[] }) {
@@ -47,6 +48,13 @@ export default function KPIAlerts({ alerts }: { alerts: KPIAlert[] }) {
           </div>
         </div>
       ))}
+      <Link
+        href="/alerts"
+        className="mt-2 inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+      >
+        <Settings className="h-3 w-3" />
+        Manage Alert Rules
+      </Link>
     </div>
   );
 }

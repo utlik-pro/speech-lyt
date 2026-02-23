@@ -2,11 +2,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.agents import router as agents_router
+from app.api.v1.alerts import router as alerts_router
 from app.api.v1.analytics import router as analytics_router
 from app.api.v1.api_keys import router as api_keys_router
+from app.api.v1.auth import router as auth_router
 from app.api.v1.calls import router as calls_router
 from app.api.v1.kpi import router as kpi_router
 from app.api.v1.projects import router as projects_router
+from app.api.v1.qa import router as qa_router
 from app.api.v1.scripts import router as scripts_router
 from app.api.v1.webhooks import router as webhooks_router
 from app.core.config import settings
@@ -32,12 +35,15 @@ app.add_middleware(RateLimitMiddleware, max_requests=100, window_seconds=60)
 
 
 # API routers
+app.include_router(auth_router, prefix=settings.API_PREFIX)
 app.include_router(projects_router, prefix=settings.API_PREFIX)
 app.include_router(calls_router, prefix=settings.API_PREFIX)
 app.include_router(agents_router, prefix=settings.API_PREFIX)
 app.include_router(scripts_router, prefix=settings.API_PREFIX)
 app.include_router(analytics_router, prefix=settings.API_PREFIX)
 app.include_router(kpi_router, prefix=settings.API_PREFIX)
+app.include_router(qa_router, prefix=settings.API_PREFIX)
+app.include_router(alerts_router, prefix=settings.API_PREFIX)
 app.include_router(webhooks_router, prefix=settings.API_PREFIX)
 app.include_router(api_keys_router, prefix=settings.API_PREFIX)
 

@@ -321,6 +321,57 @@ export async function deleteScript(scriptId: string): Promise<void> {
   await api.delete(`/scripts/${scriptId}`);
 }
 
+export async function updateScript(
+  scriptId: string,
+  payload: { name?: string; type?: string; description?: string; is_active?: boolean },
+): Promise<ScriptResponse> {
+  const { data } = await api.put<ScriptResponse>(`/scripts/${scriptId}`, payload);
+  return data;
+}
+
+// --- Script Analysis ---
+
+export interface StageResultItem {
+  stage_id: string;
+  stage_name: string;
+  passed: boolean;
+  score: number;
+  matched_phrases: string[];
+  missing_phrases: string[];
+  found_forbidden_words: string[];
+  notes: string;
+}
+
+export interface ViolationItem {
+  stage_name: string;
+  type: string;
+  description: string;
+  severity: string;
+}
+
+export interface ScriptAnalysisResponse {
+  id: string;
+  call_id: string;
+  script_id: string;
+  overall_score: number;
+  stage_results: StageResultItem[];
+  violations: ViolationItem[];
+  created_at: string;
+  updated_at: string;
+}
+
+export async function getCallScriptAnalysis(callId: string): Promise<ScriptAnalysisResponse> {
+  const { data } = await api.get<ScriptAnalysisResponse>(`/calls/${callId}/script-analysis`);
+  return data;
+}
+
+// --- Agent Info (lightweight) ---
+
+export async function getAgentInfo(agentId: string): Promise<AgentResponse> {
+  const { data } = await api.get<AgentResponse>(`/agents/${agentId}/info`);
+  return data;
+}
+
 // --- Projects API ---
 
 export interface ProjectResponse {
@@ -539,6 +590,254 @@ export function getCallAudioUrl(callId: string): string {
   const projectId =
     typeof window !== "undefined" ? localStorage.getItem("speechlyt-project-id") : null;
   return `${base}/calls/${callId}/audio${projectId ? `?project_id=${projectId}` : ""}`;
+}
+
+// --- Auth API ---
+
+export interface UserResponse {
+  id: string;
+  organization_id: string;
+  email: string;
+  name: string;
+  role: string;
+  is_active: boolean;
+  agent_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TokenResponse {
+  access_token: string;
+  token_type: string;
+  user: UserResponse;
+}
+
+export async function registerUser(payload: {
+  email: string;
+  password: string;
+  name: string;
+}): Promise<TokenResponse> {
+  const { data } = await api.post<TokenResponse>("/auth/register", payload);
+  return data;
+}
+
+export async function loginUser(payload: {
+  email: string;
+  password: string;
+}): Promise<TokenResponse> {
+  const { data } = await api.post<TokenResponse>("/auth/login", payload);
+  return data;
+}
+
+export async function getCurrentUser(): Promise<UserResponse> {
+  const { data } = await api.get<UserResponse>("/auth/me");
+  return data;
+}
+
+export async function updateProfile(payload: {
+  name?: string;
+  email?: string;
+  password?: string;
+}): Promise<UserResponse> {
+  const { data } = await api.put<UserResponse>("/auth/me", payload);
+  return data;
+}
+
+// --- QA API ---
+
+export interface QACriterionDef {
+  id: string;
+  name: string;
+  category: string;
+  weight: number;
+  description: string;
+  auto_source: string;
+}
+
+export interface QAScorecardResponse {
+  id: string;
+  organization_id: string;
+  name: string;
+  description: string | null;
+  is_active: boolean;
+  criteria: QACriterionDef[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface QAScorecardListResponse {
+  items: QAScorecardResponse[];
+  total: number;
+}
+
+export interface QAResultItem {
+  criterion_id: string;
+  score: number;
+  max_score: number;
+  passed: boolean;
+  auto_evaluated: boolean;
+  notes: string;
+}
+
+export interface QAEvaluationResponse {
+  id: string;
+  call_id: string;
+  scorecard_id: string;
+  evaluator_id: string | null;
+  total_score: number;
+  max_possible_score: number;
+  results: QAResultItem[];
+  comments: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface QAEvaluationListResponse {
+  items: QAEvaluationResponse[];
+  total: number;
+}
+
+export async function listScorecards(): Promise<QAScorecardListResponse> {
+  const { data } = await api.get<QAScorecardListResponse>("/qa/scorecards");
+  return data;
+}
+
+export async function createScorecard(payload: {
+  name: string;
+  description?: string;
+  criteria: QACriterionDef[];
+}): Promise<QAScorecardResponse> {
+  const { data } = await api.post<QAScorecardResponse>("/qa/scorecards", payload);
+  return data;
+}
+
+export async function getScorecard(id: string): Promise<QAScorecardResponse> {
+  const { data } = await api.get<QAScorecardResponse>(`/qa/scorecards/${id}`);
+  return data;
+}
+
+export async function updateScorecard(
+  id: string,
+  payload: { name?: string; description?: string; is_active?: boolean; criteria?: QACriterionDef[] },
+): Promise<QAScorecardResponse> {
+  const { data } = await api.put<QAScorecardResponse>(`/qa/scorecards/${id}`, payload);
+  return data;
+}
+
+export async function deleteScorecard(id: string): Promise<void> {
+  await api.delete(`/qa/scorecards/${id}`);
+}
+
+export async function evaluateCall(
+  callId: string,
+  scorecardId: string,
+): Promise<QAEvaluationResponse> {
+  const { data } = await api.post<QAEvaluationResponse>(`/qa/evaluate/${callId}`, {
+    scorecard_id: scorecardId,
+  });
+  return data;
+}
+
+export async function getCallEvaluations(callId: string): Promise<QAEvaluationListResponse> {
+  const { data } = await api.get<QAEvaluationListResponse>(`/qa/evaluations/${callId}`);
+  return data;
+}
+
+// --- Alerts API ---
+
+export interface AlertRuleResponse {
+  id: string;
+  organization_id: string;
+  created_by: string | null;
+  name: string;
+  metric_name: string;
+  condition: string;
+  threshold: number;
+  severity: string;
+  is_active: boolean;
+  notify_email: boolean;
+  notify_webhook: boolean;
+  cooldown_minutes: number;
+  last_triggered_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AlertRuleListResponse {
+  items: AlertRuleResponse[];
+  total: number;
+}
+
+export interface AlertHistoryResponse {
+  id: string;
+  rule_id: string;
+  organization_id: string;
+  metric_name: string;
+  metric_value: number;
+  threshold: number;
+  severity: string;
+  message: string;
+  acknowledged: boolean;
+  acknowledged_by: string | null;
+  acknowledged_at: string | null;
+  created_at: string;
+}
+
+export interface AlertHistoryListResponse {
+  items: AlertHistoryResponse[];
+  total: number;
+}
+
+export async function listAlertRules(): Promise<AlertRuleListResponse> {
+  const { data } = await api.get<AlertRuleListResponse>("/alerts/rules");
+  return data;
+}
+
+export async function createAlertRule(payload: {
+  name: string;
+  metric_name: string;
+  condition: string;
+  threshold: number;
+  severity?: string;
+  notify_email?: boolean;
+  notify_webhook?: boolean;
+  cooldown_minutes?: number;
+}): Promise<AlertRuleResponse> {
+  const { data } = await api.post<AlertRuleResponse>("/alerts/rules", payload);
+  return data;
+}
+
+export async function updateAlertRule(
+  id: string,
+  payload: Record<string, unknown>,
+): Promise<AlertRuleResponse> {
+  const { data } = await api.put<AlertRuleResponse>(`/alerts/rules/${id}`, payload);
+  return data;
+}
+
+export async function deleteAlertRule(id: string): Promise<void> {
+  await api.delete(`/alerts/rules/${id}`);
+}
+
+export async function getAlertHistory(params?: {
+  severity?: string;
+  acknowledged?: boolean;
+  page?: number;
+  page_size?: number;
+}): Promise<AlertHistoryListResponse> {
+  const { data } = await api.get<AlertHistoryListResponse>("/alerts/history", { params });
+  return data;
+}
+
+export async function acknowledgeAlert(id: string): Promise<AlertHistoryResponse> {
+  const { data } = await api.put<AlertHistoryResponse>(`/alerts/history/${id}/acknowledge`);
+  return data;
+}
+
+export async function checkAlerts(): Promise<{ triggered: number; alerts: AlertHistoryResponse[] }> {
+  const { data } = await api.post<{ triggered: number; alerts: AlertHistoryResponse[] }>("/alerts/check");
+  return data;
 }
 
 export default api;

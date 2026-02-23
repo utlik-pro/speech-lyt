@@ -1,4 +1,4 @@
-"""Analytics API — endpoints for emotion analysis, call summaries, and conversation stats."""
+"""Analytics API — endpoints for emotion analysis, call summaries, conversation stats, and script compliance."""
 
 import uuid
 
@@ -8,10 +8,12 @@ from sqlalchemy import select
 from app.core.database import async_session
 from app.models.call import Call
 from app.models.emotion import EmotionAnalysis
+from app.models.script import ScriptAnalysis
 from app.models.summary import CallSummary
 from app.models.transcription import Transcription
 from app.schemas.call import ConversationStatsResponse, TranscriptionResponse
 from app.schemas.emotion import EmotionAnalysisResponse
+from app.schemas.script import ScriptAnalysisResponse
 from app.schemas.summary import CallSummaryResponse
 from app.services.conversation_stats import calculate_conversation_stats
 
@@ -143,6 +145,26 @@ async def trigger_call_analysis(call_id: uuid.UUID):
 
         await db.commit()
         return {"message": "Analysis completed", "call_id": call_id}
+
+
+@router.get("/calls/{call_id}/script-analysis", response_model=ScriptAnalysisResponse)
+async def get_call_script_analysis(call_id: uuid.UUID):
+    """Get script compliance analysis for a specific call."""
+    async with async_session() as db:
+        call = await db.get(Call, call_id)
+        if not call:
+            raise HTTPException(status_code=404, detail="Call not found")
+
+        result = await db.execute(
+            select(ScriptAnalysis).where(ScriptAnalysis.call_id == call_id)
+        )
+        analysis = result.scalar_one_or_none()
+        if not analysis:
+            raise HTTPException(
+                status_code=404,
+                detail="Script analysis not available for this call",
+            )
+        return ScriptAnalysisResponse.model_validate(analysis)
 
 
 @router.get("/calls/{call_id}/conversation-stats", response_model=ConversationStatsResponse)
