@@ -7,8 +7,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base, TimestampMixin, UUIDMixin
 
 
-class Agent(Base, UUIDMixin, TimestampMixin):
-    __tablename__ = "agents"
+class Manager(Base, UUIDMixin, TimestampMixin):
+    __tablename__ = "agents"  # Keep original table name!
 
     organization_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -28,5 +28,5 @@ class Agent(Base, UUIDMixin, TimestampMixin):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     # Relationships
-    organization: Mapped["Organization"] = relationship(back_populates="agents")
-    team_rel: Mapped["Team | None"] = relationship(back_populates="agents")
+    organization: Mapped["Organization"] = relationship(back_populates="managers")
+    team_rel: Mapped["Team | None"] = relationship(back_populates="managers")

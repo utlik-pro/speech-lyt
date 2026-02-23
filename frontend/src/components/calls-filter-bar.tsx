@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
-import { listAgents, type AgentResponse, type CallFilters } from "@/lib/api";
+import { listManagers, type ManagerResponse, type CallFilters } from "@/lib/api";
 
 interface CallsFilterBarProps {
   filters: CallFilters;
@@ -10,11 +10,11 @@ interface CallsFilterBarProps {
 }
 
 export default function CallsFilterBar({ filters, onChange }: CallsFilterBarProps) {
-  const [agents, setAgents] = useState<AgentResponse[]>([]);
+  const [managers, setManagers] = useState<ManagerResponse[]>([]);
   const [searchInput, setSearchInput] = useState(filters.search || "");
 
   useEffect(() => {
-    listAgents().then((r) => setAgents(r.items)).catch(() => {});
+    listManagers().then((r) => setManagers(r.items)).catch(() => {});
   }, []);
 
   // Debounced search
@@ -53,8 +53,8 @@ export default function CallsFilterBar({ filters, onChange }: CallsFilterBarProp
         onChange={(e) => update("agent_id", e.target.value)}
         className="h-8 rounded-md border border-zinc-300 bg-white px-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
       >
-        <option value="">All agents</option>
-        {agents.map((a) => (
+        <option value="">All managers</option>
+        {managers.map((a) => (
           <option key={a.id} value={a.id}>
             {a.name}
           </option>

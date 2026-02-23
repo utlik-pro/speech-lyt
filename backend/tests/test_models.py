@@ -8,6 +8,7 @@ import pytest
 def test_all_models_importable():
     """Verify all models can be imported from the models package."""
     from app.models import (
+        Manager,
         Agent,
         AlertHistory,
         AlertRule,
@@ -40,6 +41,8 @@ def test_all_models_importable():
     )
 
     assert Base is not None
+    assert Manager is Agent  # backward-compatible alias
+    assert Manager.__tablename__ == "agents"  # DB table unchanged
     assert Organization.__tablename__ == "organizations"
     assert Team.__tablename__ == "teams"
     assert CallKPI.__tablename__ == "call_kpis"

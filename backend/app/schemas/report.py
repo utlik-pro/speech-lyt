@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 class ReportType(str, Enum):
     CALLS = "calls"
-    AGENTS = "agents"
+    MANAGERS = "managers"
 
 
 class ReportFormat(str, Enum):

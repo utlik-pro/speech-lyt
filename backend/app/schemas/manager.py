@@ -4,14 +4,14 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class AgentCreate(BaseModel):
+class ManagerCreate(BaseModel):
     name: str
     email: str | None = None
     team: str | None = None
     team_id: uuid.UUID | None = None
 
 
-class AgentResponse(BaseModel):
+class ManagerResponse(BaseModel):
     id: uuid.UUID
     organization_id: uuid.UUID
     name: str
@@ -25,13 +25,13 @@ class AgentResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class AgentListResponse(BaseModel):
-    items: list[AgentResponse]
+class ManagerListResponse(BaseModel):
+    items: list[ManagerResponse]
     total: int
 
 
-class AgentLeaderboardEntry(BaseModel):
-    agent_id: uuid.UUID
+class ManagerLeaderboardEntry(BaseModel):
+    manager_id: uuid.UUID
     name: str
     team: str | None
     total_calls: int
@@ -42,14 +42,14 @@ class AgentLeaderboardEntry(BaseModel):
     rank: int
 
 
-class AgentLeaderboardResponse(BaseModel):
+class ManagerLeaderboardResponse(BaseModel):
     period_start: datetime
     period_end: datetime
-    entries: list[AgentLeaderboardEntry]
+    entries: list[ManagerLeaderboardEntry]
 
 
-class AgentStatsResponse(BaseModel):
-    agent: AgentResponse
+class ManagerStatsResponse(BaseModel):
+    manager: ManagerResponse
     total_calls: int
     completed_calls: int
     avg_handle_time: float

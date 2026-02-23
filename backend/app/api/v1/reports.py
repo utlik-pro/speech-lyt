@@ -29,7 +29,7 @@ async def generate_report(
                 agent_id=payload.agent_id,
             )
         else:
-            data = await gen.generate_agents_report(
+            data = await gen.generate_managers_report(
                 organization_id=project_id,
                 date_from=payload.date_from,
                 date_to=payload.date_to,
@@ -53,7 +53,7 @@ async def export_report(
                 agent_id=payload.agent_id,
             )
         else:
-            data = await gen.generate_agents_report(
+            data = await gen.generate_managers_report(
                 organization_id=project_id,
                 date_from=payload.date_from,
                 date_to=payload.date_to,

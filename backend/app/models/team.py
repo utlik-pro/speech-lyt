@@ -26,4 +26,4 @@ class Team(Base, UUIDMixin, TimestampMixin):
     # Relationships
     organization: Mapped["Organization"] = relationship(back_populates="teams")
     supervisor: Mapped["User | None"] = relationship(foreign_keys=[supervisor_id])
-    agents: Mapped[list["Agent"]] = relationship(back_populates="team_rel")
+    managers: Mapped[list["Manager"]] = relationship(back_populates="team_rel")

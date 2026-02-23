@@ -11,7 +11,8 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import select
 
 from app.core.database import async_session
-from app.models.agent import Agent
+from app.models.ai_agent import AIAgent, AIAgentPrompt
+from app.models.manager import Manager
 from app.models.call import Call, CallDirection, CallStatus
 from app.models.emotion import EmotionAnalysis, SentimentType
 from app.models.organization import Organization
@@ -30,7 +31,7 @@ NUM_AGENTS = 8
 DAYS_RANGE = 90
 BATCH_SIZE = 200
 
-AGENTS_DATA = [
+MANAGERS_DATA = [
     {"id": uuid.UUID("a0000000-0000-0000-0000-000000000001"), "name": "Иванов Дмитрий", "team": "Продажи", "email": "ivanov@dana.by"},
     {"id": uuid.UUID("a0000000-0000-0000-0000-000000000002"), "name": "Петрова Анна", "team": "Продажи", "email": "petrova@dana.by"},
     {"id": uuid.UUID("a0000000-0000-0000-0000-000000000003"), "name": "Козлов Сергей", "team": "Поддержка", "email": "kozlov@dana.by"},
@@ -40,7 +41,7 @@ AGENTS_DATA = [
     {"id": uuid.UUID("a0000000-0000-0000-0000-000000000007"), "name": "Жук Павел", "team": "Поддержка", "email": "zhuk@dana.by"},
     {"id": uuid.UUID("a0000000-0000-0000-0000-000000000008"), "name": "Лукашевич Татьяна", "team": "Продажи", "email": "lukashevich@dana.by"},
 ]
-AGENT_IDS = [a["id"] for a in AGENTS_DATA]
+MANAGER_IDS = [a["id"] for a in MANAGERS_DATA]
 
 # ── Тематика: Дана Холдинг / МинскМир ─────────────────────────────────────────
 
@@ -375,7 +376,7 @@ async def seed():
             old_script_ids = select(Script.id).where(Script.organization_id == DANA_PROJECT_ID)
             await db.execute(delete(ScriptStage).where(ScriptStage.script_id.in_(old_script_ids)))
             await db.execute(delete(Script).where(Script.organization_id == DANA_PROJECT_ID))
-            await db.execute(delete(Agent).where(Agent.organization_id == DANA_PROJECT_ID))
+            await db.execute(delete(Manager).where(Manager.organization_id == DANA_PROJECT_ID))
             await db.execute(delete(Team).where(Team.organization_id == DANA_PROJECT_ID))
             await db.flush()
             print("  Old data deleted.")
@@ -416,7 +417,7 @@ async def seed():
             print("Project Дана Холдинг already exists, keeping it.")
 
         # Create teams
-        team_names = sorted(set(a["team"] for a in AGENTS_DATA))
+        team_names = sorted(set(a["team"] for a in MANAGERS_DATA))
         teams_map = {}
         for team_name in team_names:
             team = Team(
@@ -428,20 +429,20 @@ async def seed():
             teams_map[team_name] = team.id
         print(f"Created {len(teams_map)} teams: {', '.join(team_names)}")
 
-        # Create agents
-        for ad in AGENTS_DATA:
-            agent = Agent(
-                id=ad["id"],
+        # Create managers
+        for md in MANAGERS_DATA:
+            manager = Manager(
+                id=md["id"],
                 organization_id=DANA_PROJECT_ID,
-                name=ad["name"],
-                email=ad["email"],
-                team=ad["team"],
-                team_id=teams_map.get(ad["team"]),
+                name=md["name"],
+                email=md["email"],
+                team=md["team"],
+                team_id=teams_map.get(md["team"]),
                 is_active=True,
             )
-            db.add(agent)
+            db.add(manager)
         await db.flush()
-        print(f"Created {len(AGENTS_DATA)} agents")
+        print(f"Created {len(MANAGERS_DATA)} managers")
 
         # Create scripts
         scripts_with_stages = []
@@ -492,7 +493,7 @@ async def seed():
             call = Call(
                 id=call_id,
                 organization_id=DANA_PROJECT_ID,
-                agent_id=random.choice(AGENT_IDS),
+                agent_id=random.choice(MANAGER_IDS),
                 external_id=f"DANA-{i + 1:05d}",
                 audio_url=f"s3://speechlyt-audio/demo/{call_id}.wav",
                 original_filename=f"call_{created_at.strftime('%Y%m%d_%H%M%S')}_{i + 1}.wav",
@@ -564,8 +565,56 @@ async def seed():
                 batch_summ.clear()
                 batch_sa.clear()
 
+        # ── AI Agents ─────────────────────────────────────────────────────────
+        from sqlalchemy import delete as sa_delete
+        from app.models.ai_agent import AIAgent, AIAgentPrompt
+
+        # Clean up old AI agents for this org
+        old_agent_ids = select(AIAgent.id).where(AIAgent.organization_id == DANA_PROJECT_ID)
+        await db.execute(sa_delete(AIAgentPrompt).where(AIAgentPrompt.ai_agent_id.in_(old_agent_ids)))
+        await db.execute(sa_delete(AIAgent).where(AIAgent.organization_id == DANA_PROJECT_ID))
+        await db.flush()
+
+        # 1. Quality Analyzer agent
+        analyzer = AIAgent(
+            organization_id=DANA_PROJECT_ID,
+            name="Анализатор качества",
+            description="Автоматический анализ звонков: эмоции, саммари, соблюдение скрипта",
+            agent_type="analyzer",
+            model_name="gpt-4o-mini",
+            temperature=0.3,
+            max_tokens=2048,
+            is_active=True,
+            pipeline_steps=[
+                {"step_type": "emotion_analysis", "enabled": True, "order": 1, "config": {}},
+                {"step_type": "summary", "enabled": True, "order": 2, "config": {}},
+                {"step_type": "script_compliance", "enabled": True, "order": 3, "config": {}},
+            ],
+        )
+        db.add(analyzer)
+        await db.flush()
+        print(f"Created AI agent: {analyzer.name}")
+
+        # 2. Manager Coach agent
+        coach = AIAgent(
+            organization_id=DANA_PROJECT_ID,
+            name="Коуч менеджеров",
+            description="Анализ работы менеджеров, выявление зон роста, рекомендации по обучению",
+            agent_type="coach",
+            model_name="gpt-4o-mini",
+            temperature=0.4,
+            max_tokens=3000,
+            is_active=True,
+            pipeline_steps=[
+                {"step_type": "coaching", "enabled": True, "order": 1, "config": {"period_days": 30}},
+            ],
+        )
+        db.add(coach)
+        await db.flush()
+        print(f"Created AI agent: {coach.name}")
+
         await db.commit()
-        print(f"\nSeed complete! {NUM_CALLS} calls for Дана Холдинг (МинскМир).")
+        print(f"\nSeed complete! {NUM_CALLS} calls + 2 AI agents for Дана Холдинг (МинскМир).")
 
 
 if __name__ == "__main__":

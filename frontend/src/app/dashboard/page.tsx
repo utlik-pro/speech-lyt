@@ -15,7 +15,7 @@ import type {
   HeatmapResponse,
   WordCloudResponse,
   PeriodComparisonResponse,
-  AgentLeaderboardResponse,
+  ManagerLeaderboardResponse,
 } from "@/lib/api";
 import {
   getKPIDashboard,
@@ -24,7 +24,7 @@ import {
   getHeatmap,
   getWordCloud,
   getPeriodComparison,
-  getAgentLeaderboard,
+  getManagerLeaderboard,
 } from "@/lib/api";
 import KPICard from "@/components/kpi-card";
 import KPIAlerts from "@/components/kpi-alerts";
@@ -35,7 +35,7 @@ import DashboardSidebar from "@/components/sidebar/dashboard-sidebar";
 import PeriodComparison from "@/components/period-comparison";
 import HeatmapChart from "@/components/heatmap-chart";
 import WordCloud from "@/components/word-cloud";
-import AgentMiniLeaderboard from "@/components/agent-mini-leaderboard";
+import ManagerMiniLeaderboard from "@/components/manager-mini-leaderboard";
 
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState<KPIDashboardResponse | null>(null);
@@ -44,7 +44,7 @@ export default function DashboardPage() {
   const [heatmap, setHeatmap] = useState<HeatmapResponse | null>(null);
   const [wordCloud, setWordCloud] = useState<WordCloudResponse | null>(null);
   const [comparison, setComparison] = useState<PeriodComparisonResponse | null>(null);
-  const [leaderboard, setLeaderboard] = useState<AgentLeaderboardResponse | null>(null);
+  const [leaderboard, setLeaderboard] = useState<ManagerLeaderboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [trendMetric, setTrendMetric] = useState("aht");
 
@@ -59,7 +59,7 @@ export default function DashboardPage() {
           getHeatmap(),
           getWordCloud(),
           getPeriodComparison(),
-          getAgentLeaderboard(30),
+          getManagerLeaderboard(30),
         ]);
       setDashboard(dashData);
       setTrend(trendData);
@@ -240,13 +240,13 @@ export default function DashboardPage() {
               )}
             </div>
 
-            {/* Agent Mini Leaderboard */}
+            {/* Manager Mini Leaderboard */}
             {leaderboard && leaderboard.entries.length > 0 && (
               <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
                 <h3 className="mb-3 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-                  Top Agents
+                  Top Managers
                 </h3>
-                <AgentMiniLeaderboard entries={leaderboard.entries} />
+                <ManagerMiniLeaderboard entries={leaderboard.entries} />
               </div>
             )}
           </>

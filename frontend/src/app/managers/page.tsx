@@ -5,17 +5,17 @@ import { RefreshCw, Trophy, ArrowUpDown } from "lucide-react";
 import { cn, formatDuration } from "@/lib/utils";
 import AppHeader from "@/components/app-header";
 import CollapsibleSidebar from "@/components/collapsible-sidebar";
-import AgentsSidebar from "@/components/sidebar/agents-sidebar";
+import ManagersSidebar from "@/components/sidebar/managers-sidebar";
 import {
-  getAgentLeaderboard,
-  type AgentLeaderboardEntry,
-  type AgentLeaderboardResponse,
+  getManagerLeaderboard,
+  type ManagerLeaderboardEntry,
+  type ManagerLeaderboardResponse,
 } from "@/lib/api";
 
 type SortKey = "rank" | "total_calls" | "avg_handle_time" | "avg_script_score" | "resolution_rate" | "positive_sentiment_pct";
 
-export default function AgentsPage() {
-  const [data, setData] = useState<AgentLeaderboardResponse | null>(null);
+export default function ManagersPage() {
+  const [data, setData] = useState<ManagerLeaderboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [days, setDays] = useState(30);
   const [sortKey, setSortKey] = useState<SortKey>("rank");
@@ -24,7 +24,7 @@ export default function AgentsPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const d = await getAgentLeaderboard(days);
+      const d = await getManagerLeaderboard(days);
       setData(d);
     } catch (err) {
       console.error("Failed to load leaderboard:", err);
@@ -71,7 +71,7 @@ export default function AgentsPage() {
               <div className="flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-yellow-500" />
                 <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                  Agent Leaderboard
+                  Manager Leaderboard
                 </h2>
               </div>
               <div className="flex items-center gap-2">
@@ -101,7 +101,7 @@ export default function AgentsPage() {
               </div>
             ) : sorted.length === 0 ? (
               <div className="flex h-64 items-center justify-center text-sm text-zinc-400">
-                No agents found
+                No managers found
               </div>
             ) : (
               <div className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800">
@@ -110,7 +110,7 @@ export default function AgentsPage() {
                     <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-xs font-medium uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900">
                       {([
                         ["rank", "Rank"],
-                        ["", "Agent"],
+                        ["", "Manager"],
                         ["", "Team"],
                         ["total_calls", "Calls"],
                         ["avg_handle_time", "AHT"],
@@ -137,7 +137,7 @@ export default function AgentsPage() {
                     {sorted.map((e) => (
                       <tr
                         key={e.agent_id}
-                        onClick={() => (window.location.href = `/agents/${e.agent_id}`)}
+                        onClick={() => (window.location.href = `/managers/${e.agent_id}`)}
                         className="cursor-pointer border-b border-zinc-100 transition-colors hover:bg-zinc-50 dark:border-zinc-800/50 dark:hover:bg-zinc-900/50"
                       >
                         <td className="px-4 py-2.5">
@@ -166,7 +166,7 @@ export default function AgentsPage() {
         </main>
 
         <CollapsibleSidebar>
-          <AgentsSidebar entries={data?.entries || []} />
+          <ManagersSidebar entries={data?.entries || []} />
         </CollapsibleSidebar>
       </div>
     </div>

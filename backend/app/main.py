@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1.agents import router as agents_router
+from app.api.v1.managers import router as managers_router
+from app.api.v1.ai_agents import router as ai_agents_router
 from app.api.v1.alerts import router as alerts_router
+from app.api.v1.coaching import router as coaching_router
 from app.api.v1.analytics import router as analytics_router
 from app.api.v1.api_keys import router as api_keys_router
 from app.api.v1.auth import router as auth_router
@@ -40,7 +42,7 @@ app.add_middleware(RateLimitMiddleware, max_requests=100, window_seconds=60)
 app.include_router(auth_router, prefix=settings.API_PREFIX)
 app.include_router(projects_router, prefix=settings.API_PREFIX)
 app.include_router(calls_router, prefix=settings.API_PREFIX)
-app.include_router(agents_router, prefix=settings.API_PREFIX)
+app.include_router(managers_router, prefix=settings.API_PREFIX)
 app.include_router(scripts_router, prefix=settings.API_PREFIX)
 app.include_router(analytics_router, prefix=settings.API_PREFIX)
 app.include_router(kpi_router, prefix=settings.API_PREFIX)
@@ -50,6 +52,8 @@ app.include_router(webhooks_router, prefix=settings.API_PREFIX)
 app.include_router(api_keys_router, prefix=settings.API_PREFIX)
 app.include_router(integrations_router, prefix=settings.API_PREFIX)
 app.include_router(reports_router, prefix=settings.API_PREFIX)
+app.include_router(ai_agents_router, prefix=settings.API_PREFIX)
+app.include_router(coaching_router, prefix=settings.API_PREFIX)
 
 
 @app.get("/health")

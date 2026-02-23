@@ -16,8 +16,8 @@ class KPIMetric(BaseModel):
     status: str = "normal"  # normal, warning, critical
 
 
-class AgentKPI(BaseModel):
-    """KPI metrics for a specific agent."""
+class ManagerKPI(BaseModel):
+    """KPI metrics for a specific manager."""
 
     agent_id: uuid.UUID | None
     agent_label: str
@@ -34,7 +34,7 @@ class KPIDashboardResponse(BaseModel):
     completed_calls: int
     failed_calls: int
     metrics: list[KPIMetric]
-    agents: list[AgentKPI] = Field(default_factory=list)
+    agents: list[ManagerKPI] = Field(default_factory=list)
     sentiment_distribution: dict[str, int] = Field(default_factory=dict)
     category_distribution: dict[str, int] = Field(default_factory=dict)
 

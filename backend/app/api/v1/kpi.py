@@ -12,7 +12,7 @@ from app.schemas.kpi import (
     KPIMetric,
     KPITrendPoint,
     KPITrendResponse,
-    AgentKPI,
+    ManagerKPI,
     HeatmapCell,
     HeatmapResponse,
     WordCloudItem,
@@ -59,7 +59,7 @@ async def get_kpi_dashboard(
         failed_calls=data["failed_calls"],
         metrics=[KPIMetric(**m) for m in data["metrics"]],
         agents=[
-            AgentKPI(
+            ManagerKPI(
                 agent_id=a["agent_id"],
                 agent_label=a["agent_label"],
                 total_calls=a["total_calls"],

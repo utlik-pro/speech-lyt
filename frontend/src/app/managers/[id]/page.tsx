@@ -16,13 +16,13 @@ import {
 import { cn, formatDuration } from "@/lib/utils";
 import AppHeader from "@/components/app-header";
 import { SentimentChart, CategoryChart } from "@/components/kpi-charts";
-import { getAgentStats, type AgentStatsResponse } from "@/lib/api";
+import { getManagerStats, type ManagerStatsResponse } from "@/lib/api";
 
-export default function AgentDetailPage() {
+export default function ManagerDetailPage() {
   const params = useParams();
-  const agentId = params.id as string;
+  const managerId = params.id as string;
 
-  const [stats, setStats] = useState<AgentStatsResponse | null>(null);
+  const [stats, setStats] = useState<ManagerStatsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [days, setDays] = useState(30);
@@ -32,16 +32,16 @@ export default function AgentDetailPage() {
       setLoading(true);
       setError(null);
       try {
-        const data = await getAgentStats(agentId, days);
+        const data = await getManagerStats(managerId, days);
         setStats(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load agent");
+        setError(err instanceof Error ? err.message : "Failed to load manager");
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, [agentId, days]);
+  }, [managerId, days]);
 
   if (loading) {
     return (
@@ -55,9 +55,9 @@ export default function AgentDetailPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-zinc-50 dark:bg-zinc-950">
         <AlertCircle className="h-8 w-8 text-red-500" />
-        <p className="text-sm text-zinc-500">{error || "Agent not found"}</p>
-        <Link href="/agents" className="mt-2 text-sm text-blue-600 hover:underline">
-          Back to agents
+        <p className="text-sm text-zinc-500">{error || "Manager not found"}</p>
+        <Link href="/managers" className="mt-2 text-sm text-blue-600 hover:underline">
+          Back to managers
         </Link>
       </div>
     );
@@ -72,7 +72,7 @@ export default function AgentDetailPage() {
       <main className="mx-auto max-w-6xl space-y-6 px-6 py-8">
         <div className="flex items-center justify-between">
           <Link
-            href="/agents"
+            href="/managers"
             className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -89,7 +89,7 @@ export default function AgentDetailPage() {
           </select>
         </div>
 
-        {/* Agent card */}
+        {/* Manager card */}
         <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
           <div className="flex items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/40">

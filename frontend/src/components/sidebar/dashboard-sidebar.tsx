@@ -10,11 +10,11 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { SidebarSection } from "@/components/collapsible-sidebar";
-import type { KPIAlertsResponse, AgentLeaderboardResponse } from "@/lib/api";
+import type { KPIAlertsResponse, ManagerLeaderboardResponse } from "@/lib/api";
 
 interface DashboardSidebarProps {
   alerts: KPIAlertsResponse | null;
-  leaderboard: AgentLeaderboardResponse | null;
+  leaderboard: ManagerLeaderboardResponse | null;
 }
 
 export default function DashboardSidebar({ alerts, leaderboard }: DashboardSidebarProps) {
@@ -74,7 +74,7 @@ export default function DashboardSidebar({ alerts, leaderboard }: DashboardSideb
           {[
             { href: "/qa", label: "QA Scorecards", icon: <ClipboardCheck className="h-4 w-4" /> },
             { href: "/alerts", label: "Alert Rules", icon: <Bell className="h-4 w-4" /> },
-            { href: "/agents", label: "Agent Leaderboard", icon: <Users className="h-4 w-4" /> },
+            { href: "/managers", label: "Manager Leaderboard", icon: <Users className="h-4 w-4" /> },
           ].map((link) => (
             <Link
               key={link.href}
@@ -88,9 +88,9 @@ export default function DashboardSidebar({ alerts, leaderboard }: DashboardSideb
         </div>
       </SidebarSection>
 
-      {/* Top Agents Quick View */}
+      {/* Top Managers Quick View */}
       {leaderboard && leaderboard.entries.length > 0 && (
-        <SidebarSection title="Top Agents" icon={<Users className="h-3.5 w-3.5" />}>
+        <SidebarSection title="Top Managers" icon={<Users className="h-3.5 w-3.5" />}>
           <div className="space-y-1.5">
             {leaderboard.entries.slice(0, 5).map((e) => (
               <div

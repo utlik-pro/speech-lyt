@@ -1,4 +1,4 @@
-"""Agent statistics and leaderboard service."""
+"""Manager statistics and leaderboard service."""
 
 import logging
 from datetime import datetime
@@ -6,7 +6,7 @@ from datetime import datetime
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.agent import Agent
+from app.models.manager import Manager
 from app.models.call import Call, CallStatus
 from app.models.emotion import EmotionAnalysis, SentimentType
 from app.models.script import ScriptAnalysis
@@ -15,13 +15,13 @@ from app.models.summary import CallSummary
 logger = logging.getLogger(__name__)
 
 
-async def get_agent_leaderboard(
+async def get_manager_leaderboard(
     db: AsyncSession,
     organization_id,
     period_start: datetime,
     period_end: datetime,
 ) -> list[dict]:
-    """Build agent leaderboard ranked by composite score.
+    """Build manager leaderboard ranked by composite score.
 
     Composite score = 0.3*resolution_rate + 0.25*script_score + 0.25*(1-negative%) + 0.2*(1/AHT_norm)
     """
@@ -33,8 +33,8 @@ async def get_agent_leaderboard(
         Call.agent_id.isnot(None),
     ]
 
-    # Per-agent call stats
-    agent_calls_q = (
+    # Per-manager call stats
+    manager_calls_q = (
         select(
             Call.agent_id,
             func.count().label("total_calls"),
@@ -43,35 +43,35 @@ async def get_agent_leaderboard(
         .where(*base_filter)
         .group_by(Call.agent_id)
     )
-    agent_rows = (await db.execute(agent_calls_q)).all()
+    manager_rows = (await db.execute(manager_calls_q)).all()
 
-    if not agent_rows:
+    if not manager_rows:
         return []
 
-    agent_ids = [row.agent_id for row in agent_rows]
-    agent_map = {row.agent_id: {"total_calls": row.total_calls, "avg_handle_time": float(row.avg_handle_time or 0)} for row in agent_rows}
+    manager_ids = [row.agent_id for row in manager_rows]
+    manager_map = {row.agent_id: {"total_calls": row.total_calls, "avg_handle_time": float(row.avg_handle_time or 0)} for row in manager_rows}
 
-    # Agent names
-    agents_q = select(Agent).where(Agent.id.in_(agent_ids))
-    agents = {a.id: a for a in (await db.execute(agents_q)).scalars().all()}
+    # Manager names
+    managers_q = select(Manager).where(Manager.id.in_(manager_ids))
+    managers = {a.id: a for a in (await db.execute(managers_q)).scalars().all()}
 
-    # Per-agent script scores
+    # Per-manager script scores
     script_q = (
         select(Call.agent_id, func.avg(ScriptAnalysis.overall_score).label("avg_score"))
         .select_from(ScriptAnalysis)
         .join(Call, ScriptAnalysis.call_id == Call.id)
-        .where(*base_filter, Call.agent_id.in_(agent_ids))
+        .where(*base_filter, Call.agent_id.in_(manager_ids))
         .group_by(Call.agent_id)
     )
     for row in (await db.execute(script_q)).all():
-        agent_map[row.agent_id]["avg_script_score"] = float(row.avg_score) if row.avg_score else None
+        manager_map[row.agent_id]["avg_script_score"] = float(row.avg_score) if row.avg_score else None
 
-    # Per-agent resolution rate
+    # Per-manager resolution rate
     resolved_q = (
         select(Call.agent_id, func.count().label("resolved"))
         .select_from(CallSummary)
         .join(Call, CallSummary.call_id == Call.id)
-        .where(*base_filter, Call.agent_id.in_(agent_ids), CallSummary.outcome == "resolved")
+        .where(*base_filter, Call.agent_id.in_(manager_ids), CallSummary.outcome == "resolved")
         .group_by(Call.agent_id)
     )
     resolved_map = {row.agent_id: row.resolved for row in (await db.execute(resolved_q)).all()}
@@ -80,17 +80,17 @@ async def get_agent_leaderboard(
         select(Call.agent_id, func.count().label("total"))
         .select_from(CallSummary)
         .join(Call, CallSummary.call_id == Call.id)
-        .where(*base_filter, Call.agent_id.in_(agent_ids))
+        .where(*base_filter, Call.agent_id.in_(manager_ids))
         .group_by(Call.agent_id)
     )
     total_summary_map = {row.agent_id: row.total for row in (await db.execute(total_summary_q)).all()}
 
-    # Per-agent positive sentiment %
+    # Per-manager positive sentiment %
     positive_q = (
         select(Call.agent_id, func.count().label("pos"))
         .select_from(EmotionAnalysis)
         .join(Call, EmotionAnalysis.call_id == Call.id)
-        .where(*base_filter, Call.agent_id.in_(agent_ids), EmotionAnalysis.overall_sentiment == SentimentType.POSITIVE)
+        .where(*base_filter, Call.agent_id.in_(manager_ids), EmotionAnalysis.overall_sentiment == SentimentType.POSITIVE)
         .group_by(Call.agent_id)
     )
     positive_map = {row.agent_id: row.pos for row in (await db.execute(positive_q)).all()}
@@ -99,28 +99,28 @@ async def get_agent_leaderboard(
         select(Call.agent_id, func.count().label("total"))
         .select_from(EmotionAnalysis)
         .join(Call, EmotionAnalysis.call_id == Call.id)
-        .where(*base_filter, Call.agent_id.in_(agent_ids))
+        .where(*base_filter, Call.agent_id.in_(manager_ids))
         .group_by(Call.agent_id)
     )
     total_emotion_map = {row.agent_id: row.total for row in (await db.execute(total_emotion_q)).all()}
 
     # Build entries
     entries = []
-    for aid in agent_ids:
-        data = agent_map[aid]
-        agent = agents.get(aid)
-        total_summaries = total_summary_map.get(aid, 0)
-        resolved = resolved_map.get(aid, 0)
+    for mid in manager_ids:
+        data = manager_map[mid]
+        manager = managers.get(mid)
+        total_summaries = total_summary_map.get(mid, 0)
+        resolved = resolved_map.get(mid, 0)
         resolution_rate = (resolved / total_summaries * 100) if total_summaries > 0 else 0.0
 
-        total_emotions = total_emotion_map.get(aid, 0)
-        positive = positive_map.get(aid, 0)
+        total_emotions = total_emotion_map.get(mid, 0)
+        positive = positive_map.get(mid, 0)
         positive_pct = (positive / total_emotions * 100) if total_emotions > 0 else 0.0
 
         entries.append({
-            "agent_id": aid,
-            "name": agent.name if agent else f"Agent {str(aid)[:8]}",
-            "team": agent.team if agent else None,
+            "manager_id": mid,
+            "name": manager.name if manager else f"Manager {str(mid)[:8]}",
+            "team": manager.team if manager else None,
             "total_calls": data["total_calls"],
             "avg_handle_time": round(data["avg_handle_time"], 1),
             "avg_script_score": round(data.get("avg_script_score", 0) or 0, 1) if data.get("avg_script_score") is not None else None,
@@ -144,22 +144,22 @@ async def get_agent_leaderboard(
     return entries
 
 
-async def get_agent_stats(
+async def get_manager_stats(
     db: AsyncSession,
-    agent_id,
+    manager_id,
     organization_id,
     period_start: datetime,
     period_end: datetime,
 ) -> dict | None:
-    """Get detailed statistics for a single agent."""
-    # Get agent record
-    agent = await db.get(Agent, agent_id)
-    if not agent or agent.organization_id != organization_id:
+    """Get detailed statistics for a single manager."""
+    # Get manager record
+    manager = await db.get(Manager, manager_id)
+    if not manager or manager.organization_id != organization_id:
         return None
 
     base_filter = [
         Call.organization_id == organization_id,
-        Call.agent_id == agent_id,
+        Call.agent_id == manager_id,
         Call.created_at >= period_start,
         Call.created_at <= period_end,
     ]
@@ -227,7 +227,7 @@ async def get_agent_stats(
     category_distribution = {row[0]: row[1] for row in category_rows}
 
     return {
-        "agent": agent,
+        "manager": manager,
         "total_calls": total_calls,
         "completed_calls": completed_calls,
         "avg_handle_time": round(float(aht), 1),

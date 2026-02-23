@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Headphones, User, LogOut } from "lucide-react";
+import { Headphones, User, LogOut, Bot, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ProjectSelector from "@/components/project-selector";
 import { useAuth } from "@/lib/auth-context";
@@ -10,9 +10,11 @@ import { useAuth } from "@/lib/auth-context";
 const navLinks = [
   { href: "/calls", label: "Calls" },
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/agents", label: "Agents" },
+  { href: "/managers", label: "Managers" },
   { href: "/scripts", label: "Scripts" },
   { href: "/qa", label: "QA" },
+  { href: "/ai-agents", label: "AI Agents" },
+  { href: "/coaching", label: "Coaching" },
   { href: "/alerts", label: "Alerts" },
 ];
 

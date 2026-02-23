@@ -16,23 +16,23 @@ import { SidebarSection } from "@/components/collapsible-sidebar";
 import {
   getKPIDashboard,
   getKPIAlerts,
-  getAgentLeaderboard,
+  getManagerLeaderboard,
   type KPIDashboardResponse,
   type KPIAlertsResponse,
-  type AgentLeaderboardResponse,
+  type ManagerLeaderboardResponse,
 } from "@/lib/api";
 
 export default function CallsSidebar() {
   const [dashboard, setDashboard] = useState<KPIDashboardResponse | null>(null);
   const [alerts, setAlerts] = useState<KPIAlertsResponse | null>(null);
-  const [leaderboard, setLeaderboard] = useState<AgentLeaderboardResponse | null>(null);
+  const [leaderboard, setLeaderboard] = useState<ManagerLeaderboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       getKPIDashboard(),
       getKPIAlerts(),
-      getAgentLeaderboard(30),
+      getManagerLeaderboard(30),
     ])
       .then(([d, a, l]) => {
         setDashboard(d);
@@ -107,9 +107,9 @@ export default function CallsSidebar() {
         </SidebarSection>
       )}
 
-      {/* Top Agents */}
+      {/* Top Managers */}
       {leaderboard && leaderboard.entries.length > 0 && (
-        <SidebarSection title="Top Agents" icon={<Trophy className="h-3.5 w-3.5" />}>
+        <SidebarSection title="Top Managers" icon={<Trophy className="h-3.5 w-3.5" />}>
           <div className="space-y-2">
             {leaderboard.entries.slice(0, 3).map((e) => (
               <div
@@ -129,7 +129,7 @@ export default function CallsSidebar() {
             ))}
           </div>
           <Link
-            href="/agents"
+            href="/managers"
             className="mt-2 inline-block text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400"
           >
             View leaderboard →

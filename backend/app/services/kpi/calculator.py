@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import func, select, extract, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.agent import Agent
+from app.models.manager import Manager
 from app.models.call import Call, CallStatus
 from app.models.emotion import EmotionAnalysis, SentimentType
 from app.models.script import ScriptAnalysis
@@ -154,28 +154,28 @@ async def calculate_dashboard_kpis(
     # Per-agent breakdown
     agents = []
     if not agent_id:
-        agent_q = (
+        manager_q = (
             select(
                 Call.agent_id,
-                Agent.name.label("agent_name"),
+                Manager.name.label("manager_name"),
                 func.count().label("cnt"),
                 func.avg(Call.duration_seconds).label("avg_dur"),
             )
-            .outerjoin(Agent, Call.agent_id == Agent.id)
+            .outerjoin(Manager, Call.agent_id == Manager.id)
             .where(*base_filter, Call.agent_id.isnot(None), Call.status == CallStatus.COMPLETED)
-            .group_by(Call.agent_id, Agent.name)
+            .group_by(Call.agent_id, Manager.name)
         )
-        agent_rows = (await db.execute(agent_q)).all()
-        for row in agent_rows:
-            agent_metrics = [
+        manager_rows = (await db.execute(manager_q)).all()
+        for row in manager_rows:
+            manager_metrics = [
                 _build_metric("calls", "Total Calls", row.cnt, ""),
                 _build_metric("aht", "Avg Handle Time", round(row.avg_dur or 0, 1), "sec"),
             ]
             agents.append({
                 "agent_id": row.agent_id,
-                "agent_label": row.agent_name or f"Agent {str(row.agent_id)[:8]}",
+                "agent_label": row.manager_name or f"Manager {str(row.agent_id)[:8]}",
                 "total_calls": row.cnt,
-                "metrics": agent_metrics,
+                "metrics": manager_metrics,
             })
 
     return {

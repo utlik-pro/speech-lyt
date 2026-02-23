@@ -24,7 +24,7 @@ class Organization(Base, UUIDMixin, TimestampMixin):
 
     # Relationships
     users: Mapped[list["User"]] = relationship(back_populates="organization")
-    agents: Mapped[list["Agent"]] = relationship(back_populates="organization")
+    managers: Mapped[list["Manager"]] = relationship(back_populates="organization")
     teams: Mapped[list["Team"]] = relationship(back_populates="organization")
     calls: Mapped[list["Call"]] = relationship(back_populates="organization")
     scripts: Mapped[list["Script"]] = relationship(back_populates="organization")
@@ -33,3 +33,4 @@ class Organization(Base, UUIDMixin, TimestampMixin):
     api_keys: Mapped[list["APIKey"]] = relationship(back_populates="organization")
     webhooks: Mapped[list["Webhook"]] = relationship(back_populates="organization")
     integrations: Mapped[list["IntegrationConfig"]] = relationship(back_populates="organization")
+    ai_agents: Mapped[list["AIAgent"]] = relationship(back_populates="organization")

@@ -9,7 +9,7 @@ async def test_list_report_types(client):
     assert response.status_code == 200
     data = response.json()
     assert "calls" in data["report_types"]
-    assert "agents" in data["report_types"]
+    assert "managers" in data["report_types"]
     assert "json" in data["formats"]
     assert "excel" in data["formats"]
     assert "pdf" in data["formats"]

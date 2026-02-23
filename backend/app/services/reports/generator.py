@@ -7,7 +7,7 @@ from datetime import datetime
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.agent import Agent
+from app.models.manager import Manager
 from app.models.call import Call, CallStatus
 from app.models.call_kpi import CallKPI
 from app.models.emotion import EmotionAnalysis, SentimentType
@@ -53,10 +53,10 @@ class ReportGenerator:
                 "status": call.status.value if call.status else "",
             }
 
-            # Fetch agent name
+            # Fetch manager name
             if call.agent_id:
-                agent = await self.db.get(Agent, call.agent_id)
-                row["agent_name"] = agent.name if agent else ""
+                manager = await self.db.get(Manager, call.agent_id)
+                row["agent_name"] = manager.name if manager else ""
             else:
                 row["agent_name"] = ""
 
@@ -112,23 +112,23 @@ class ReportGenerator:
             "rows": rows,
         }
 
-    async def generate_agents_report(
+    async def generate_managers_report(
         self,
         organization_id: uuid.UUID,
         date_from: datetime,
         date_to: datetime,
     ) -> dict:
-        """Generate a report of agent performance in a date range."""
-        agents_result = await self.db.execute(
-            select(Agent).where(Agent.organization_id == organization_id, Agent.is_active.is_(True))
+        """Generate a report of manager performance in a date range."""
+        managers_result = await self.db.execute(
+            select(Manager).where(Manager.organization_id == organization_id, Manager.is_active.is_(True))
         )
-        agents = agents_result.scalars().all()
+        managers = managers_result.scalars().all()
 
         rows = []
-        for agent in agents:
+        for manager in managers:
             calls_result = await self.db.execute(
                 select(func.count()).select_from(Call).where(
-                    Call.agent_id == agent.id,
+                    Call.agent_id == manager.id,
                     Call.status == CallStatus.COMPLETED,
                     Call.created_at >= date_from,
                     Call.created_at <= date_to,
@@ -138,7 +138,7 @@ class ReportGenerator:
 
             avg_dur_result = await self.db.execute(
                 select(func.avg(Call.duration_seconds)).where(
-                    Call.agent_id == agent.id,
+                    Call.agent_id == manager.id,
                     Call.status == CallStatus.COMPLETED,
                     Call.created_at >= date_from,
                     Call.created_at <= date_to,
@@ -151,7 +151,7 @@ class ReportGenerator:
                 select(EmotionAnalysis.overall_sentiment, func.count()).join(
                     Call, Call.id == EmotionAnalysis.call_id
                 ).where(
-                    Call.agent_id == agent.id,
+                    Call.agent_id == manager.id,
                     Call.created_at >= date_from,
                     Call.created_at <= date_to,
                 ).group_by(EmotionAnalysis.overall_sentiment)
@@ -162,9 +162,9 @@ class ReportGenerator:
             positive_pct = round(positive / total_with_sentiment * 100, 1) if total_with_sentiment else 0
 
             rows.append({
-                "agent_id": str(agent.id),
-                "agent_name": agent.name,
-                "team": agent.team or "",
+                "agent_id": str(manager.id),
+                "agent_name": manager.name,
+                "team": manager.team or "",
                 "total_calls": total_calls,
                 "avg_duration_seconds": round(avg_duration, 1),
                 "positive_sentiment_pct": positive_pct,
@@ -172,11 +172,11 @@ class ReportGenerator:
             })
 
         return {
-            "title": "Agent Performance Report",
+            "title": "Manager Performance Report",
             "period": f"{date_from.strftime('%Y-%m-%d')} — {date_to.strftime('%Y-%m-%d')}",
             "generated_at": datetime.utcnow().isoformat(),
             "summary": {
-                "total_agents": len(rows),
+                "total_managers": len(rows),
                 "total_calls": sum(r["total_calls"] for r in rows),
             },
             "columns": [

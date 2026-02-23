@@ -138,7 +138,7 @@ export interface KPIMetric {
   status: "normal" | "warning" | "critical";
 }
 
-export interface AgentKPI {
+export interface ManagerKPI {
   agent_id: string | null;
   agent_label: string;
   total_calls: number;
@@ -152,7 +152,7 @@ export interface KPIDashboardResponse {
   completed_calls: number;
   failed_calls: number;
   metrics: KPIMetric[];
-  agents: AgentKPI[];
+  agents: ManagerKPI[];
   sentiment_distribution: Record<string, number>;
   category_distribution: Record<string, number>;
 }
@@ -365,10 +365,10 @@ export async function getCallScriptAnalysis(callId: string): Promise<ScriptAnaly
   return data;
 }
 
-// --- Agent Info (lightweight) ---
+// --- Manager Info (lightweight) ---
 
-export async function getAgentInfo(agentId: string): Promise<AgentResponse> {
-  const { data } = await api.get<AgentResponse>(`/agents/${agentId}/info`);
+export async function getManagerInfo(managerId: string): Promise<ManagerResponse> {
+  const { data } = await api.get<ManagerResponse>(`/managers/${managerId}/info`);
   return data;
 }
 
@@ -409,9 +409,9 @@ export async function createProject(payload: {
   return data;
 }
 
-// --- Agents API ---
+// --- Managers API ---
 
-export interface AgentResponse {
+export interface ManagerResponse {
   id: string;
   organization_id: string;
   name: string;
@@ -422,12 +422,12 @@ export interface AgentResponse {
   updated_at: string;
 }
 
-export interface AgentListResponse {
-  items: AgentResponse[];
+export interface ManagerListResponse {
+  items: ManagerResponse[];
   total: number;
 }
 
-export interface AgentLeaderboardEntry {
+export interface ManagerLeaderboardEntry {
   agent_id: string;
   name: string;
   team: string | null;
@@ -439,14 +439,14 @@ export interface AgentLeaderboardEntry {
   rank: number;
 }
 
-export interface AgentLeaderboardResponse {
+export interface ManagerLeaderboardResponse {
   period_start: string;
   period_end: string;
-  entries: AgentLeaderboardEntry[];
+  entries: ManagerLeaderboardEntry[];
 }
 
-export interface AgentStatsResponse {
-  agent: AgentResponse;
+export interface ManagerStatsResponse {
+  agent: ManagerResponse;
   total_calls: number;
   completed_calls: number;
   avg_handle_time: number;
@@ -456,18 +456,18 @@ export interface AgentStatsResponse {
   category_distribution: Record<string, number>;
 }
 
-export async function listAgents(): Promise<AgentListResponse> {
-  const { data } = await api.get<AgentListResponse>("/agents");
+export async function listManagers(): Promise<ManagerListResponse> {
+  const { data } = await api.get<ManagerListResponse>("/managers");
   return data;
 }
 
-export async function getAgentLeaderboard(days = 30): Promise<AgentLeaderboardResponse> {
-  const { data } = await api.get<AgentLeaderboardResponse>("/agents/leaderboard", { params: { days } });
+export async function getManagerLeaderboard(days = 30): Promise<ManagerLeaderboardResponse> {
+  const { data } = await api.get<ManagerLeaderboardResponse>("/managers/leaderboard", { params: { days } });
   return data;
 }
 
-export async function getAgentStats(agentId: string, days = 30): Promise<AgentStatsResponse> {
-  const { data } = await api.get<AgentStatsResponse>(`/agents/${agentId}`, { params: { days } });
+export async function getManagerStats(managerId: string, days = 30): Promise<ManagerStatsResponse> {
+  const { data } = await api.get<ManagerStatsResponse>(`/managers/${managerId}`, { params: { days } });
   return data;
 }
 
@@ -838,6 +838,161 @@ export async function acknowledgeAlert(id: string): Promise<AlertHistoryResponse
 export async function checkAlerts(): Promise<{ triggered: number; alerts: AlertHistoryResponse[] }> {
   const { data } = await api.post<{ triggered: number; alerts: AlertHistoryResponse[] }>("/alerts/check");
   return data;
+}
+
+// --- AI Agents API ---
+
+export interface PipelineStepConfig {
+  step_type: string;
+  enabled: boolean;
+  order: number;
+  config: Record<string, unknown>;
+}
+
+export interface AIAgentResponse {
+  id: string;
+  organization_id: string;
+  name: string;
+  description: string | null;
+  agent_type: string;
+  is_active: boolean;
+  model_name: string;
+  temperature: number;
+  max_tokens: number;
+  pipeline_steps: PipelineStepConfig[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AIAgentListResponse {
+  items: AIAgentResponse[];
+  total: number;
+}
+
+export interface AIAgentRunResponse {
+  id: string;
+  ai_agent_id: string;
+  call_id: string;
+  status: string;
+  step_results: Record<string, unknown>[];
+  total_duration_ms: number | null;
+  error_message: string | null;
+  total_input_tokens: number;
+  total_output_tokens: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AIAgentRunListResponse {
+  items: AIAgentRunResponse[];
+  total: number;
+}
+
+export interface CoachingInsightResponse {
+  id: string;
+  organization_id: string;
+  manager_id: string;
+  ai_agent_id: string | null;
+  insight_type: string;
+  title: string;
+  description: string;
+  priority: string;
+  metadata_json: Record<string, unknown>;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CoachingInsightListResponse {
+  items: CoachingInsightResponse[];
+  total: number;
+}
+
+export async function listAIAgents(): Promise<AIAgentListResponse> {
+  const { data } = await api.get<AIAgentListResponse>("/ai-agents");
+  return data;
+}
+
+export async function getAIAgent(agentId: string): Promise<AIAgentResponse> {
+  const { data } = await api.get<AIAgentResponse>(`/ai-agents/${agentId}`);
+  return data;
+}
+
+export async function createAIAgent(payload: {
+  name: string;
+  description?: string;
+  agent_type: string;
+  model_name?: string;
+  temperature?: number;
+  max_tokens?: number;
+  pipeline_steps: PipelineStepConfig[];
+}): Promise<AIAgentResponse> {
+  const { data } = await api.post<AIAgentResponse>("/ai-agents", payload);
+  return data;
+}
+
+export async function updateAIAgent(
+  agentId: string,
+  payload: Record<string, unknown>,
+): Promise<AIAgentResponse> {
+  const { data } = await api.put<AIAgentResponse>(`/ai-agents/${agentId}`, payload);
+  return data;
+}
+
+export async function deleteAIAgent(agentId: string): Promise<void> {
+  await api.delete(`/ai-agents/${agentId}`);
+}
+
+export async function runAIAgentPipeline(
+  agentId: string,
+  callId: string,
+): Promise<AIAgentRunResponse> {
+  const { data } = await api.post<AIAgentRunResponse>(`/ai-agents/${agentId}/run/${callId}`);
+  return data;
+}
+
+export async function listAIAgentRuns(
+  agentId: string,
+  limit = 20,
+  offset = 0,
+): Promise<AIAgentRunListResponse> {
+  const { data } = await api.get<AIAgentRunListResponse>(`/ai-agents/${agentId}/runs`, {
+    params: { limit, offset },
+  });
+  return data;
+}
+
+export async function generateCoaching(
+  agentId: string,
+  managerId: string,
+  periodDays = 30,
+): Promise<{ manager_id: string; insights_count: number; insights: CoachingInsightResponse[] }> {
+  const { data } = await api.post(`/ai-agents/${agentId}/coach/${managerId}`, null, {
+    params: { period_days: periodDays },
+  });
+  return data;
+}
+
+export async function listCoachingInsights(params?: {
+  manager_id?: string;
+  status?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<CoachingInsightListResponse> {
+  const { data } = await api.get<CoachingInsightListResponse>("/coaching/insights", { params });
+  return data;
+}
+
+export async function acknowledgeInsight(insightId: string): Promise<void> {
+  await api.put(`/coaching/insights/${insightId}/acknowledge`);
+}
+
+export async function dismissInsight(insightId: string): Promise<void> {
+  await api.put(`/coaching/insights/${insightId}/dismiss`);
+}
+
+export async function resolveInsight(insightId: string): Promise<void> {
+  await api.put(`/coaching/insights/${insightId}/resolve`);
 }
 
 export default api;

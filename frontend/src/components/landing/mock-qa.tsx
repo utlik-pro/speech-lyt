@@ -49,7 +49,7 @@ export default function MockQA() {
           </div>
         </div>
 
-        {/* Agent Leaderboard */}
+        {/* Manager Leaderboard */}
         <div className="rounded-lg border border-white/5 bg-zinc-800/80 p-3">
           <div className="mb-3 text-[10px] font-medium text-zinc-500">
             Рейтинг операторов

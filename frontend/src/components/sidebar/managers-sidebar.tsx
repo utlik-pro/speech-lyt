@@ -3,7 +3,7 @@
 import { cn, formatDuration } from "@/lib/utils";
 import { SidebarSection } from "@/components/collapsible-sidebar";
 
-interface AgentsSidebarProps {
+interface ManagersSidebarProps {
   entries: Array<{
     agent_id: string;
     name: string;
@@ -17,7 +17,7 @@ interface AgentsSidebarProps {
   }>;
 }
 
-export default function AgentsSidebar({ entries }: AgentsSidebarProps) {
+export default function ManagersSidebar({ entries }: ManagersSidebarProps) {
   // Group entries by team
   const teamGroups = entries.reduce<Record<string, number>>((acc, e) => {
     const team = e.team || "Unassigned";
@@ -25,7 +25,7 @@ export default function AgentsSidebar({ entries }: AgentsSidebarProps) {
     return acc;
   }, {});
 
-  // Best agent is entries[0] if exists
+  // Best manager is entries[0] if exists
   const best = entries[0] ?? null;
 
   // Averages across all entries
@@ -49,7 +49,7 @@ export default function AgentsSidebar({ entries }: AgentsSidebarProps) {
 
   if (entries.length === 0) {
     return (
-      <div className="text-xs text-zinc-400">No agent data available</div>
+      <div className="text-xs text-zinc-400">No manager data available</div>
     );
   }
 
@@ -74,9 +74,9 @@ export default function AgentsSidebar({ entries }: AgentsSidebarProps) {
         </ul>
       </SidebarSection>
 
-      {/* Best Agent */}
+      {/* Best Manager */}
       {best && (
-        <SidebarSection title="Best Agent">
+        <SidebarSection title="Best Manager">
           <div
             className={cn(
               "rounded-lg border p-2.5",

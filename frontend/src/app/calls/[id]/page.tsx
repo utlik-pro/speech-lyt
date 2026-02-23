@@ -33,14 +33,14 @@ import {
   getCallTranscription,
   getCallScriptAnalysis,
   getCallAudioUrl,
-  getAgentInfo,
+  getManagerInfo,
   type CallResponse,
   type EmotionAnalysisResponse,
   type CallSummaryResponse,
   type ConversationStatsResponse,
   type TranscriptionResponse,
   type ScriptAnalysisResponse,
-  type AgentResponse,
+  type ManagerResponse,
   getCallEvaluations,
   type QAEvaluationResponse,
 } from "@/lib/api";
@@ -87,7 +87,7 @@ export default function CallDetailPage() {
   const [transcription, setTranscription] = useState<TranscriptionResponse | null>(null);
   const [scriptAnalysis, setScriptAnalysis] = useState<ScriptAnalysisResponse | null>(null);
   const [qaEvaluation, setQaEvaluation] = useState<QAEvaluationResponse | null>(null);
-  const [agent, setAgent] = useState<AgentResponse | null>(null);
+  const [agent, setAgent] = useState<ManagerResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -103,7 +103,7 @@ export default function CallDetailPage() {
 
         // Load agent info if available
         if (callData.agent_id) {
-          getAgentInfo(callData.agent_id).then(setAgent).catch(() => {});
+          getManagerInfo(callData.agent_id).then(setAgent).catch(() => {});
         }
 
         if (callData.status === "completed") {
@@ -245,18 +245,18 @@ export default function CallDetailPage() {
               )}
             </div>
 
-            {/* Agent info */}
+            {/* Manager info */}
             <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
               <div className="flex items-center gap-2">
                 <User className="h-5 w-5 text-blue-500" />
                 <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-                  Agent
+                  Manager
                 </h3>
               </div>
               {agent ? (
                 <div className="mt-3 space-y-2 text-sm">
                   <Link
-                    href={`/agents/${agent.id}`}
+                    href={`/managers/${agent.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-400"
                   >
                     {agent.name}
@@ -270,7 +270,7 @@ export default function CallDetailPage() {
                 </div>
               ) : (
                 <p className="mt-3 text-xs text-zinc-400">
-                  {call.agent_id ? "Loading..." : "No agent assigned"}
+                  {call.agent_id ? "Loading..." : "No manager assigned"}
                 </p>
               )}
             </div>
