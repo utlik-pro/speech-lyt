@@ -7,18 +7,25 @@ Computes call center KPI metrics from processed calls:
 - Sentiment Distribution
 - Call Resolution Rate
 - Average Calls Per Agent
+- Heatmap (calls by day-of-week and hour)
+- Word cloud (top words from transcriptions)
+- Period comparison (current vs previous period)
 """
 
 import logging
-from datetime import datetime
+import re
+from collections import Counter
+from datetime import datetime, timedelta
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, extract, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.agent import Agent
 from app.models.call import Call, CallStatus
 from app.models.emotion import EmotionAnalysis, SentimentType
 from app.models.script import ScriptAnalysis
 from app.models.summary import CallSummary
+from app.models.transcription import Transcription
 
 logger = logging.getLogger(__name__)
 
@@ -150,11 +157,13 @@ async def calculate_dashboard_kpis(
         agent_q = (
             select(
                 Call.agent_id,
+                Agent.name.label("agent_name"),
                 func.count().label("cnt"),
                 func.avg(Call.duration_seconds).label("avg_dur"),
             )
+            .outerjoin(Agent, Call.agent_id == Agent.id)
             .where(*base_filter, Call.agent_id.isnot(None), Call.status == CallStatus.COMPLETED)
-            .group_by(Call.agent_id)
+            .group_by(Call.agent_id, Agent.name)
         )
         agent_rows = (await db.execute(agent_q)).all()
         for row in agent_rows:
@@ -164,7 +173,7 @@ async def calculate_dashboard_kpis(
             ]
             agents.append({
                 "agent_id": row.agent_id,
-                "agent_label": f"Agent {str(row.agent_id)[:8]}",
+                "agent_label": row.agent_name or f"Agent {str(row.agent_id)[:8]}",
                 "total_calls": row.cnt,
                 "metrics": agent_metrics,
             })
@@ -301,4 +310,151 @@ def _build_metric(name: str, label: str, value, unit: str) -> dict:
         "threshold_min": thresholds.get("min"),
         "threshold_max": thresholds.get("max"),
         "status": status,
+    }
+
+
+# ── Heatmap ─────────────────────────────────────────────────────────────────
+
+async def calculate_heatmap(
+    db: AsyncSession,
+    organization_id,
+    period_start: datetime,
+    period_end: datetime,
+) -> list[dict]:
+    """Calculate call volume heatmap: day-of-week (0=Mon) x hour (0-23)."""
+    # PostgreSQL DOW: 0=Sunday, we shift to 0=Monday
+    q = (
+        select(
+            extract("dow", Call.created_at).label("dow"),
+            extract("hour", Call.created_at).label("hour"),
+            func.count().label("cnt"),
+        )
+        .where(
+            Call.organization_id == organization_id,
+            Call.created_at >= period_start,
+            Call.created_at <= period_end,
+        )
+        .group_by("dow", "hour")
+    )
+    rows = (await db.execute(q)).all()
+
+    cells = []
+    for row in rows:
+        # Shift: PostgreSQL DOW 0=Sunday → our 6=Sunday, 1=Monday→0, etc.
+        pg_dow = int(row.dow)
+        day = (pg_dow - 1) % 7  # 1→0(Mon), 2→1(Tue), ..., 0→6(Sun)
+        cells.append({"day": day, "hour": int(row.hour), "count": row.cnt})
+
+    return cells
+
+
+# ── Word Cloud ──────────────────────────────────────────────────────────────
+
+RUSSIAN_STOPWORDS = {
+    "и", "в", "во", "не", "что", "он", "на", "я", "с", "со", "как", "а", "то",
+    "все", "она", "так", "его", "но", "да", "ты", "к", "у", "же", "вы", "за",
+    "бы", "по", "только", "её", "мне", "было", "вот", "от", "меня", "ещё",
+    "нет", "о", "из", "ему", "теперь", "когда", "даже", "ну", "вдруг", "ли",
+    "если", "уже", "или", "ни", "быть", "был", "него", "до", "вас", "нибудь",
+    "опять", "уж", "вам", "ведь", "там", "потом", "себя", "ничего", "ей",
+    "может", "они", "тут", "где", "есть", "надо", "ней", "для", "мы", "тебя",
+    "их", "чем", "была", "сам", "чтоб", "без", "будто", "чего", "раз",
+    "тоже", "себе", "под", "будет", "ж", "тогда", "кто", "этот", "того",
+    "потому", "этого", "какой", "совсем", "ним", "здесь", "этом", "один",
+    "почти", "мой", "тем", "чтобы", "нее", "сейчас", "были", "куда", "зачем",
+    "всех", "никогда", "можно", "при", "наконец", "два", "об", "другой", "хоть",
+    "после", "над", "больше", "тот", "через", "эти", "нас", "про", "всего",
+    "них", "какая", "много", "разве", "три", "эту", "моя", "впрочем", "хорошо",
+    "свою", "этой", "перед", "иногда", "лучше", "чуть", "том", "нельзя",
+    "такой", "им", "более", "всегда", "конечно", "всю", "между", "это", "мне",
+    "вы", "нам",
+}
+
+
+async def calculate_word_cloud(
+    db: AsyncSession,
+    organization_id,
+    period_start: datetime,
+    period_end: datetime,
+    limit: int = 50,
+) -> list[dict]:
+    """Calculate word frequencies from transcriptions for word cloud."""
+    q = (
+        select(Transcription.full_text)
+        .join(Call, Transcription.call_id == Call.id)
+        .where(
+            Call.organization_id == organization_id,
+            Call.created_at >= period_start,
+            Call.created_at <= period_end,
+        )
+    )
+    rows = (await db.execute(q)).all()
+
+    counter = Counter()
+    word_re = re.compile(r"[а-яёА-ЯЁa-zA-Z]{3,}")
+    for row in rows:
+        if row.full_text:
+            words = word_re.findall(row.full_text.lower())
+            counter.update(w for w in words if w not in RUSSIAN_STOPWORDS)
+
+    return [{"word": word, "count": count} for word, count in counter.most_common(limit)]
+
+
+# ── Period Comparison ───────────────────────────────────────────────────────
+
+async def calculate_period_comparison(
+    db: AsyncSession,
+    organization_id,
+    period_start: datetime,
+    period_end: datetime,
+) -> dict:
+    """Compare KPIs between current period and previous period of same length."""
+    duration = period_end - period_start
+    prev_end = period_start
+    prev_start = prev_end - duration
+
+    current = await calculate_dashboard_kpis(db, organization_id, period_start, period_end)
+    previous = await calculate_dashboard_kpis(db, organization_id, prev_start, prev_end)
+
+    comparisons = []
+    current_metrics = {m["name"]: m for m in current["metrics"]}
+    previous_metrics = {m["name"]: m for m in previous["metrics"]}
+
+    # Compare core metrics
+    for name in ["aht", "avg_script_score", "resolution_rate", "negative_sentiment_pct", "completion_rate"]:
+        cm = current_metrics.get(name)
+        pm = previous_metrics.get(name)
+        if not cm or not pm:
+            continue
+        cv = cm["value"]
+        pv = pm["value"]
+        delta = cv - pv
+        pct = (delta / pv * 100) if pv != 0 else None
+        comparisons.append({
+            "name": name,
+            "label": cm["label"],
+            "current": cv,
+            "previous": pv,
+            "delta": round(delta, 1),
+            "pct_change": round(pct, 1) if pct is not None else None,
+        })
+
+    # Also compare total calls
+    tc_delta = current["total_calls"] - previous["total_calls"]
+    tc_pct = (tc_delta / previous["total_calls"] * 100) if previous["total_calls"] > 0 else None
+    comparisons.insert(0, {
+        "name": "total_calls",
+        "label": "Total Calls",
+        "current": current["total_calls"],
+        "previous": previous["total_calls"],
+        "delta": tc_delta,
+        "pct_change": round(tc_pct, 1) if tc_pct is not None else None,
+    })
+
+    return {
+        "current_start": period_start,
+        "current_end": period_end,
+        "previous_start": prev_start,
+        "previous_end": prev_end,
+        "metrics": comparisons,
     }

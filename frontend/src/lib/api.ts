@@ -5,6 +5,16 @@ const api = axios.create({
   timeout: 300_000, // 5 min for large uploads
 });
 
+api.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const projectId = localStorage.getItem("speechlyt-project-id");
+    if (projectId) {
+      config.headers["X-Project-Id"] = projectId;
+    }
+  }
+  return config;
+});
+
 export interface CallUploadResponse {
   id: string;
   status: string;
@@ -82,16 +92,27 @@ export async function uploadCallsBatch(
   return data;
 }
 
+export interface CallFilters {
+  status?: string;
+  direction?: string;
+  agent_id?: string;
+  sentiment?: string;
+  category?: string;
+  outcome?: string;
+  date_from?: string;
+  date_to?: string;
+  search?: string;
+}
+
 export async function listCalls(
   page: number = 1,
   pageSize: number = 20,
-  status?: string,
-  direction?: string,
+  filters: CallFilters = {},
 ): Promise<CallListResponse> {
   const params: Record<string, string | number> = { page, page_size: pageSize };
-  if (status) params.status = status;
-  if (direction) params.direction = direction;
-
+  for (const [k, v] of Object.entries(filters)) {
+    if (v) params[k] = v;
+  }
   const { data } = await api.get<CallListResponse>("/calls", { params });
   return data;
 }
@@ -298,6 +319,226 @@ export async function createScript(payload: {
 
 export async function deleteScript(scriptId: string): Promise<void> {
   await api.delete(`/scripts/${scriptId}`);
+}
+
+// --- Projects API ---
+
+export interface ProjectResponse {
+  id: string;
+  name: string;
+  description: string | null;
+  color: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProjectListResponse {
+  items: ProjectResponse[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export async function listProjects(
+  page: number = 1,
+  pageSize: number = 100,
+): Promise<ProjectListResponse> {
+  const { data } = await api.get<ProjectListResponse>("/projects", {
+    params: { page, page_size: pageSize },
+  });
+  return data;
+}
+
+export async function createProject(payload: {
+  name: string;
+  description?: string;
+  color?: string;
+}): Promise<ProjectResponse> {
+  const { data } = await api.post<ProjectResponse>("/projects", payload);
+  return data;
+}
+
+// --- Agents API ---
+
+export interface AgentResponse {
+  id: string;
+  organization_id: string;
+  name: string;
+  email: string | null;
+  team: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AgentListResponse {
+  items: AgentResponse[];
+  total: number;
+}
+
+export interface AgentLeaderboardEntry {
+  agent_id: string;
+  name: string;
+  team: string | null;
+  total_calls: number;
+  avg_handle_time: number;
+  avg_script_score: number | null;
+  resolution_rate: number;
+  positive_sentiment_pct: number;
+  rank: number;
+}
+
+export interface AgentLeaderboardResponse {
+  period_start: string;
+  period_end: string;
+  entries: AgentLeaderboardEntry[];
+}
+
+export interface AgentStatsResponse {
+  agent: AgentResponse;
+  total_calls: number;
+  completed_calls: number;
+  avg_handle_time: number;
+  avg_script_score: number | null;
+  resolution_rate: number;
+  sentiment_distribution: Record<string, number>;
+  category_distribution: Record<string, number>;
+}
+
+export async function listAgents(): Promise<AgentListResponse> {
+  const { data } = await api.get<AgentListResponse>("/agents");
+  return data;
+}
+
+export async function getAgentLeaderboard(days = 30): Promise<AgentLeaderboardResponse> {
+  const { data } = await api.get<AgentLeaderboardResponse>("/agents/leaderboard", { params: { days } });
+  return data;
+}
+
+export async function getAgentStats(agentId: string, days = 30): Promise<AgentStatsResponse> {
+  const { data } = await api.get<AgentStatsResponse>(`/agents/${agentId}`, { params: { days } });
+  return data;
+}
+
+// --- Conversation Stats API ---
+
+export interface ConversationStatsResponse {
+  agent_talk_time: number;
+  client_talk_time: number;
+  silence_time: number;
+  total_duration: number;
+  talk_listen_ratio: number;
+  interruption_count: number;
+  agent_wpm: number;
+  client_wpm: number;
+  longest_monologue_duration: number;
+  longest_monologue_speaker: string | null;
+  agent_talk_pct: number;
+  client_talk_pct: number;
+  silence_pct: number;
+}
+
+export interface TranscriptionResponse {
+  call_id: string;
+  full_text: string;
+  language: string;
+  segments: { speaker: string; text: string; start_time: number; end_time: number; confidence: number }[];
+}
+
+export async function getConversationStats(callId: string): Promise<ConversationStatsResponse> {
+  const { data } = await api.get<ConversationStatsResponse>(`/calls/${callId}/conversation-stats`);
+  return data;
+}
+
+export async function getCallTranscription(callId: string): Promise<TranscriptionResponse> {
+  const { data } = await api.get<TranscriptionResponse>(`/calls/${callId}/transcription`);
+  return data;
+}
+
+// --- Enhanced KPI API ---
+
+export interface HeatmapCell {
+  day: number;
+  hour: number;
+  count: number;
+}
+
+export interface HeatmapResponse {
+  period_start: string;
+  period_end: string;
+  cells: HeatmapCell[];
+  max_count: number;
+}
+
+export interface WordCloudItem {
+  word: string;
+  count: number;
+}
+
+export interface WordCloudResponse {
+  period_start: string;
+  period_end: string;
+  items: WordCloudItem[];
+}
+
+export interface PeriodMetricComparison {
+  name: string;
+  label: string;
+  current: number;
+  previous: number;
+  delta: number;
+  pct_change: number | null;
+}
+
+export interface PeriodComparisonResponse {
+  current_start: string;
+  current_end: string;
+  previous_start: string;
+  previous_end: string;
+  metrics: PeriodMetricComparison[];
+}
+
+export async function getHeatmap(
+  periodStart?: string,
+  periodEnd?: string,
+): Promise<HeatmapResponse> {
+  const params: Record<string, string> = {};
+  if (periodStart) params.period_start = periodStart;
+  if (periodEnd) params.period_end = periodEnd;
+  const { data } = await api.get<HeatmapResponse>("/kpi/heatmap", { params });
+  return data;
+}
+
+export async function getWordCloud(
+  periodStart?: string,
+  periodEnd?: string,
+  limit = 50,
+): Promise<WordCloudResponse> {
+  const params: Record<string, string | number> = { limit };
+  if (periodStart) params.period_start = periodStart;
+  if (periodEnd) params.period_end = periodEnd;
+  const { data } = await api.get<WordCloudResponse>("/kpi/word-cloud", { params });
+  return data;
+}
+
+export async function getPeriodComparison(
+  periodStart?: string,
+  periodEnd?: string,
+): Promise<PeriodComparisonResponse> {
+  const params: Record<string, string> = {};
+  if (periodStart) params.period_start = periodStart;
+  if (periodEnd) params.period_end = periodEnd;
+  const { data } = await api.get<PeriodComparisonResponse>("/kpi/comparison", { params });
+  return data;
+}
+
+// --- Audio Player ---
+
+export function getCallAudioUrl(callId: string): string {
+  const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+  const projectId =
+    typeof window !== "undefined" ? localStorage.getItem("speechlyt-project-id") : null;
+  return `${base}/calls/${callId}/audio${projectId ? `?project_id=${projectId}` : ""}`;
 }
 
 export default api;

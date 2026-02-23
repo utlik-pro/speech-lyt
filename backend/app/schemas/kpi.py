@@ -83,3 +83,44 @@ class KPIAlertsResponse(BaseModel):
 
     alerts: list[KPIAlert]
     total: int
+
+
+class HeatmapCell(BaseModel):
+    day: int  # 0=Monday, 6=Sunday
+    hour: int  # 0-23
+    count: int
+
+
+class HeatmapResponse(BaseModel):
+    period_start: datetime
+    period_end: datetime
+    cells: list[HeatmapCell]
+    max_count: int
+
+
+class WordCloudItem(BaseModel):
+    word: str
+    count: int
+
+
+class WordCloudResponse(BaseModel):
+    period_start: datetime
+    period_end: datetime
+    items: list[WordCloudItem]
+
+
+class PeriodMetricComparison(BaseModel):
+    name: str
+    label: str
+    current: float
+    previous: float
+    delta: float
+    pct_change: float | None
+
+
+class PeriodComparisonResponse(BaseModel):
+    current_start: datetime
+    current_end: datetime
+    previous_start: datetime
+    previous_end: datetime
+    metrics: list[PeriodMetricComparison]

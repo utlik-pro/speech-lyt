@@ -1,8 +1,12 @@
 import uuid
 
-from fastapi import APIRouter, File, Form, Query, UploadFile, HTTPException
+from datetime import datetime
+
+from fastapi import APIRouter, Depends, File, Form, Query, Request, UploadFile, HTTPException
+from fastapi.responses import Response
 from sqlalchemy import select, func
 
+from app.api.v1.deps import get_project_id
 from app.core.database import get_db
 from app.models.call import Call, CallDirection, CallStatus
 from app.schemas.call import (
@@ -14,14 +18,19 @@ from app.schemas.call import (
 from app.services.audio import audio_service
 from app.services.storage import storage_service
 
-router = APIRouter(prefix="/calls", tags=["calls"])
+AUDIO_CONTENT_TYPES = {
+    "wav": "audio/wav",
+    "mp3": "audio/mpeg",
+    "ogg": "audio/ogg",
+    "flac": "audio/flac",
+}
 
-# Temporary hardcoded org_id until auth is implemented
-TEMP_ORG_ID = uuid.UUID("00000000-0000-0000-0000-000000000001")
+router = APIRouter(prefix="/calls", tags=["calls"])
 
 
 @router.post("/upload", response_model=CallUploadResponse)
 async def upload_call(
+    project_id: uuid.UUID = Depends(get_project_id),
     file: UploadFile = File(...),
     direction: CallDirection = Form(default=CallDirection.UNKNOWN),
     phone_number: str | None = Form(default=None),
@@ -45,14 +54,14 @@ async def upload_call(
         raise HTTPException(status_code=400, detail=f"Invalid audio file: {e}")
 
     # Upload to storage
-    audio_url = await storage_service.upload(TEMP_ORG_ID, file.filename, data)
+    audio_url = await storage_service.upload(project_id, file.filename, data)
 
     # Create call record
     from app.core.database import async_session
 
     async with async_session() as db:
         call = Call(
-            organization_id=TEMP_ORG_ID,
+            organization_id=project_id,
             agent_id=agent_id,
             external_id=external_id,
             audio_url=audio_url,
@@ -86,6 +95,7 @@ async def upload_call(
 
 @router.post("/upload/batch", response_model=CallBatchUploadResponse)
 async def upload_calls_batch(
+    project_id: uuid.UUID = Depends(get_project_id),
     files: list[UploadFile] = File(...),
     direction: CallDirection = Form(default=CallDirection.UNKNOWN),
 ):
@@ -102,13 +112,13 @@ async def upload_calls_batch(
             data = await file.read()
             audio_service.validate_size(len(data))
             info = audio_service.get_audio_info(data, fmt)
-            audio_url = await storage_service.upload(TEMP_ORG_ID, file.filename, data)
+            audio_url = await storage_service.upload(project_id, file.filename, data)
 
             from app.core.database import async_session
 
             async with async_session() as db:
                 call = Call(
-                    organization_id=TEMP_ORG_ID,
+                    organization_id=project_id,
                     audio_url=audio_url,
                     original_filename=file.filename,
                     audio_format=fmt,
@@ -144,21 +154,63 @@ async def upload_calls_batch(
 
 @router.get("", response_model=CallListResponse)
 async def list_calls(
+    project_id: uuid.UUID = Depends(get_project_id),
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
     status: CallStatus | None = Query(default=None),
     direction: CallDirection | None = Query(default=None),
+    agent_id: uuid.UUID | None = Query(default=None, description="Filter by agent"),
+    sentiment: str | None = Query(default=None, description="Filter by sentiment: positive/neutral/negative"),
+    category: str | None = Query(default=None, description="Filter by category"),
+    outcome: str | None = Query(default=None, description="Filter by outcome: resolved/unresolved/escalated/callback"),
+    date_from: datetime | None = Query(default=None, description="Filter calls from this date"),
+    date_to: datetime | None = Query(default=None, description="Filter calls to this date"),
+    search: str | None = Query(default=None, description="Search in transcription text"),
 ):
-    """List calls with pagination and filters."""
+    """List calls with pagination and advanced filters."""
     from app.core.database import async_session
+    from app.models.emotion import EmotionAnalysis, SentimentType
+    from app.models.summary import CallSummary
+    from app.models.transcription import Transcription
 
     async with async_session() as db:
-        query = select(Call).where(Call.organization_id == TEMP_ORG_ID)
+        query = select(Call).where(Call.organization_id == project_id)
 
         if status:
             query = query.where(Call.status == status)
         if direction:
             query = query.where(Call.direction == direction)
+        if agent_id:
+            query = query.where(Call.agent_id == agent_id)
+        if date_from:
+            query = query.where(Call.created_at >= date_from)
+        if date_to:
+            query = query.where(Call.created_at <= date_to)
+
+        # JOIN-based filters
+        if sentiment:
+            try:
+                sent_enum = SentimentType(sentiment)
+            except ValueError:
+                sent_enum = None
+            if sent_enum:
+                query = query.join(EmotionAnalysis, EmotionAnalysis.call_id == Call.id).where(
+                    EmotionAnalysis.overall_sentiment == sent_enum
+                )
+
+        if category:
+            query = query.join(CallSummary, CallSummary.call_id == Call.id).where(
+                CallSummary.category == category
+            )
+        elif outcome:
+            query = query.join(CallSummary, CallSummary.call_id == Call.id).where(
+                CallSummary.outcome == outcome
+            )
+
+        if search:
+            query = query.join(Transcription, Transcription.call_id == Call.id).where(
+                Transcription.full_text.ilike(f"%{search}%")
+            )
 
         # Count total
         count_query = select(func.count()).select_from(query.subquery())
@@ -204,3 +256,53 @@ async def delete_call(call_id: uuid.UUID):
         await db.commit()
 
         return {"message": "Call deleted successfully"}
+
+
+@router.get("/{call_id}/audio")
+async def stream_audio(call_id: uuid.UUID, request: Request):
+    """Stream audio file for playback. Supports HTTP Range requests for seeking."""
+    from app.core.database import async_session
+
+    async with async_session() as db:
+        call = await db.get(Call, call_id)
+        if not call:
+            raise HTTPException(status_code=404, detail="Call not found")
+
+        try:
+            data = await storage_service.download(call.audio_url)
+        except Exception:
+            raise HTTPException(status_code=404, detail="Audio file not found")
+
+        content_type = AUDIO_CONTENT_TYPES.get(call.audio_format, "application/octet-stream")
+        total_size = len(data)
+
+        # Handle Range requests for seeking
+        range_header = request.headers.get("range")
+        if range_header:
+            # Parse "bytes=start-end"
+            range_spec = range_header.replace("bytes=", "")
+            parts = range_spec.split("-")
+            start = int(parts[0]) if parts[0] else 0
+            end = int(parts[1]) if parts[1] else total_size - 1
+            end = min(end, total_size - 1)
+            chunk = data[start : end + 1]
+
+            return Response(
+                content=chunk,
+                status_code=206,
+                headers={
+                    "Content-Type": content_type,
+                    "Content-Range": f"bytes {start}-{end}/{total_size}",
+                    "Accept-Ranges": "bytes",
+                    "Content-Length": str(len(chunk)),
+                },
+            )
+
+        return Response(
+            content=data,
+            media_type=content_type,
+            headers={
+                "Accept-Ranges": "bytes",
+                "Content-Length": str(total_size),
+            },
+        )

@@ -50,3 +50,28 @@ class CallBatchUploadResponse(BaseModel):
     failed: int
     calls: list[CallUploadResponse]
     errors: list[str] = Field(default_factory=list)
+
+
+class ConversationStatsResponse(BaseModel):
+    agent_talk_time: float
+    client_talk_time: float
+    silence_time: float
+    total_duration: float
+    talk_listen_ratio: float
+    interruption_count: int
+    agent_wpm: float
+    client_wpm: float
+    longest_monologue_duration: float
+    longest_monologue_speaker: str | None
+    agent_talk_pct: float
+    client_talk_pct: float
+    silence_pct: float
+
+
+class TranscriptionResponse(BaseModel):
+    call_id: uuid.UUID
+    full_text: str
+    language: str
+    segments: list[dict]
+
+    model_config = {"from_attributes": True}

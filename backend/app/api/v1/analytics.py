@@ -1,4 +1,4 @@
-"""Analytics API — endpoints for emotion analysis and call summaries."""
+"""Analytics API — endpoints for emotion analysis, call summaries, and conversation stats."""
 
 import uuid
 
@@ -10,8 +10,10 @@ from app.models.call import Call
 from app.models.emotion import EmotionAnalysis
 from app.models.summary import CallSummary
 from app.models.transcription import Transcription
+from app.schemas.call import ConversationStatsResponse, TranscriptionResponse
 from app.schemas.emotion import EmotionAnalysisResponse
 from app.schemas.summary import CallSummaryResponse
+from app.services.conversation_stats import calculate_conversation_stats
 
 router = APIRouter(tags=["analytics"])
 
@@ -141,3 +143,49 @@ async def trigger_call_analysis(call_id: uuid.UUID):
 
         await db.commit()
         return {"message": "Analysis completed", "call_id": call_id}
+
+
+@router.get("/calls/{call_id}/conversation-stats", response_model=ConversationStatsResponse)
+async def get_conversation_stats(call_id: uuid.UUID):
+    """Get conversation statistics (talk time, silence, interruptions, etc.)."""
+    async with async_session() as db:
+        call = await db.get(Call, call_id)
+        if not call:
+            raise HTTPException(status_code=404, detail="Call not found")
+
+        result = await db.execute(
+            select(Transcription).where(Transcription.call_id == call_id)
+        )
+        transcription = result.scalar_one_or_none()
+        if not transcription:
+            raise HTTPException(
+                status_code=404,
+                detail="Transcription not available for this call",
+            )
+
+        stats = calculate_conversation_stats(
+            transcription.segments or [],
+            call.duration_seconds or 0,
+        )
+        return ConversationStatsResponse(**stats)
+
+
+@router.get("/calls/{call_id}/transcription", response_model=TranscriptionResponse)
+async def get_call_transcription(call_id: uuid.UUID):
+    """Get full transcription with segments for a call."""
+    async with async_session() as db:
+        call = await db.get(Call, call_id)
+        if not call:
+            raise HTTPException(status_code=404, detail="Call not found")
+
+        result = await db.execute(
+            select(Transcription).where(Transcription.call_id == call_id)
+        )
+        transcription = result.scalar_one_or_none()
+        if not transcription:
+            raise HTTPException(
+                status_code=404,
+                detail="Transcription not available for this call",
+            )
+
+        return TranscriptionResponse.model_validate(transcription)

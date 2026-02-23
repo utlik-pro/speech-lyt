@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -15,18 +15,29 @@ import {
   Meh,
   Frown,
   Tag,
+  Mic,
   MessageSquare,
   Target,
+  Volume2,
 } from "lucide-react";
 import { cn, formatDuration, formatFileSize } from "@/lib/utils";
+import ProjectSelector from "@/components/project-selector";
 import {
   getCall,
   getCallEmotions,
   getCallSummary,
+  getConversationStats,
+  getCallTranscription,
+  getCallAudioUrl,
   type CallResponse,
   type EmotionAnalysisResponse,
   type CallSummaryResponse,
+  type ConversationStatsResponse,
+  type TranscriptionResponse,
 } from "@/lib/api";
+import ConversationStatsComponent from "@/components/conversation-stats";
+import ConversationTimeline from "@/components/conversation-timeline";
+import AudioPlayer from "@/components/audio-player";
 import { formatDistanceToNow } from "date-fns";
 
 const sentimentIcon: Record<string, React.ReactNode> = {
@@ -61,8 +72,12 @@ export default function CallDetailPage() {
   const [call, setCall] = useState<CallResponse | null>(null);
   const [emotions, setEmotions] = useState<EmotionAnalysisResponse | null>(null);
   const [summary, setSummary] = useState<CallSummaryResponse | null>(null);
+  const [convStats, setConvStats] = useState<ConversationStatsResponse | null>(null);
+  const [transcription, setTranscription] = useState<TranscriptionResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [seekTo, setSeekTo] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     async function load() {
@@ -73,12 +88,16 @@ export default function CallDetailPage() {
         setCall(callData);
 
         if (callData.status === "completed") {
-          const [emotionData, summaryData] = await Promise.allSettled([
+          const [emotionData, summaryData, statsData, transData] = await Promise.allSettled([
             getCallEmotions(callId),
             getCallSummary(callId),
+            getConversationStats(callId),
+            getCallTranscription(callId),
           ]);
           if (emotionData.status === "fulfilled") setEmotions(emotionData.value);
           if (summaryData.status === "fulfilled") setSummary(summaryData.value);
+          if (statsData.status === "fulfilled") setConvStats(statsData.value);
+          if (transData.status === "fulfilled") setTranscription(transData.value);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load call");
@@ -88,6 +107,17 @@ export default function CallDetailPage() {
     }
     load();
   }, [callId]);
+
+  const handleTimeUpdate = useCallback((time: number) => {
+    setCurrentTime(time);
+  }, []);
+
+  const handleSegmentClick = useCallback((time: number) => {
+    setSeekTo(time);
+    setCurrentTime(time);
+    // Reset seekTo after a tick so the same timestamp can be clicked again
+    setTimeout(() => setSeekTo(undefined), 50);
+  }, []);
 
   if (loading) {
     return (
@@ -113,11 +143,28 @@ export default function CallDetailPage() {
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-zinc-950">
       {/* Header */}
       <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto flex max-w-5xl items-center gap-3 px-6 py-4">
-          <Headphones className="h-6 w-6 text-blue-600" />
-          <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-            SpeechLyt
-          </h1>
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <Headphones className="h-6 w-6 text-blue-600" />
+            <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+              SpeechLyt
+            </h1>
+            <ProjectSelector />
+          </div>
+          <nav className="flex items-center gap-4 text-sm">
+            <Link href="/" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+              Calls
+            </Link>
+            <Link href="/dashboard" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+              Dashboard
+            </Link>
+            <Link href="/agents" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+              Agents
+            </Link>
+            <Link href="/scripts" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+              Scripts
+            </Link>
+          </nav>
         </div>
       </header>
 
@@ -333,6 +380,53 @@ export default function CallDetailPage() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Conversation Statistics */}
+        {convStats && (
+          <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+              <Mic className="h-4 w-4" />
+              Conversation Statistics
+            </h3>
+            <div className="mt-4">
+              <ConversationStatsComponent stats={convStats} />
+            </div>
+          </div>
+        )}
+
+        {/* Audio Player */}
+        {call.status === "completed" && (
+          <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+              <Volume2 className="h-4 w-4" />
+              Audio Playback
+            </h3>
+            <AudioPlayer
+              src={getCallAudioUrl(callId)}
+              totalDuration={call.duration_seconds || 0}
+              onTimeUpdate={handleTimeUpdate}
+              seekTo={seekTo}
+            />
+          </div>
+        )}
+
+        {/* Conversation Timeline */}
+        {transcription && transcription.segments.length > 0 && (
+          <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+              <MessageSquare className="h-4 w-4" />
+              Conversation Timeline
+            </h3>
+            <div className="mt-4">
+              <ConversationTimeline
+                segments={transcription.segments}
+                totalDuration={call.duration_seconds || 0}
+                currentTime={currentTime}
+                onSegmentClick={handleSegmentClick}
+              />
+            </div>
           </div>
         )}
 

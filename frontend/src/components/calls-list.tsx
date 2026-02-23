@@ -17,7 +17,7 @@ import {
   Phone,
 } from "lucide-react";
 import { cn, formatFileSize, formatDuration } from "@/lib/utils";
-import { listCalls, deleteCall, type CallResponse } from "@/lib/api";
+import { listCalls, deleteCall, type CallResponse, type CallFilters } from "@/lib/api";
 import { formatDistanceToNow } from "date-fns";
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
@@ -38,9 +38,10 @@ const DIRECTION_ICON: Record<string, React.ReactNode> = {
 
 interface CallsListProps {
   refreshKey?: number;
+  filters?: CallFilters;
 }
 
-export default function CallsList({ refreshKey }: CallsListProps) {
+export default function CallsList({ refreshKey, filters = {} }: CallsListProps) {
   const router = useRouter();
   const [calls, setCalls] = useState<CallResponse[]>([]);
   const [total, setTotal] = useState(0);
@@ -53,7 +54,7 @@ export default function CallsList({ refreshKey }: CallsListProps) {
     setLoading(true);
     setError(null);
     try {
-      const data = await listCalls(page, pageSize);
+      const data = await listCalls(page, pageSize, filters);
       setCalls(data.items);
       setTotal(data.total);
     } catch (err) {
@@ -61,7 +62,7 @@ export default function CallsList({ refreshKey }: CallsListProps) {
     } finally {
       setLoading(false);
     }
-  }, [page]);
+  }, [page, JSON.stringify(filters)]);
 
   useEffect(() => {
     fetchCalls();

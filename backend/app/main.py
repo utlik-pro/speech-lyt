@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1.agents import router as agents_router
 from app.api.v1.analytics import router as analytics_router
 from app.api.v1.api_keys import router as api_keys_router
 from app.api.v1.calls import router as calls_router
 from app.api.v1.kpi import router as kpi_router
+from app.api.v1.projects import router as projects_router
 from app.api.v1.scripts import router as scripts_router
 from app.api.v1.webhooks import router as webhooks_router
 from app.core.config import settings
@@ -19,17 +21,20 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "http://localhost:3001"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Range", "Accept-Ranges", "Content-Length"],
 )
 
 app.add_middleware(RateLimitMiddleware, max_requests=100, window_seconds=60)
 
 
 # API routers
+app.include_router(projects_router, prefix=settings.API_PREFIX)
 app.include_router(calls_router, prefix=settings.API_PREFIX)
+app.include_router(agents_router, prefix=settings.API_PREFIX)
 app.include_router(scripts_router, prefix=settings.API_PREFIX)
 app.include_router(analytics_router, prefix=settings.API_PREFIX)
 app.include_router(kpi_router, prefix=settings.API_PREFIX)

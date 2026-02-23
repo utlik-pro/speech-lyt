@@ -14,30 +14,60 @@ import type {
   KPIDashboardResponse,
   KPITrendResponse,
   KPIAlertsResponse,
+  HeatmapResponse,
+  WordCloudResponse,
+  PeriodComparisonResponse,
+  AgentLeaderboardResponse,
 } from "@/lib/api";
-import { getKPIDashboard, getKPITrend, getKPIAlerts } from "@/lib/api";
+import {
+  getKPIDashboard,
+  getKPITrend,
+  getKPIAlerts,
+  getHeatmap,
+  getWordCloud,
+  getPeriodComparison,
+  getAgentLeaderboard,
+} from "@/lib/api";
 import KPICard from "@/components/kpi-card";
 import KPIAlerts from "@/components/kpi-alerts";
 import { SentimentChart, CategoryChart, TrendChart } from "@/components/kpi-charts";
+import ProjectSelector from "@/components/project-selector";
+import PeriodComparison from "@/components/period-comparison";
+import HeatmapChart from "@/components/heatmap-chart";
+import WordCloud from "@/components/word-cloud";
+import AgentMiniLeaderboard from "@/components/agent-mini-leaderboard";
 
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState<KPIDashboardResponse | null>(null);
   const [trend, setTrend] = useState<KPITrendResponse | null>(null);
   const [alerts, setAlerts] = useState<KPIAlertsResponse | null>(null);
+  const [heatmap, setHeatmap] = useState<HeatmapResponse | null>(null);
+  const [wordCloud, setWordCloud] = useState<WordCloudResponse | null>(null);
+  const [comparison, setComparison] = useState<PeriodComparisonResponse | null>(null);
+  const [leaderboard, setLeaderboard] = useState<AgentLeaderboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [trendMetric, setTrendMetric] = useState("aht");
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const [dashData, trendData, alertData] = await Promise.all([
-        getKPIDashboard(),
-        getKPITrend(trendMetric),
-        getKPIAlerts(),
-      ]);
+      const [dashData, trendData, alertData, heatData, wcData, compData, lbData] =
+        await Promise.all([
+          getKPIDashboard(),
+          getKPITrend(trendMetric),
+          getKPIAlerts(),
+          getHeatmap(),
+          getWordCloud(),
+          getPeriodComparison(),
+          getAgentLeaderboard(30),
+        ]);
       setDashboard(dashData);
       setTrend(trendData);
       setAlerts(alertData);
+      setHeatmap(heatData);
+      setWordCloud(wcData);
+      setComparison(compData);
+      setLeaderboard(lbData);
     } catch (err) {
       console.error("Failed to load KPI data:", err);
     } finally {
@@ -67,6 +97,7 @@ export default function DashboardPage() {
             <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
               Beta
             </span>
+            <ProjectSelector />
           </div>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
@@ -77,6 +108,9 @@ export default function DashboardPage() {
               className="font-medium text-blue-600 dark:text-blue-400"
             >
               Dashboard
+            </Link>
+            <Link href="/agents" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+              Agents
             </Link>
             <Link href="/scripts" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
               Scripts
@@ -141,6 +175,16 @@ export default function DashboardPage() {
               </div>
             </div>
 
+            {/* Period Comparison */}
+            {comparison && comparison.metrics.length > 0 && (
+              <section>
+                <h3 className="mb-3 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                  Period Comparison (vs previous)
+                </h3>
+                <PeriodComparison metrics={comparison.metrics} />
+              </section>
+            )}
+
             {/* KPI Metrics */}
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
               {dashboard.metrics.map((m) => (
@@ -201,6 +245,39 @@ export default function DashboardPage() {
                 />
               )}
             </div>
+
+            {/* Heatmap + Word Cloud + Mini Leaderboard */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* Heatmap */}
+              {heatmap && (
+                <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+                  <h3 className="mb-3 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                    Call Volume Heatmap
+                  </h3>
+                  <HeatmapChart cells={heatmap.cells} maxCount={heatmap.max_count} />
+                </div>
+              )}
+
+              {/* Word Cloud */}
+              {wordCloud && (
+                <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+                  <h3 className="mb-3 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                    Word Cloud
+                  </h3>
+                  <WordCloud items={wordCloud.items} />
+                </div>
+              )}
+            </div>
+
+            {/* Agent Mini Leaderboard */}
+            {leaderboard && leaderboard.entries.length > 0 && (
+              <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+                <h3 className="mb-3 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                  Top Agents
+                </h3>
+                <AgentMiniLeaderboard entries={leaderboard.entries} />
+              </div>
+            )}
           </>
         ) : (
           <div className="flex h-64 items-center justify-center text-sm text-zinc-400">

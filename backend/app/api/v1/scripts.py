@@ -1,9 +1,10 @@
 import uuid
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
+from app.api.v1.deps import get_project_id
 from app.core.database import async_session
 from app.models.call import Call
 from app.models.script import Script, ScriptAnalysis, ScriptStage
@@ -22,19 +23,16 @@ from app.services.scripts.compliance import script_compliance_service
 
 router = APIRouter(tags=["scripts"])
 
-# Temporary hardcoded org_id until auth is implemented
-TEMP_ORG_ID = uuid.UUID("00000000-0000-0000-0000-000000000001")
-
 
 # --- Script CRUD ---
 
 
 @router.post("/scripts", response_model=ScriptResponse, status_code=201)
-async def create_script(payload: ScriptCreate):
+async def create_script(payload: ScriptCreate, project_id: uuid.UUID = Depends(get_project_id)):
     """Create a new script with optional stages."""
     async with async_session() as db:
         script = Script(
-            organization_id=TEMP_ORG_ID,
+            organization_id=project_id,
             name=payload.name,
             type=payload.type,
             description=payload.description,
@@ -43,7 +41,6 @@ async def create_script(payload: ScriptCreate):
         db.add(script)
         await db.flush()
 
-        # Create stages if provided
         for stage_data in payload.stages:
             stage = ScriptStage(
                 script_id=script.id,
@@ -58,7 +55,6 @@ async def create_script(payload: ScriptCreate):
 
         await db.commit()
 
-        # Reload with stages
         result = await db.execute(
             select(Script)
             .options(selectinload(Script.stages))
@@ -70,6 +66,7 @@ async def create_script(payload: ScriptCreate):
 
 @router.get("/scripts", response_model=ScriptListResponse)
 async def list_scripts(
+    project_id: uuid.UUID = Depends(get_project_id),
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
     is_active: bool | None = Query(default=None),
@@ -77,18 +74,16 @@ async def list_scripts(
 ):
     """List scripts with pagination and filters."""
     async with async_session() as db:
-        query = select(Script).where(Script.organization_id == TEMP_ORG_ID)
+        query = select(Script).where(Script.organization_id == project_id)
 
         if is_active is not None:
             query = query.where(Script.is_active == is_active)
         if type is not None:
             query = query.where(Script.type == type)
 
-        # Count total
         count_query = select(func.count()).select_from(query.subquery())
         total = (await db.execute(count_query)).scalar() or 0
 
-        # Paginate with stages loaded
         query = (
             query.options(selectinload(Script.stages))
             .order_by(Script.created_at.desc())
@@ -141,7 +136,6 @@ async def update_script(script_id: uuid.UUID, payload: ScriptUpdate):
         await db.commit()
         await db.refresh(script)
 
-        # Reload with stages
         result = await db.execute(
             select(Script)
             .options(selectinload(Script.stages))
@@ -198,12 +192,10 @@ async def add_stage_to_script(script_id: uuid.UUID, payload: ScriptStageCreate):
 async def analyze_script_compliance(call_id: uuid.UUID, payload: AnalyzeScriptRequest):
     """Run script compliance analysis on a call's transcription."""
     async with async_session() as db:
-        # Get the call
         call = await db.get(Call, call_id)
         if not call:
             raise HTTPException(status_code=404, detail="Call not found")
 
-        # Get the transcription
         result = await db.execute(
             select(Transcription).where(Transcription.call_id == call_id)
         )
@@ -214,7 +206,6 @@ async def analyze_script_compliance(call_id: uuid.UUID, payload: AnalyzeScriptRe
                 detail="Call has no transcription yet. Please wait for transcription to complete.",
             )
 
-        # Get the script with stages
         result = await db.execute(
             select(Script)
             .options(selectinload(Script.stages))
@@ -227,7 +218,6 @@ async def analyze_script_compliance(call_id: uuid.UUID, payload: AnalyzeScriptRe
         if not script.is_active:
             raise HTTPException(status_code=400, detail="Script is not active")
 
-        # Build stages data for the compliance service
         stages_data = [
             {
                 "id": stage.id,
@@ -241,7 +231,6 @@ async def analyze_script_compliance(call_id: uuid.UUID, payload: AnalyzeScriptRe
             for stage in sorted(script.stages, key=lambda s: s.order)
         ]
 
-        # Run compliance analysis
         analysis_result = await script_compliance_service.analyze(
             transcription_text=transcription.full_text,
             segments=transcription.segments or [],
@@ -249,7 +238,6 @@ async def analyze_script_compliance(call_id: uuid.UUID, payload: AnalyzeScriptRe
             stages=stages_data,
         )
 
-        # Persist the analysis
         analysis = ScriptAnalysis(
             call_id=call_id,
             script_id=script.id,

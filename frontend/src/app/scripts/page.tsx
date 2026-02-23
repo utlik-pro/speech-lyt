@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ProjectSelector from "@/components/project-selector";
 import {
   listScripts,
   createScript,
@@ -143,6 +144,7 @@ export default function ScriptsPage() {
             <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               SpeechLyt
             </h1>
+            <ProjectSelector />
           </div>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
@@ -150,6 +152,9 @@ export default function ScriptsPage() {
             </Link>
             <Link href="/dashboard" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
               Dashboard
+            </Link>
+            <Link href="/agents" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+              Agents
             </Link>
             <Link href="/scripts" className="font-medium text-blue-600 dark:text-blue-400">
               Scripts
