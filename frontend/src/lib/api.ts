@@ -428,7 +428,7 @@ export interface ManagerListResponse {
 }
 
 export interface ManagerLeaderboardEntry {
-  agent_id: string;
+  manager_id: string;
   name: string;
   team: string | null;
   total_calls: number;

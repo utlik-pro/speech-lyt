@@ -136,8 +136,8 @@ export default function ManagersPage() {
                   <tbody>
                     {sorted.map((e) => (
                       <tr
-                        key={e.agent_id}
-                        onClick={() => (window.location.href = `/managers/${e.agent_id}`)}
+                        key={e.manager_id}
+                        onClick={() => (window.location.href = `/managers/${e.manager_id}`)}
                         className="cursor-pointer border-b border-zinc-100 transition-colors hover:bg-zinc-50 dark:border-zinc-800/50 dark:hover:bg-zinc-900/50"
                       >
                         <td className="px-4 py-2.5">

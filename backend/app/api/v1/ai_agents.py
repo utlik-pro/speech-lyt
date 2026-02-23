@@ -26,6 +26,32 @@ from app.services.ai_agents.defaults import DEFAULT_PROMPTS
 router = APIRouter(prefix="/ai-agents", tags=["ai-agents"])
 
 
+# ── Default Prompts (must be before /{agent_id} to avoid route conflict) ───
+
+
+@router.get("/default-prompts", response_model=list[DefaultPromptResponse])
+async def get_default_prompts():
+    """Get all default prompt templates."""
+    return [
+        DefaultPromptResponse(
+            step_type=step_type,
+            system_prompt=prompts["system_prompt"],
+            user_prompt_template=prompts["user_prompt_template"],
+        )
+        for step_type, prompts in DEFAULT_PROMPTS.items()
+    ]
+
+
+@router.get("/runs/{run_id}", response_model=AIAgentRunResponse)
+async def get_run(run_id: uuid.UUID):
+    """Get details of a specific pipeline run."""
+    async with async_session() as db:
+        run = await db.get(AIAgentRun, run_id)
+        if not run:
+            raise HTTPException(status_code=404, detail="Run not found")
+        return run
+
+
 # ── CRUD ────────────────────────────────────────────────────────────────────
 
 
@@ -202,16 +228,6 @@ async def list_runs(
         return AIAgentRunListResponse(items=runs, total=total)
 
 
-@router.get("/runs/{run_id}", response_model=AIAgentRunResponse)
-async def get_run(run_id: uuid.UUID):
-    """Get details of a specific pipeline run."""
-    async with async_session() as db:
-        run = await db.get(AIAgentRun, run_id)
-        if not run:
-            raise HTTPException(status_code=404, detail="Run not found")
-        return run
-
-
 # ── Coaching ────────────────────────────────────────────────────────────────
 
 
@@ -248,17 +264,3 @@ async def generate_coaching(
         }
 
 
-# ── Default Prompts ─────────────────────────────────────────────────────────
-
-
-@router.get("/default-prompts", response_model=list[DefaultPromptResponse])
-async def get_default_prompts():
-    """Get all default prompt templates."""
-    return [
-        DefaultPromptResponse(
-            step_type=step_type,
-            system_prompt=prompts["system_prompt"],
-            user_prompt_template=prompts["user_prompt_template"],
-        )
-        for step_type, prompts in DEFAULT_PROMPTS.items()
-    ]

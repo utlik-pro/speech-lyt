@@ -24,8 +24,8 @@ export default function ManagerMiniLeaderboard({ entries }: ManagerMiniLeaderboa
     <div className="space-y-2">
       {top5.map((e) => (
         <Link
-          key={e.agent_id}
-          href={`/managers/${e.agent_id}`}
+          key={e.manager_id}
+          href={`/managers/${e.manager_id}`}
           className="flex items-center gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
         >
           <span

@@ -113,7 +113,7 @@ export default function CallsSidebar() {
           <div className="space-y-2">
             {leaderboard.entries.slice(0, 3).map((e) => (
               <div
-                key={e.agent_id}
+                key={e.manager_id}
                 className="flex items-center justify-between rounded-md border border-zinc-200 bg-zinc-50 p-2 dark:border-zinc-800 dark:bg-zinc-800/50"
               >
                 <div className="flex items-center gap-2">

@@ -94,7 +94,7 @@ export default function DashboardSidebar({ alerts, leaderboard }: DashboardSideb
           <div className="space-y-1.5">
             {leaderboard.entries.slice(0, 5).map((e) => (
               <div
-                key={e.agent_id}
+                key={e.manager_id}
                 className="flex items-center justify-between text-xs"
               >
                 <div className="flex items-center gap-1.5">
