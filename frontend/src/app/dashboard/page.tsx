@@ -30,6 +30,8 @@ import KPICard from "@/components/kpi-card";
 import KPIAlerts from "@/components/kpi-alerts";
 import { SentimentChart, CategoryChart, TrendChart } from "@/components/kpi-charts";
 import AppHeader from "@/components/app-header";
+import CollapsibleSidebar from "@/components/collapsible-sidebar";
+import DashboardSidebar from "@/components/sidebar/dashboard-sidebar";
 import PeriodComparison from "@/components/period-comparison";
 import HeatmapChart from "@/components/heatmap-chart";
 import WordCloud from "@/components/word-cloud";
@@ -86,7 +88,9 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-zinc-950">
       <AppHeader />
 
-      <main className="mx-auto max-w-6xl space-y-6 px-6 py-8">
+      <div className="flex">
+        <main className="min-w-0 flex-1">
+          <div className="mx-auto max-w-6xl space-y-6 px-6 py-8">
         {/* Title row */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -251,7 +255,13 @@ export default function DashboardPage() {
             Failed to load KPI data
           </div>
         )}
-      </main>
+          </div>
+        </main>
+
+        <CollapsibleSidebar>
+          <DashboardSidebar alerts={alerts} leaderboard={leaderboard} />
+        </CollapsibleSidebar>
+      </div>
     </div>
   );
 }

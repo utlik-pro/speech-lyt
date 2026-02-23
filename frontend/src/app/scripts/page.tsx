@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AppHeader from "@/components/app-header";
+import CollapsibleSidebar from "@/components/collapsible-sidebar";
+import ScriptsSidebar from "@/components/sidebar/scripts-sidebar";
 import {
   listScripts,
   createScript,
@@ -137,7 +139,9 @@ export default function ScriptsPage() {
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-zinc-950">
       <AppHeader />
 
-      <main className="mx-auto max-w-5xl space-y-6 px-6 py-8">
+      <div className="flex">
+      <main className="min-w-0 flex-1">
+      <div className="mx-auto max-w-5xl space-y-6 px-6 py-8">
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             <FileText className="h-5 w-5 text-blue-600" />
@@ -401,7 +405,12 @@ export default function ScriptsPage() {
             ))}
           </div>
         )}
+      </div>
       </main>
+      <CollapsibleSidebar>
+        <ScriptsSidebar scripts={scripts} />
+      </CollapsibleSidebar>
+      </div>
     </div>
   );
 }
