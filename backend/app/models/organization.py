@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Enum, String
+from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -17,8 +17,8 @@ class Organization(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "organizations"
 
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    plan: Mapped[OrganizationPlan] = mapped_column(
-        Enum(OrganizationPlan), default=OrganizationPlan.FREE, nullable=False
+    plan: Mapped[str] = mapped_column(
+        String(20), default="free", nullable=False
     )
     settings: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
 

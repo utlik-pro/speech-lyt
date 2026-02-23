@@ -31,9 +31,10 @@ def upgrade() -> None:
     )
 
     # 2. Backfill organizations from all existing organization_id values
+    # Note: UNION already deduplicates; avoid DISTINCT on json columns
     op.execute("""
         INSERT INTO organizations (id, name, plan, settings)
-        SELECT DISTINCT organization_id, 'Organization ' || organization_id::text, 'free', '{}'::json
+        SELECT organization_id, 'Organization ' || organization_id::text, 'free', '{}'::jsonb
         FROM (
             SELECT organization_id FROM agents WHERE organization_id IS NOT NULL
             UNION SELECT organization_id FROM calls WHERE organization_id IS NOT NULL
@@ -51,9 +52,8 @@ def upgrade() -> None:
     # Also backfill from users table (may not exist yet in some setups)
     op.execute("""
         INSERT INTO organizations (id, name, plan, settings)
-        SELECT DISTINCT organization_id, 'Organization ' || organization_id::text, 'free', '{}'::json
-        FROM users
-        WHERE organization_id IS NOT NULL
+        SELECT organization_id, 'Organization ' || organization_id::text, 'free', '{}'::jsonb
+        FROM (SELECT DISTINCT organization_id FROM users WHERE organization_id IS NOT NULL) u
         ON CONFLICT (id) DO NOTHING
     """)
 

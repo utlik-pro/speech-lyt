@@ -8,7 +8,7 @@ import ProjectSelector from "@/components/project-selector";
 import { useAuth } from "@/lib/auth-context";
 
 const navLinks = [
-  { href: "/", label: "Calls" },
+  { href: "/calls", label: "Calls" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/agents", label: "Agents" },
   { href: "/scripts", label: "Scripts" },

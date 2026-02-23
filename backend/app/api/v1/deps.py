@@ -24,7 +24,7 @@ async def get_project_id(
         except ValueError:
             pass
     # Default project
-    return uuid.UUID("00000000-0000-0000-0000-000000000001")
+    return uuid.UUID("00000000-0000-0000-0000-000000000002")
 
 
 async def get_optional_user(
