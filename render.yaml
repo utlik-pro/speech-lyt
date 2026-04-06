@@ -1,0 +1,34 @@
+# Render Blueprint – SpeechLyt
+# https://render.com/docs/blueprint-spec
+
+databases:
+  - name: speechlyt-db
+    plan: free
+    databaseName: speechlyt
+    user: speechlyt
+
+services:
+  # ── Backend API ─────────────────────────────────────────────
+  - type: web
+    name: speechlyt-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: speechlyt-db
+          property: connectionString
+        # Render gives postgres://, we need postgresql+asyncpg://
+      - key: RENDER_DATABASE_URL
+        fromDatabase:
+          name: speechlyt-db
+          property: connectionString
+      - key: REDIS_URL
+        value: ""
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: PYTHONUNBUFFERED
+        value: "1"

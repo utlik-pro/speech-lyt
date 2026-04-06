@@ -32,7 +32,7 @@ export default function CollapsibleSidebar({ children }: CollapsibleSidebarProps
           "dark:hover:bg-zinc-800 dark:hover:text-zinc-300",
           "transition-colors",
         )}
-        title={isOpen ? "Collapse sidebar" : "Expand sidebar"}
+        title={isOpen ? "Свернуть панель" : "Развернуть панель"}
       >
         {isOpen ? (
           <ChevronRight className="h-4 w-4" />

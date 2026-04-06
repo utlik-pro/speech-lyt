@@ -43,7 +43,7 @@ export default function ScriptComplianceCard({
           <p className={cn("text-3xl font-bold", scoreColor(analysis.overall_score))}>
             {Math.round(analysis.overall_score)}%
           </p>
-          <p className="text-xs text-zinc-500">Overall Score</p>
+          <p className="text-xs text-zinc-500">Общая оценка</p>
         </div>
         <div className="flex-1">
           <div className="h-3 rounded-full bg-zinc-100 dark:bg-zinc-800">
@@ -58,7 +58,7 @@ export default function ScriptComplianceCard({
       {/* Stage results */}
       {analysis.stage_results.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs font-medium text-zinc-500">Stage Results</p>
+          <p className="text-xs font-medium text-zinc-500">Результаты по этапам</p>
           {analysis.stage_results.map((sr) => (
             <div
               key={sr.stage_id}
@@ -143,7 +143,7 @@ export default function ScriptComplianceCard({
       {/* Violations */}
       {analysis.violations.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-xs font-medium text-zinc-500">Violations</p>
+          <p className="text-xs font-medium text-zinc-500">Нарушения</p>
           {analysis.violations.map((v, i) => (
             <div
               key={i}

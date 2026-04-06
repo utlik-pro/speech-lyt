@@ -21,13 +21,13 @@ import { listCalls, deleteCall, type CallResponse, type CallFilters } from "@/li
 import { formatDistanceToNow } from "date-fns";
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-  pending: { label: "Pending", color: "text-yellow-600 bg-yellow-50 dark:bg-yellow-950/30", icon: <Clock className="h-3 w-3" /> },
-  uploading: { label: "Uploading", color: "text-blue-600 bg-blue-50 dark:bg-blue-950/30", icon: <Loader2 className="h-3 w-3 animate-spin" /> },
-  processing: { label: "Processing", color: "text-blue-600 bg-blue-50 dark:bg-blue-950/30", icon: <Loader2 className="h-3 w-3 animate-spin" /> },
-  transcribing: { label: "Transcribing", color: "text-purple-600 bg-purple-50 dark:bg-purple-950/30", icon: <Loader2 className="h-3 w-3 animate-spin" /> },
-  analyzing: { label: "Analyzing", color: "text-indigo-600 bg-indigo-50 dark:bg-indigo-950/30", icon: <Loader2 className="h-3 w-3 animate-spin" /> },
-  completed: { label: "Completed", color: "text-green-600 bg-green-50 dark:bg-green-950/30", icon: <CheckCircle className="h-3 w-3" /> },
-  failed: { label: "Failed", color: "text-red-600 bg-red-50 dark:bg-red-950/30", icon: <AlertCircle className="h-3 w-3" /> },
+  pending: { label: "Ожидание", color: "text-yellow-600 bg-yellow-50 dark:bg-yellow-950/30", icon: <Clock className="h-3 w-3" /> },
+  uploading: { label: "Загрузка", color: "text-blue-600 bg-blue-50 dark:bg-blue-950/30", icon: <Loader2 className="h-3 w-3 animate-spin" /> },
+  processing: { label: "Обработка", color: "text-blue-600 bg-blue-50 dark:bg-blue-950/30", icon: <Loader2 className="h-3 w-3 animate-spin" /> },
+  transcribing: { label: "Транскрипция", color: "text-purple-600 bg-purple-50 dark:bg-purple-950/30", icon: <Loader2 className="h-3 w-3 animate-spin" /> },
+  analyzing: { label: "Анализ", color: "text-indigo-600 bg-indigo-50 dark:bg-indigo-950/30", icon: <Loader2 className="h-3 w-3 animate-spin" /> },
+  completed: { label: "Завершён", color: "text-green-600 bg-green-50 dark:bg-green-950/30", icon: <CheckCircle className="h-3 w-3" /> },
+  failed: { label: "Ошибка", color: "text-red-600 bg-red-50 dark:bg-red-950/30", icon: <AlertCircle className="h-3 w-3" /> },
 };
 
 const DIRECTION_ICON: Record<string, React.ReactNode> = {
@@ -58,7 +58,7 @@ export default function CallsList({ refreshKey, filters = {} }: CallsListProps) 
       setCalls(data.items);
       setTotal(data.total);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load calls");
+      setError(err instanceof Error ? err.message : "Не удалось загрузить звонки");
     } finally {
       setLoading(false);
     }
@@ -70,12 +70,12 @@ export default function CallsList({ refreshKey, filters = {} }: CallsListProps) 
 
   const handleDelete = useCallback(
     async (callId: string, filename: string) => {
-      if (!confirm(`Delete "${filename}"?`)) return;
+      if (!confirm(`Удалить "${filename}"?`)) return;
       try {
         await deleteCall(callId);
         fetchCalls();
       } catch {
-        alert("Failed to delete call");
+        alert("Не удалось удалить звонок");
       }
     },
     [fetchCalls],
@@ -87,7 +87,7 @@ export default function CallsList({ refreshKey, filters = {} }: CallsListProps) 
     return (
       <div className="flex items-center justify-center py-12 text-zinc-500">
         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-        Loading calls...
+        Загрузка звонков...
       </div>
     );
   }
@@ -101,7 +101,7 @@ export default function CallsList({ refreshKey, filters = {} }: CallsListProps) 
           onClick={fetchCalls}
           className="mt-2 text-xs text-blue-600 hover:underline"
         >
-          Retry
+          Повторить
         </button>
       </div>
     );
@@ -111,7 +111,7 @@ export default function CallsList({ refreshKey, filters = {} }: CallsListProps) 
     return (
       <div className="flex flex-col items-center gap-2 py-12 text-zinc-500">
         <FileAudio className="h-8 w-8" />
-        <p className="text-sm">No calls uploaded yet</p>
+        <p className="text-sm">Звонки ещё не загружены</p>
       </div>
     );
   }
@@ -121,7 +121,7 @@ export default function CallsList({ refreshKey, filters = {} }: CallsListProps) 
       {/* Header */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-zinc-500">
-          {total} call{total !== 1 && "s"} total
+          Всего звонков: {total}
         </p>
         <button
           onClick={fetchCalls}
@@ -129,7 +129,7 @@ export default function CallsList({ refreshKey, filters = {} }: CallsListProps) 
           className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
         >
           <RefreshCw className={cn("h-3 w-3", loading && "animate-spin")} />
-          Refresh
+          Обновить
         </button>
       </div>
 
@@ -138,11 +138,11 @@ export default function CallsList({ refreshKey, filters = {} }: CallsListProps) 
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-xs font-medium uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900">
-              <th className="px-4 py-2">File</th>
-              <th className="px-4 py-2">Duration</th>
-              <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2">Uploaded</th>
-              <th className="px-4 py-2 text-right">Actions</th>
+              <th className="px-4 py-2">Файл</th>
+              <th className="px-4 py-2">Длительность</th>
+              <th className="px-4 py-2">Статус</th>
+              <th className="px-4 py-2">Загружен</th>
+              <th className="px-4 py-2 text-right">Действия</th>
             </tr>
           </thead>
           <tbody>
@@ -207,7 +207,7 @@ export default function CallsList({ refreshKey, filters = {} }: CallsListProps) 
       {totalPages > 1 && (
         <div className="flex items-center justify-between text-sm">
           <p className="text-xs text-zinc-500">
-            Page {page} of {totalPages}
+            Страница {page} из {totalPages}
           </p>
           <div className="flex gap-1">
             <button

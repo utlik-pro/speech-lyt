@@ -9,7 +9,7 @@ export default function KPIAlerts({ alerts }: { alerts: KPIAlert[] }) {
   if (alerts.length === 0) {
     return (
       <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-300">
-        All KPIs are within normal thresholds
+        Все KPI в пределах нормы
       </div>
     );
   }
@@ -53,7 +53,7 @@ export default function KPIAlerts({ alerts }: { alerts: KPIAlert[] }) {
         className="mt-2 inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
       >
         <Settings className="h-3 w-3" />
-        Manage Alert Rules
+        Управление правилами
       </Link>
     </div>
   );

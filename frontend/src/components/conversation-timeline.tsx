@@ -43,7 +43,7 @@ export default function ConversationTimeline({
   }, [activeIndex]);
 
   if (segments.length === 0 || totalDuration <= 0) {
-    return <p className="py-4 text-center text-sm text-zinc-400">No timeline data</p>;
+    return <p className="py-4 text-center text-sm text-zinc-400">Нет данных хронологии</p>;
   }
 
   const handleBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -99,23 +99,23 @@ export default function ConversationTimeline({
       <div className="flex items-center gap-4 text-xs text-zinc-500">
         <span className="flex items-center gap-1">
           <span className="inline-block h-2.5 w-2.5 rounded-sm bg-blue-500/70" />
-          Agent
+          Оператор
         </span>
         <span className="flex items-center gap-1">
           <span className="inline-block h-2.5 w-2.5 rounded-sm bg-green-500/70" />
-          Client
+          Клиент
         </span>
         <span className="flex items-center gap-1">
           <span className="inline-block h-2.5 w-2.5 rounded-sm bg-zinc-200 dark:bg-zinc-700" />
-          Silence
+          Тишина
         </span>
         {playheadPct !== null && (
           <span className="flex items-center gap-1">
             <span className="inline-block h-2.5 w-0.5 bg-red-500" />
-            Playhead
+            Воспроизведение
           </span>
         )}
-        <span className="ml-auto">{formatDuration(totalDuration)} total</span>
+        <span className="ml-auto">{formatDuration(totalDuration)} всего</span>
       </div>
 
       {/* Segment list (scrollable) */}
@@ -150,7 +150,7 @@ export default function ConversationTimeline({
                   isAgent ? "text-blue-600" : "text-green-600",
                 )}
               >
-                {isAgent ? "Agent" : "Client"}
+                {isAgent ? "Оператор" : "Клиент"}
               </span>
               <span
                 className={cn(

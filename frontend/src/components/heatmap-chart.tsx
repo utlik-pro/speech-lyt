@@ -2,7 +2,7 @@
 
 import type { HeatmapCell } from "@/lib/api";
 
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
 interface HeatmapChartProps {
@@ -42,7 +42,7 @@ export default function HeatmapChart({ cells, maxCount }: HeatmapChartProps) {
                 return (
                   <div
                     key={h}
-                    title={`${day} ${h}:00 — ${count} calls`}
+                    title={`${day} ${h}:00 — ${count} звонков`}
                     className="flex-1 rounded-sm"
                     style={{
                       aspectRatio: "1",
@@ -60,7 +60,7 @@ export default function HeatmapChart({ cells, maxCount }: HeatmapChartProps) {
 
         {/* Legend */}
         <div className="mt-2 ml-10 flex items-center gap-1 text-[10px] text-zinc-400">
-          <span>Less</span>
+          <span>Меньше</span>
           {[0.1, 0.3, 0.5, 0.7, 0.9].map((v) => (
             <div
               key={v}
@@ -68,7 +68,7 @@ export default function HeatmapChart({ cells, maxCount }: HeatmapChartProps) {
               style={{ backgroundColor: `rgba(59, 130, 246, ${v})` }}
             />
           ))}
-          <span>More</span>
+          <span>Больше</span>
         </div>
       </div>
     </div>

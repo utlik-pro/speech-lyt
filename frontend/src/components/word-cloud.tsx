@@ -20,7 +20,7 @@ const COLORS = [
 export default function WordCloud({ items }: WordCloudProps) {
   if (items.length === 0) {
     return (
-      <p className="py-8 text-center text-sm text-zinc-400">No word data</p>
+      <p className="py-8 text-center text-sm text-zinc-400">Нет данных по словам</p>
     );
   }
 

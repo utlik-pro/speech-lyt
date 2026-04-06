@@ -49,7 +49,7 @@ export default function ProjectSelector() {
           }}
         />
         <span className="max-w-[140px] truncate">
-          {selectedProject?.name || "Select project"}
+          {selectedProject?.name || "Выберите проект"}
         </span>
         <ChevronDown
           className={`h-3.5 w-3.5 shrink-0 text-zinc-400 transition-transform ${
@@ -83,7 +83,7 @@ export default function ProjectSelector() {
           {projects.length === 0 && (
             <div className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-400">
               <FolderOpen className="h-4 w-4" />
-              No projects
+              Нет проектов
             </div>
           )}
         </div>

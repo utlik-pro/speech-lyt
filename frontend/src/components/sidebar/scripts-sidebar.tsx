@@ -37,22 +37,22 @@ export default function ScriptsSidebar({ scripts }: ScriptsSidebarProps) {
   return (
     <>
       {/* Stats */}
-      <SidebarSection title="Stats">
+      <SidebarSection title="Статистика">
         <div className="grid grid-cols-2 gap-2">
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Total Scripts</div>
+            <div className="text-xs text-zinc-500">Всего скриптов</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {scripts.length}
             </div>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Active</div>
+            <div className="text-xs text-zinc-500">Активных</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {activeCount}
             </div>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Total Stages</div>
+            <div className="text-xs text-zinc-500">Всего этапов</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {totalStages}
             </div>
@@ -61,7 +61,7 @@ export default function ScriptsSidebar({ scripts }: ScriptsSidebarProps) {
       </SidebarSection>
 
       {/* Script Types */}
-      <SidebarSection title="Script Types">
+      <SidebarSection title="Типы скриптов">
         <div className="flex flex-wrap gap-1.5">
           {Object.entries(typeGroups).map(([type, count]) => (
             <span
@@ -79,9 +79,9 @@ export default function ScriptsSidebar({ scripts }: ScriptsSidebarProps) {
       </SidebarSection>
 
       {/* Scripts */}
-      <SidebarSection title="Scripts">
+      <SidebarSection title="Скрипты">
         {scripts.length === 0 ? (
-          <p className="text-xs text-zinc-400">No scripts available</p>
+          <p className="text-xs text-zinc-400">Скрипты не найдены</p>
         ) : (
           <div className="space-y-1.5">
             {scripts.map((script) => (
@@ -101,11 +101,11 @@ export default function ScriptsSidebar({ scripts }: ScriptsSidebarProps) {
                         : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
                     )}
                   >
-                    {script.is_active ? "Active" : "Inactive"}
+                    {script.is_active ? "Активен" : "Неактивен"}
                   </span>
                 </div>
                 <div className="mt-0.5 text-xs text-zinc-500">
-                  {script.stages.length} stage{script.stages.length !== 1 ? "s" : ""}
+                  {script.stages.length} этапов
                 </div>
               </div>
             ))}

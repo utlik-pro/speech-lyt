@@ -71,7 +71,7 @@ export default function ManagersPage() {
               <div className="flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-yellow-500" />
                 <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                  Manager Leaderboard
+                  Рейтинг менеджеров
                 </h2>
               </div>
               <div className="flex items-center gap-2">
@@ -80,9 +80,9 @@ export default function ManagersPage() {
                   onChange={(e) => setDays(Number(e.target.value))}
                   className="h-8 rounded-md border border-zinc-300 bg-white px-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                 >
-                  <option value={7}>Last 7 days</option>
-                  <option value={30}>Last 30 days</option>
-                  <option value={90}>Last 90 days</option>
+                  <option value={7}>За 7 дней</option>
+                  <option value={30}>За 30 дней</option>
+                  <option value={90}>За 90 дней</option>
                 </select>
                 <button
                   onClick={loadData}
@@ -90,7 +90,7 @@ export default function ManagersPage() {
                   className="flex items-center gap-1.5 rounded-md bg-zinc-100 px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-200 disabled:opacity-50 dark:bg-zinc-800 dark:text-zinc-300"
                 >
                   <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
-                  Refresh
+                  Обновить
                 </button>
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function ManagersPage() {
               </div>
             ) : sorted.length === 0 ? (
               <div className="flex h-64 items-center justify-center text-sm text-zinc-400">
-                No managers found
+                Менеджеры не найдены
               </div>
             ) : (
               <div className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800">
@@ -109,14 +109,14 @@ export default function ManagersPage() {
                   <thead>
                     <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-xs font-medium uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900">
                       {([
-                        ["rank", "Rank"],
-                        ["", "Manager"],
-                        ["", "Team"],
-                        ["total_calls", "Calls"],
+                        ["rank", "Место"],
+                        ["", "Менеджер"],
+                        ["", "Команда"],
+                        ["total_calls", "Звонки"],
                         ["avg_handle_time", "AHT"],
-                        ["avg_script_score", "Script %"],
-                        ["resolution_rate", "Resolution %"],
-                        ["positive_sentiment_pct", "Positive %"],
+                        ["avg_script_score", "Скрипт %"],
+                        ["resolution_rate", "Решение %"],
+                        ["positive_sentiment_pct", "Позитив %"],
                       ] as [SortKey | "", string][]).map(([key, label]) => (
                         <th
                           key={label}

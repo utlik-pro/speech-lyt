@@ -28,18 +28,18 @@ import {
 import { formatDistanceToNow } from "date-fns";
 
 const AGENT_TYPES = [
-  { value: "analyzer", label: "Analyzer", icon: Zap, color: "text-blue-600 bg-blue-50 dark:bg-blue-900/20" },
-  { value: "coach", label: "Coach", icon: Brain, color: "text-purple-600 bg-purple-50 dark:bg-purple-900/20" },
-  { value: "qa_reviewer", label: "QA Reviewer", icon: Shield, color: "text-green-600 bg-green-50 dark:bg-green-900/20" },
-  { value: "custom", label: "Custom", icon: MessageSquare, color: "text-orange-600 bg-orange-50 dark:bg-orange-900/20" },
+  { value: "analyzer", label: "Анализатор", icon: Zap, color: "text-blue-600 bg-blue-50 dark:bg-blue-900/20" },
+  { value: "coach", label: "Коуч", icon: Brain, color: "text-purple-600 bg-purple-50 dark:bg-purple-900/20" },
+  { value: "qa_reviewer", label: "QA-ревьюер", icon: Shield, color: "text-green-600 bg-green-50 dark:bg-green-900/20" },
+  { value: "custom", label: "Кастомный", icon: MessageSquare, color: "text-orange-600 bg-orange-50 dark:bg-orange-900/20" },
 ];
 
 const STEP_TYPES = [
-  { value: "emotion_analysis", label: "Emotion Analysis" },
-  { value: "summary", label: "Summary" },
-  { value: "script_compliance", label: "Script Compliance" },
-  { value: "coaching", label: "Coaching" },
-  { value: "custom", label: "Custom Analysis" },
+  { value: "emotion_analysis", label: "Анализ эмоций" },
+  { value: "summary", label: "Резюме" },
+  { value: "script_compliance", label: "Соблюдение скрипта" },
+  { value: "coaching", label: "Коучинг" },
+  { value: "custom", label: "Кастомный анализ" },
 ];
 
 const MODELS = [
@@ -83,12 +83,12 @@ export default function AIAgentsPage() {
   }, [fetchAgents]);
 
   const handleDelete = async (id: string, agentName: string) => {
-    if (!confirm(`Delete AI agent "${agentName}"?`)) return;
+    if (!confirm(`Удалить AI-агент "${agentName}"?`)) return;
     try {
       await deleteAIAgent(id);
       fetchAgents();
     } catch {
-      alert("Failed to delete agent");
+      alert("Не удалось удалить агента");
     }
   };
 
@@ -97,7 +97,7 @@ export default function AIAgentsPage() {
       await updateAIAgent(agent.id, { is_active: !agent.is_active });
       fetchAgents();
     } catch {
-      alert("Failed to update agent");
+      alert("Не удалось обновить агента");
     }
   };
 
@@ -141,7 +141,7 @@ export default function AIAgentsPage() {
       setShowForm(false);
       fetchAgents();
     } catch {
-      alert("Failed to create AI agent");
+      alert("Не удалось создать AI-агента");
     } finally {
       setSaving(false);
     }
@@ -158,14 +158,14 @@ export default function AIAgentsPage() {
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             <Bot className="h-5 w-5 text-blue-600" />
-            AI Agents
+            AI-агенты
           </h2>
           <button
             onClick={() => setShowForm((v) => !v)}
             className="flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
           >
             <Plus className="h-4 w-4" />
-            New Agent
+            Новый агент
           </button>
         </div>
 
@@ -177,18 +177,18 @@ export default function AIAgentsPage() {
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Name</label>
+                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Название</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  placeholder="e.g., Quality Analyzer"
+                  placeholder="напр., Анализатор качества"
                   className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Type</label>
+                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Тип</label>
                 <select
                   value={agentType}
                   onChange={(e) => setAgentType(e.target.value)}
@@ -202,19 +202,19 @@ export default function AIAgentsPage() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Description</label>
+              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Описание</label>
               <input
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="What does this agent do?"
+                placeholder="Что делает этот агент?"
                 className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
               />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3">
               <div>
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Model</label>
+                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Модель</label>
                 <select
                   value={modelName}
                   onChange={(e) => setModelName(e.target.value)}
@@ -227,7 +227,7 @@ export default function AIAgentsPage() {
               </div>
               <div>
                 <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                  Temperature ({temperature})
+                  Температура ({temperature})
                 </label>
                 <input
                   type="range"
@@ -240,7 +240,7 @@ export default function AIAgentsPage() {
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Max Tokens</label>
+                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Макс. токенов</label>
                 <input
                   type="number"
                   min={256}
@@ -257,10 +257,10 @@ export default function AIAgentsPage() {
             <div>
               <div className="flex items-center justify-between">
                 <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                  Pipeline Steps
+                  Шаги пайплайна
                 </label>
                 <button type="button" onClick={addStep} className="text-xs text-blue-600 hover:underline">
-                  + Add Step
+                  + Добавить шаг
                 </button>
               </div>
               <div className="mt-2 space-y-2">
@@ -285,7 +285,7 @@ export default function AIAgentsPage() {
                         checked={step.enabled}
                         onChange={(e) => updateStep(idx, "enabled", e.target.checked)}
                       />
-                      On
+                      Вкл
                     </label>
                     {steps.length > 1 && (
                       <button
@@ -307,7 +307,7 @@ export default function AIAgentsPage() {
                 onClick={() => setShowForm(false)}
                 className="rounded-md px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
               >
-                Cancel
+                Отмена
               </button>
               <button
                 type="submit"
@@ -315,7 +315,7 @@ export default function AIAgentsPage() {
                 className="flex items-center gap-1.5 rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
               >
                 {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                Create Agent
+                Создать агент
               </button>
             </div>
           </form>
@@ -325,12 +325,12 @@ export default function AIAgentsPage() {
         {loading ? (
           <div className="flex items-center justify-center py-12 text-zinc-500">
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            Loading AI agents...
+            Загрузка AI-агентов...
           </div>
         ) : agents.length === 0 ? (
           <div className="flex flex-col items-center gap-2 py-12 text-zinc-500">
             <Bot className="h-8 w-8" />
-            <p className="text-sm">No AI agents configured yet</p>
+            <p className="text-sm">AI-агенты ещё не настроены</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -358,12 +358,12 @@ export default function AIAgentsPage() {
                               ? "bg-green-50 text-green-600 dark:bg-green-900/20"
                               : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800",
                           )}>
-                            {agent.is_active ? "Active" : "Inactive"}
+                            {agent.is_active ? "Активен" : "Неактивен"}
                           </span>
                           <span>{agent.model_name}</span>
                           <span>T={agent.temperature}</span>
                           <span>
-                            Created{" "}
+                            Создан{" "}
                             {formatDistanceToNow(new Date(agent.created_at), { addSuffix: true })}
                           </span>
                         </div>
@@ -381,7 +381,7 @@ export default function AIAgentsPage() {
                             ? "text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
                             : "text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800",
                         )}
-                        title={agent.is_active ? "Deactivate" : "Activate"}
+                        title={agent.is_active ? "Деактивировать" : "Активировать"}
                       >
                         {agent.is_active ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                       </button>

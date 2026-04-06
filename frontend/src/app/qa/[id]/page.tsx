@@ -27,11 +27,11 @@ import {
 import { formatDistanceToNow } from "date-fns";
 
 const sourceLabel: Record<string, string> = {
-  script_analysis: "Script Analysis",
-  emotion: "Sentiment",
-  summary: "Call Summary",
-  conversation_stats: "Conv. Stats",
-  manual: "Manual",
+  script_analysis: "Анализ скрипта",
+  emotion: "Тональность",
+  summary: "Резюме звонка",
+  conversation_stats: "Статистика",
+  manual: "Ручная",
 };
 
 export default function ScorecardDetailPage() {
@@ -57,7 +57,7 @@ export default function ScorecardDetailPage() {
         const data = await getScorecard(scorecardId);
         setScorecard(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load scorecard");
+        setError(err instanceof Error ? err.message : "Не удалось загрузить карту оценки");
       } finally {
         setLoading(false);
       }
@@ -85,19 +85,19 @@ export default function ScorecardDetailPage() {
       setScorecard(updated);
       setEditing(false);
     } catch {
-      alert("Failed to update scorecard");
+      alert("Не удалось обновить карту оценки");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!scorecard || !confirm(`Delete scorecard "${scorecard.name}"?`)) return;
+    if (!scorecard || !confirm(`Удалить карту оценки "${scorecard.name}"?`)) return;
     try {
       await deleteScorecard(scorecard.id);
       router.push("/qa");
     } catch {
-      alert("Failed to delete scorecard");
+      alert("Не удалось удалить карту оценки");
     }
   };
 
@@ -113,9 +113,9 @@ export default function ScorecardDetailPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-zinc-50 dark:bg-zinc-950">
         <AlertCircle className="h-8 w-8 text-red-500" />
-        <p className="text-sm text-zinc-500">{error || "Scorecard not found"}</p>
+        <p className="text-sm text-zinc-500">{error || "Карта оценки не найдена"}</p>
         <Link href="/qa" className="mt-2 text-sm text-blue-600 hover:underline">
-          Back to QA
+          К картам оценки
         </Link>
       </div>
     );
@@ -136,7 +136,7 @@ export default function ScorecardDetailPage() {
           className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to QA
+          К картам оценки
         </Link>
 
         {/* Scorecard header */}
@@ -146,7 +146,7 @@ export default function ScorecardDetailPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                    Name
+                    Название
                   </label>
                   <input
                     type="text"
@@ -157,7 +157,7 @@ export default function ScorecardDetailPage() {
                 </div>
                 <div>
                   <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                    Description
+                    Описание
                   </label>
                   <input
                     type="text"
@@ -174,7 +174,7 @@ export default function ScorecardDetailPage() {
                   onChange={(e) => setEditActive(e.target.checked)}
                   className="rounded"
                 />
-                Active
+                Активна
               </label>
               <div className="flex gap-2">
                 <button
@@ -187,14 +187,14 @@ export default function ScorecardDetailPage() {
                   ) : (
                     <Save className="h-3.5 w-3.5" />
                   )}
-                  Save
+                  Сохранить
                 </button>
                 <button
                   onClick={() => setEditing(false)}
                   className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
                 >
                   <X className="h-3.5 w-3.5" />
-                  Cancel
+                  Отмена
                 </button>
               </div>
             </div>
@@ -208,9 +208,9 @@ export default function ScorecardDetailPage() {
                   </h2>
                 </div>
                 <div className="mt-2 flex items-center gap-2 text-sm text-zinc-500">
-                  <span>{scorecard.criteria.length} criteria</span>
+                  <span>{scorecard.criteria.length} критериев</span>
                   <span className="text-xs text-zinc-400">
-                    (max {totalWeight} pts)
+                    (макс. {totalWeight} б.)
                   </span>
                   <span
                     className={cn(
@@ -220,10 +220,10 @@ export default function ScorecardDetailPage() {
                         : "bg-zinc-100 text-zinc-500",
                     )}
                   >
-                    {scorecard.is_active ? "Active" : "Inactive"}
+                    {scorecard.is_active ? "Активна" : "Неактивна"}
                   </span>
                   <span>
-                    Created{" "}
+                    Создана{" "}
                     {formatDistanceToNow(new Date(scorecard.created_at), {
                       addSuffix: true,
                     })}
@@ -239,14 +239,14 @@ export default function ScorecardDetailPage() {
                 <button
                   onClick={startEdit}
                   className="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800"
-                  title="Edit"
+                  title="Редактировать"
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
                 <button
                   onClick={handleDelete}
                   className="rounded p-1.5 text-zinc-400 hover:bg-red-50 hover:text-red-500"
-                  title="Delete"
+                  title="Удалить"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -258,7 +258,7 @@ export default function ScorecardDetailPage() {
         {/* Criteria list */}
         <div>
           <h3 className="mb-3 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-            Criteria ({scorecard.criteria.length})
+            Критерии ({scorecard.criteria.length})
           </h3>
           <div className="space-y-3">
             {scorecard.criteria.map((crit: QACriterionDef, idx: number) => (
@@ -277,7 +277,7 @@ export default function ScorecardDetailPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-500 dark:bg-zinc-800">
-                      {crit.weight} pts
+                      {crit.weight} б.
                     </span>
                     <span
                       className={cn(
@@ -312,7 +312,7 @@ export default function ScorecardDetailPage() {
         {scorecard.criteria.length === 0 && (
           <div className="flex flex-col items-center gap-2 py-8 text-zinc-400">
             <ClipboardCheck className="h-8 w-8" />
-            <p className="text-sm">No criteria defined for this scorecard</p>
+            <p className="text-sm">Критерии для карты не заданы</p>
           </div>
         )}
       </main>

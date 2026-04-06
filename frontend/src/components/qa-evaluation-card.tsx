@@ -32,7 +32,7 @@ export default function QAEvaluationCard({
       <div className="flex items-center gap-4">
         <div className="text-center">
           <p className={cn("text-3xl font-bold", scoreColor(pct))}>{pct}%</p>
-          <p className="text-xs text-zinc-500">QA Score</p>
+          <p className="text-xs text-zinc-500">Оценка QA</p>
         </div>
         <div className="flex-1">
           <div className="h-3 rounded-full bg-zinc-100 dark:bg-zinc-800">
@@ -42,7 +42,7 @@ export default function QAEvaluationCard({
             />
           </div>
           <p className="mt-1 text-xs text-zinc-400">
-            {evaluation.total_score.toFixed(1)} / {evaluation.max_possible_score.toFixed(1)} pts
+            {evaluation.total_score.toFixed(1)} / {evaluation.max_possible_score.toFixed(1)} б.
           </p>
         </div>
       </div>
@@ -50,7 +50,7 @@ export default function QAEvaluationCard({
       {/* Criterion results */}
       {evaluation.results.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs font-medium text-zinc-500">Criteria Results</p>
+          <p className="text-xs font-medium text-zinc-500">Результаты по критериям</p>
           {evaluation.results.map((r: QAResultItem) => (
             <div
               key={r.criterion_id}
@@ -72,11 +72,11 @@ export default function QAEvaluationCard({
                     {r.criterion_id}
                   </span>
                   {r.auto_evaluated ? (
-                    <span title="Auto-evaluated">
+                    <span title="Автооценка">
                       <Zap className="h-3 w-3 text-blue-400" />
                     </span>
                   ) : (
-                    <span title="Manual review needed">
+                    <span title="Требуется ручная проверка">
                       <Hand className="h-3 w-3 text-orange-400" />
                     </span>
                   )}
@@ -104,7 +104,7 @@ export default function QAEvaluationCard({
 
       {evaluation.comments && (
         <div className="rounded-md bg-zinc-50 p-3 dark:bg-zinc-800">
-          <p className="text-xs font-medium text-zinc-500">Comments</p>
+          <p className="text-xs font-medium text-zinc-500">Комментарии</p>
           <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
             {evaluation.comments}
           </p>

@@ -8,14 +8,14 @@ import ProjectSelector from "@/components/project-selector";
 import { useAuth } from "@/lib/auth-context";
 
 const navLinks = [
-  { href: "/calls", label: "Calls" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/managers", label: "Managers" },
-  { href: "/scripts", label: "Scripts" },
-  { href: "/qa", label: "QA" },
-  { href: "/ai-agents", label: "AI Agents" },
-  { href: "/coaching", label: "Coaching" },
-  { href: "/alerts", label: "Alerts" },
+  { href: "/calls", label: "Звонки" },
+  { href: "/dashboard", label: "Дашборд" },
+  { href: "/managers", label: "Менеджеры" },
+  { href: "/scripts", label: "Скрипты" },
+  { href: "/qa", label: "Качество" },
+  { href: "/ai-agents", label: "AI-агенты" },
+  { href: "/coaching", label: "Коучинг" },
+  { href: "/alerts", label: "Алерты" },
 ];
 
 export default function AppHeader() {
@@ -69,7 +69,7 @@ export default function AppHeader() {
               <button
                 onClick={logout}
                 className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800"
-                title="Logout"
+                title="Выйти"
               >
                 <LogOut className="h-4 w-4" />
               </button>
@@ -79,7 +79,7 @@ export default function AppHeader() {
               href="/login"
               className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
             >
-              Login
+              Войти
             </Link>
           )}
         </nav>

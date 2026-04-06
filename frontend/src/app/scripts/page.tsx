@@ -70,12 +70,12 @@ export default function ScriptsPage() {
   }, [fetchScripts]);
 
   const handleDelete = async (id: string, scriptName: string) => {
-    if (!confirm(`Delete script "${scriptName}"?`)) return;
+    if (!confirm(`Удалить скрипт "${scriptName}"?`)) return;
     try {
       await deleteScript(id);
       fetchScripts();
     } catch {
-      alert("Failed to delete script");
+      alert("Не удалось удалить скрипт");
     }
   };
 
@@ -129,7 +129,7 @@ export default function ScriptsPage() {
       setShowForm(false);
       fetchScripts();
     } catch (err) {
-      alert("Failed to create script");
+      alert("Не удалось создать скрипт");
     } finally {
       setSaving(false);
     }
@@ -145,14 +145,14 @@ export default function ScriptsPage() {
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             <FileText className="h-5 w-5 text-blue-600" />
-            Script Templates
+            Шаблоны скриптов
           </h2>
           <button
             onClick={() => setShowForm((v) => !v)}
             className="flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
           >
             <Plus className="h-4 w-4" />
-            New Script
+            Новый скрипт
           </button>
         </div>
 
@@ -165,43 +165,43 @@ export default function ScriptsPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                  Name
+                  Название
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  placeholder="e.g., Sales Welcome Script"
+                  placeholder="напр., Скрипт приветствия"
                   className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                 />
               </div>
               <div>
                 <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                  Type
+                  Тип
                 </label>
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
                   className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                 >
-                  <option value="support">Support</option>
-                  <option value="sales">Sales</option>
-                  <option value="inbound">Inbound</option>
-                  <option value="outbound">Outbound</option>
+                  <option value="support">Поддержка</option>
+                  <option value="sales">Продажи</option>
+                  <option value="inbound">Входящие</option>
+                  <option value="outbound">Исходящие</option>
                 </select>
               </div>
             </div>
 
             <div>
               <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                Description
+                Описание
               </label>
               <input
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Optional description"
+                placeholder="Необязательное описание"
                 className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
               />
             </div>
@@ -210,14 +210,14 @@ export default function ScriptsPage() {
             <div>
               <div className="flex items-center justify-between">
                 <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                  Stages
+                  Этапы
                 </label>
                 <button
                   type="button"
                   onClick={addStage}
                   className="text-xs text-blue-600 hover:underline"
                 >
-                  + Add Stage
+                  + Добавить этап
                 </button>
               </div>
               <div className="mt-2 space-y-3">
@@ -237,12 +237,12 @@ export default function ScriptsPage() {
                     )}
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div>
-                        <label className="text-xs text-zinc-500">Stage Name</label>
+                        <label className="text-xs text-zinc-500">Название этапа</label>
                         <input
                           type="text"
                           value={stage.name}
                           onChange={(e) => updateStage(idx, "name", e.target.value)}
-                          placeholder="e.g., Greeting"
+                          placeholder="напр., Приветствие"
                           className="mt-1 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm dark:border-zinc-600 dark:bg-zinc-700"
                         />
                       </div>
@@ -254,10 +254,10 @@ export default function ScriptsPage() {
                             onChange={(e) => updateStage(idx, "is_required", e.target.checked)}
                             className="rounded"
                           />
-                          Required
+                          Обязательный
                         </label>
                         <div>
-                          <label className="text-xs text-zinc-500">Max duration (sec)</label>
+                          <label className="text-xs text-zinc-500">Макс. длительность (сек)</label>
                           <input
                             type="number"
                             value={stage.max_duration_seconds}
@@ -270,7 +270,7 @@ export default function ScriptsPage() {
                       </div>
                       <div>
                         <label className="text-xs text-zinc-500">
-                          Required phrases (one per line)
+                          Обязательные фразы (по одной на строку)
                         </label>
                         <textarea
                           value={stage.required_phrases}
@@ -278,13 +278,13 @@ export default function ScriptsPage() {
                             updateStage(idx, "required_phrases", e.target.value)
                           }
                           rows={3}
-                          placeholder="Greeting phrase&#10;Company name"
+                          placeholder="Фраза приветствия&#10;Название компании"
                           className="mt-1 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm dark:border-zinc-600 dark:bg-zinc-700"
                         />
                       </div>
                       <div>
                         <label className="text-xs text-zinc-500">
-                          Forbidden words (one per line)
+                          Запрещённые слова (по одной на строку)
                         </label>
                         <textarea
                           value={stage.forbidden_words}
@@ -292,7 +292,7 @@ export default function ScriptsPage() {
                             updateStage(idx, "forbidden_words", e.target.value)
                           }
                           rows={3}
-                          placeholder="Rude word&#10;Competitor name"
+                          placeholder="Грубое слово&#10;Название конкурента"
                           className="mt-1 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm dark:border-zinc-600 dark:bg-zinc-700"
                         />
                       </div>
@@ -308,7 +308,7 @@ export default function ScriptsPage() {
                 onClick={() => setShowForm(false)}
                 className="rounded-md px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
               >
-                Cancel
+                Отмена
               </button>
               <button
                 type="submit"
@@ -316,7 +316,7 @@ export default function ScriptsPage() {
                 className="flex items-center gap-1.5 rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
               >
                 {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                Create Script
+                Создать скрипт
               </button>
             </div>
           </form>
@@ -326,12 +326,12 @@ export default function ScriptsPage() {
         {loading ? (
           <div className="flex items-center justify-center py-12 text-zinc-500">
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            Loading scripts...
+            Загрузка скриптов...
           </div>
         ) : scripts.length === 0 ? (
           <div className="flex flex-col items-center gap-2 py-12 text-zinc-500">
             <FileText className="h-8 w-8" />
-            <p className="text-sm">No scripts created yet</p>
+            <p className="text-sm">Скрипты ещё не созданы</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -352,7 +352,7 @@ export default function ScriptsPage() {
                       <span className="rounded bg-zinc-100 px-1.5 py-0.5 dark:bg-zinc-800">
                         {script.type}
                       </span>
-                      <span>{script.stages.length} stages</span>
+                      <span>{script.stages.length} этапов</span>
                       <span
                         className={cn(
                           "rounded-full px-1.5 py-0.5",
@@ -361,10 +361,10 @@ export default function ScriptsPage() {
                             : "bg-zinc-100 text-zinc-500",
                         )}
                       >
-                        {script.is_active ? "Active" : "Inactive"}
+                        {script.is_active ? "Активен" : "Неактивен"}
                       </span>
                       <span>
-                        Created{" "}
+                        Создан{" "}
                         {formatDistanceToNow(new Date(script.created_at), {
                           addSuffix: true,
                         })}

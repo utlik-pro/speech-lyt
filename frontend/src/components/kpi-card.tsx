@@ -41,9 +41,9 @@ export default function KPICard({ metric }: { metric: KPIMetric }) {
       </div>
       {(metric.threshold_min !== null || metric.threshold_max !== null) && (
         <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
-          {metric.threshold_min !== null && `Min: ${metric.threshold_min}${metric.unit}`}
+          {metric.threshold_min !== null && `Мин: ${metric.threshold_min}${metric.unit}`}
           {metric.threshold_min !== null && metric.threshold_max !== null && " / "}
-          {metric.threshold_max !== null && `Max: ${metric.threshold_max}${metric.unit}`}
+          {metric.threshold_max !== null && `Макс: ${metric.threshold_max}${metric.unit}`}
         </div>
       )}
     </div>

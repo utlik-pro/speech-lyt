@@ -49,22 +49,22 @@ export default function AlertsSidebar({ rules, history }: AlertsSidebarProps) {
   return (
     <>
       {/* Stats */}
-      <SidebarSection title="Stats">
+      <SidebarSection title="Статистика">
         <div className="grid grid-cols-2 gap-2">
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Active Rules</div>
+            <div className="text-xs text-zinc-500">Активных правил</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {activeRules}
             </div>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Total Triggered</div>
+            <div className="text-xs text-zinc-500">Всего сработало</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {totalTriggered}
             </div>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Unacknowledged</div>
+            <div className="text-xs text-zinc-500">Не подтверждено</div>
             <div
               className={cn(
                 "text-sm font-bold",
@@ -80,7 +80,7 @@ export default function AlertsSidebar({ rules, history }: AlertsSidebarProps) {
       </SidebarSection>
 
       {/* Severity Breakdown */}
-      <SidebarSection title="Severity Breakdown">
+      <SidebarSection title="По важности">
         <div className="space-y-1.5">
           {(["info", "warning", "critical"] as const).map((severity) => (
             <div
@@ -102,7 +102,7 @@ export default function AlertsSidebar({ rules, history }: AlertsSidebarProps) {
       </SidebarSection>
 
       {/* Last Triggered */}
-      <SidebarSection title="Last Triggered">
+      <SidebarSection title="Последнее срабатывание">
         {lastTriggered ? (
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
             <div className="flex items-start gap-2">
@@ -120,7 +120,7 @@ export default function AlertsSidebar({ rules, history }: AlertsSidebarProps) {
             </div>
           </div>
         ) : (
-          <p className="text-xs text-zinc-400">No alerts triggered yet</p>
+          <p className="text-xs text-zinc-400">Алерты ещё не срабатывали</p>
         )}
       </SidebarSection>
     </>

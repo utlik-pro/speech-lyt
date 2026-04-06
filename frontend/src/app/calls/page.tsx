@@ -23,7 +23,7 @@ export default function CallsPage() {
             {/* Upload Section */}
             <section>
               <h2 className="mb-4 text-base font-semibold text-zinc-800 dark:text-zinc-200">
-                Upload Audio
+                Загрузка аудио
               </h2>
               <AudioUpload onUploadComplete={() => setRefreshKey((k) => k + 1)} />
             </section>
@@ -31,7 +31,7 @@ export default function CallsPage() {
             {/* Filters */}
             <section>
               <h2 className="mb-3 text-base font-semibold text-zinc-800 dark:text-zinc-200">
-                Calls
+                Звонки
               </h2>
               <CallsFilterBar filters={filters} onChange={setFilters} />
             </section>

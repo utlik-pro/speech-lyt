@@ -55,13 +55,13 @@ export default function CallsSidebar() {
     <>
       {/* Quick Stats */}
       {dashboard && (
-        <SidebarSection title="Quick Stats" icon={<BarChart3 className="h-3.5 w-3.5" />}>
+        <SidebarSection title="Статистика" icon={<BarChart3 className="h-3.5 w-3.5" />}>
           <div className="grid grid-cols-2 gap-2">
             {[
-              { label: "Total", value: dashboard.total_calls, icon: <Phone className="h-3.5 w-3.5 text-blue-500" /> },
-              { label: "Completed", value: dashboard.completed_calls, icon: <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> },
-              { label: "Processing", value: dashboard.total_calls - dashboard.completed_calls - dashboard.failed_calls, icon: <Loader2 className="h-3.5 w-3.5 text-yellow-500" /> },
-              { label: "Failed", value: dashboard.failed_calls, icon: <XCircle className="h-3.5 w-3.5 text-red-500" /> },
+              { label: "Всего", value: dashboard.total_calls, icon: <Phone className="h-3.5 w-3.5 text-blue-500" /> },
+              { label: "Завершено", value: dashboard.completed_calls, icon: <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> },
+              { label: "В обработке", value: dashboard.total_calls - dashboard.completed_calls - dashboard.failed_calls, icon: <Loader2 className="h-3.5 w-3.5 text-yellow-500" /> },
+              { label: "Ошибки", value: dashboard.failed_calls, icon: <XCircle className="h-3.5 w-3.5 text-red-500" /> },
             ].map((s) => (
               <div
                 key={s.label}
@@ -82,7 +82,7 @@ export default function CallsSidebar() {
 
       {/* Recent Alerts */}
       {alerts && alerts.alerts.length > 0 && (
-        <SidebarSection title="Recent Alerts" icon={<AlertTriangle className="h-3.5 w-3.5" />}>
+        <SidebarSection title="Последние алерты" icon={<AlertTriangle className="h-3.5 w-3.5" />}>
           <div className="space-y-2">
             {alerts.alerts.slice(0, 3).map((a, i) => (
               <div
@@ -102,14 +102,14 @@ export default function CallsSidebar() {
             href="/alerts"
             className="mt-2 inline-block text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400"
           >
-            View all alerts →
+            Все алерты →
           </Link>
         </SidebarSection>
       )}
 
       {/* Top Managers */}
       {leaderboard && leaderboard.entries.length > 0 && (
-        <SidebarSection title="Top Managers" icon={<Trophy className="h-3.5 w-3.5" />}>
+        <SidebarSection title="Лучшие менеджеры" icon={<Trophy className="h-3.5 w-3.5" />}>
           <div className="space-y-2">
             {leaderboard.entries.slice(0, 3).map((e) => (
               <div
@@ -124,7 +124,7 @@ export default function CallsSidebar() {
                     {e.name}
                   </span>
                 </div>
-                <span className="text-xs text-zinc-500">{e.total_calls} calls</span>
+                <span className="text-xs text-zinc-500">{e.total_calls} звонков</span>
               </div>
             ))}
           </div>
@@ -132,7 +132,7 @@ export default function CallsSidebar() {
             href="/managers"
             className="mt-2 inline-block text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400"
           >
-            View leaderboard →
+            Рейтинг менеджеров →
           </Link>
         </SidebarSection>
       )}

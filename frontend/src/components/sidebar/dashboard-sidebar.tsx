@@ -30,29 +30,29 @@ export default function DashboardSidebar({ alerts, leaderboard }: DashboardSideb
   return (
     <>
       {/* Active Alerts */}
-      <SidebarSection title="Active Alerts" icon={<Bell className="h-3.5 w-3.5" />}>
+      <SidebarSection title="Активные алерты" icon={<Bell className="h-3.5 w-3.5" />}>
         {alerts && alerts.alerts.length > 0 ? (
           <div className="space-y-2">
             <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-              {alerts.alerts.length} alert{alerts.alerts.length !== 1 ? "s" : ""}
+              Алертов: {alerts.alerts.length}
             </p>
             <div className="flex flex-wrap gap-1.5">
               {alertCounts.critical > 0 && (
                 <span className="flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600 dark:bg-red-900/20 dark:text-red-400">
                   <ShieldAlert className="h-3 w-3" />
-                  {alertCounts.critical} critical
+                  {alertCounts.critical} крит.
                 </span>
               )}
               {alertCounts.warning > 0 && (
                 <span className="flex items-center gap-1 rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-medium text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400">
                   <AlertTriangle className="h-3 w-3" />
-                  {alertCounts.warning} warning
+                  {alertCounts.warning} предупр.
                 </span>
               )}
               {alertCounts.info > 0 && (
                 <span className="flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
                   <Info className="h-3 w-3" />
-                  {alertCounts.info} info
+                  {alertCounts.info} инфо
                 </span>
               )}
             </div>
@@ -60,21 +60,21 @@ export default function DashboardSidebar({ alerts, leaderboard }: DashboardSideb
               href="/alerts"
               className="inline-block text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400"
             >
-              Manage alerts →
+              Управление алертами →
             </Link>
           </div>
         ) : (
-          <p className="text-xs text-green-600 dark:text-green-400">All metrics normal</p>
+          <p className="text-xs text-green-600 dark:text-green-400">Все метрики в норме</p>
         )}
       </SidebarSection>
 
       {/* Quick Links */}
-      <SidebarSection title="Quick Links" icon={<span className="text-xs">→</span>}>
+      <SidebarSection title="Быстрые ссылки" icon={<span className="text-xs">→</span>}>
         <div className="space-y-1">
           {[
-            { href: "/qa", label: "QA Scorecards", icon: <ClipboardCheck className="h-4 w-4" /> },
-            { href: "/alerts", label: "Alert Rules", icon: <Bell className="h-4 w-4" /> },
-            { href: "/managers", label: "Manager Leaderboard", icon: <Users className="h-4 w-4" /> },
+            { href: "/qa", label: "Карты оценки", icon: <ClipboardCheck className="h-4 w-4" /> },
+            { href: "/alerts", label: "Правила алертов", icon: <Bell className="h-4 w-4" /> },
+            { href: "/managers", label: "Рейтинг менеджеров", icon: <Users className="h-4 w-4" /> },
           ].map((link) => (
             <Link
               key={link.href}
@@ -90,7 +90,7 @@ export default function DashboardSidebar({ alerts, leaderboard }: DashboardSideb
 
       {/* Top Managers Quick View */}
       {leaderboard && leaderboard.entries.length > 0 && (
-        <SidebarSection title="Top Managers" icon={<Users className="h-3.5 w-3.5" />}>
+        <SidebarSection title="Лучшие менеджеры" icon={<Users className="h-3.5 w-3.5" />}>
           <div className="space-y-1.5">
             {leaderboard.entries.slice(0, 5).map((e) => (
               <div

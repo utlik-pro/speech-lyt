@@ -87,7 +87,7 @@ export default function AudioUpload({ onUploadComplete }: AudioUploadProps) {
           ),
         );
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Upload failed";
+        const message = err instanceof Error ? err.message : "Ошибка загрузки";
         setFiles((prev) =>
           prev.map((f, idx) =>
             idx === i ? { ...f, status: "error" as const, error: message } : f,
@@ -121,10 +121,10 @@ export default function AudioUpload({ onUploadComplete }: AudioUploadProps) {
         <Upload className="h-10 w-10 text-zinc-400" />
         <div className="text-center">
           <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            Drag & drop audio files here
+            Перетащите аудиофайлы сюда
           </p>
           <p className="mt-1 text-xs text-zinc-500">
-            WAV, MP3, OGG, FLAC — up to 500 MB each
+            WAV, MP3, OGG, FLAC — до 500 МБ каждый
           </p>
         </div>
         <input
@@ -142,8 +142,8 @@ export default function AudioUpload({ onUploadComplete }: AudioUploadProps) {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              {files.length} file{files.length !== 1 && "s"} selected
-              {successCount > 0 && ` — ${successCount} uploaded`}
+              Выбрано файлов: {files.length}
+              {successCount > 0 && ` — загружено: ${successCount}`}
             </p>
             <div className="flex gap-2">
               {files.length > 0 && !isUploading && (
@@ -151,7 +151,7 @@ export default function AudioUpload({ onUploadComplete }: AudioUploadProps) {
                   onClick={() => setFiles([])}
                   className="text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                 >
-                  Clear all
+                  Очистить
                 </button>
               )}
             </div>
@@ -223,12 +223,12 @@ export default function AudioUpload({ onUploadComplete }: AudioUploadProps) {
               {isUploading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Uploading...
+                  Загрузка...
                 </>
               ) : (
                 <>
                   <Upload className="h-4 w-4" />
-                  Upload {pendingCount} file{pendingCount !== 1 && "s"}
+                  Загрузить ({pendingCount})
                 </>
               )}
             </button>

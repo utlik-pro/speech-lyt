@@ -30,35 +30,35 @@ export default function QaSidebar({ scorecards }: QaSidebarProps) {
 
   if (scorecards.length === 0) {
     return (
-      <div className="text-xs text-zinc-400">No scorecards available</div>
+      <div className="text-xs text-zinc-400">Карты оценки не найдены</div>
     );
   }
 
   return (
     <>
       {/* Stats */}
-      <SidebarSection title="Stats">
+      <SidebarSection title="Статистика">
         <div className="grid grid-cols-2 gap-2">
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Total Scorecards</div>
+            <div className="text-xs text-zinc-500">Всего карт</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {totalScorecards}
             </div>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Active</div>
+            <div className="text-xs text-zinc-500">Активные</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {activeScorecards}
             </div>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Total Criteria</div>
+            <div className="text-xs text-zinc-500">Критериев</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {totalCriteria}
             </div>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Total Weight</div>
+            <div className="text-xs text-zinc-500">Общий вес</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {totalWeight}
             </div>
@@ -67,7 +67,7 @@ export default function QaSidebar({ scorecards }: QaSidebarProps) {
       </SidebarSection>
 
       {/* Scorecards */}
-      <SidebarSection title="Scorecards">
+      <SidebarSection title="Карты оценки">
         <ul className="space-y-1.5">
           {scorecards.map((sc) => (
             <li key={sc.id}>
@@ -85,7 +85,7 @@ export default function QaSidebar({ scorecards }: QaSidebarProps) {
                         : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500",
                     )}
                   >
-                    {sc.is_active ? "Active" : "Inactive"}
+                    {sc.is_active ? "Активна" : "Неактивна"}
                   </span>
                 </span>
                 <span className="ml-2 shrink-0 rounded-full bg-zinc-200 px-1.5 py-0.5 text-[10px] font-medium text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">

@@ -52,7 +52,7 @@ export default function PeriodComparison({ metrics }: PeriodComparisonProps) {
               </div>
             </div>
             <p className="mt-0.5 text-[11px] text-zinc-400">
-              prev: {typeof m.previous === "number" ? m.previous.toLocaleString() : m.previous}
+              пред.: {typeof m.previous === "number" ? m.previous.toLocaleString() : m.previous}
             </p>
           </div>
         );

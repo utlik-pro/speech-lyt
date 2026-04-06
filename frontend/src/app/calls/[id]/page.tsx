@@ -58,9 +58,9 @@ const sentimentIcon: Record<string, React.ReactNode> = {
 };
 
 const sentimentLabel: Record<string, string> = {
-  positive: "Positive",
-  neutral: "Neutral",
-  negative: "Negative",
+  positive: "Позитивная",
+  neutral: "Нейтральная",
+  negative: "Негативная",
 };
 
 const sentimentColor: Record<string, string> = {
@@ -126,7 +126,7 @@ export default function CallDetailPage() {
           }
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load call");
+        setError(err instanceof Error ? err.message : "Не удалось загрузить звонок");
       } finally {
         setLoading(false);
       }
@@ -156,9 +156,9 @@ export default function CallDetailPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-zinc-50 dark:bg-zinc-950">
         <AlertCircle className="h-8 w-8 text-red-500" />
-        <p className="text-sm text-zinc-500">{error || "Call not found"}</p>
+        <p className="text-sm text-zinc-500">{error || "Звонок не найден"}</p>
         <Link href="/" className="mt-2 text-sm text-blue-600 hover:underline">
-          Back to calls
+          К списку звонков
         </Link>
       </div>
     );
@@ -177,7 +177,7 @@ export default function CallDetailPage() {
           className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to calls
+          К списку звонков
         </Link>
 
         {/* Two-column layout */}
@@ -189,13 +189,13 @@ export default function CallDetailPage() {
               <div className="flex items-center gap-2">
                 <FileAudio className="h-5 w-5 text-blue-500" />
                 <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-                  Call Info
+                  О звонке
                 </h3>
               </div>
 
               <div className="mt-3 space-y-2.5 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-zinc-500">File</span>
+                  <span className="text-zinc-500">Файл</span>
                   <span className="text-right text-zinc-800 dark:text-zinc-200" title={call.original_filename}>
                     {call.original_filename.length > 20
                       ? call.original_filename.slice(0, 20) + "..."
@@ -203,20 +203,20 @@ export default function CallDetailPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-500">Format</span>
+                  <span className="text-zinc-500">Формат</span>
                   <span className="text-zinc-800 dark:text-zinc-200">
                     {call.audio_format.toUpperCase()} / {formatFileSize(call.file_size_bytes)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-500">Duration</span>
+                  <span className="text-zinc-500">Длительность</span>
                   <span className="flex items-center gap-1 text-zinc-800 dark:text-zinc-200">
                     <Clock className="h-3.5 w-3.5 text-zinc-400" />
                     {formatDuration(call.duration_seconds)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-500">Status</span>
+                  <span className="text-zinc-500">Статус</span>
                   <span
                     className={cn(
                       "rounded-full px-2 py-0.5 text-xs font-medium",
@@ -231,7 +231,7 @@ export default function CallDetailPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-500">Uploaded</span>
+                  <span className="text-zinc-500">Загружен</span>
                   <span className="text-zinc-800 dark:text-zinc-200">
                     {formatDistanceToNow(new Date(call.created_at), { addSuffix: true })}
                   </span>
@@ -250,7 +250,7 @@ export default function CallDetailPage() {
               <div className="flex items-center gap-2">
                 <User className="h-5 w-5 text-blue-500" />
                 <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-                  Manager
+                  Менеджер
                 </h3>
               </div>
               {agent ? (
@@ -270,7 +270,7 @@ export default function CallDetailPage() {
                 </div>
               ) : (
                 <p className="mt-3 text-xs text-zinc-400">
-                  {call.agent_id ? "Loading..." : "No manager assigned"}
+                  {call.agent_id ? "Загрузка..." : "Менеджер не назначен"}
                 </p>
               )}
             </div>
@@ -280,7 +280,7 @@ export default function CallDetailPage() {
               <div className="flex items-center gap-2">
                 <Phone className="h-5 w-5 text-green-500" />
                 <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-                  Client
+                  Клиент
                 </h3>
               </div>
               <div className="mt-3 space-y-2 text-sm">
@@ -302,7 +302,7 @@ export default function CallDetailPage() {
                     {call.phone_number}
                   </p>
                 ) : (
-                  <p className="text-xs text-zinc-400">No phone number</p>
+                  <p className="text-xs text-zinc-400">Номер не указан</p>
                 )}
               </div>
             </div>
@@ -313,30 +313,30 @@ export default function CallDetailPage() {
                 <div className="flex items-center gap-2">
                   <Mic className="h-5 w-5 text-purple-500" />
                   <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-                    Quick Stats
+                    Быстрая статистика
                   </h3>
                 </div>
                 <div className="mt-3 grid grid-cols-2 gap-3">
                   <div>
-                    <p className="text-xs text-zinc-500">Talk/Listen</p>
+                    <p className="text-xs text-zinc-500">Говорит/Слушает</p>
                     <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                       {convStats.talk_listen_ratio.toFixed(1)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-zinc-500">Silence</p>
+                    <p className="text-xs text-zinc-500">Тишина</p>
                     <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                       {Math.round(convStats.silence_pct)}%
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-zinc-500">Interruptions</p>
+                    <p className="text-xs text-zinc-500">Перебивания</p>
                     <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                       {convStats.interruption_count}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-zinc-500">Avg WPM</p>
+                    <p className="text-xs text-zinc-500">Сл./мин</p>
                     <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                       {Math.round((convStats.agent_wpm + convStats.client_wpm) / 2)}
                     </p>
@@ -351,7 +351,7 @@ export default function CallDetailPage() {
                 <div className="flex items-center gap-2">
                   <Shield className="h-5 w-5 text-orange-500" />
                   <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-                    Script Score
+                    Оценка скрипта
                   </h3>
                 </div>
                 <div className="mt-3 text-center">
@@ -368,8 +368,8 @@ export default function CallDetailPage() {
                     {Math.round(scriptAnalysis.overall_score)}%
                   </p>
                   <p className="mt-1 text-xs text-zinc-500">
-                    {scriptAnalysis.stage_results.filter((s) => s.passed).length}/
-                    {scriptAnalysis.stage_results.length} stages passed
+                    {scriptAnalysis.stage_results.filter((s) => s.passed).length} из{" "}
+                    {scriptAnalysis.stage_results.length} этапов пройдено
                   </p>
                 </div>
               </div>
@@ -383,7 +383,7 @@ export default function CallDetailPage() {
               <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
                   <MessageSquare className="h-4 w-4" />
-                  AI Summary
+                  AI-резюме
                 </h3>
                 <p className="mt-3 text-sm text-zinc-700 dark:text-zinc-300">
                   {summary.short_summary}
@@ -391,11 +391,11 @@ export default function CallDetailPage() {
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   <div>
-                    <span className="text-xs font-medium text-zinc-500">Topic</span>
+                    <span className="text-xs font-medium text-zinc-500">Тема</span>
                     <p className="text-sm text-zinc-800 dark:text-zinc-200">{summary.topic}</p>
                   </div>
                   <div>
-                    <span className="text-xs font-medium text-zinc-500">Outcome</span>
+                    <span className="text-xs font-medium text-zinc-500">Результат</span>
                     <span
                       className={cn(
                         "ml-1 rounded-full px-2 py-0.5 text-xs font-medium",
@@ -407,19 +407,19 @@ export default function CallDetailPage() {
                   </div>
                   {summary.problem && (
                     <div>
-                      <span className="text-xs font-medium text-zinc-500">Problem</span>
+                      <span className="text-xs font-medium text-zinc-500">Проблема</span>
                       <p className="text-sm text-zinc-800 dark:text-zinc-200">{summary.problem}</p>
                     </div>
                   )}
                   {summary.solution && (
                     <div>
-                      <span className="text-xs font-medium text-zinc-500">Solution</span>
+                      <span className="text-xs font-medium text-zinc-500">Решение</span>
                       <p className="text-sm text-zinc-800 dark:text-zinc-200">{summary.solution}</p>
                     </div>
                   )}
                   {summary.next_steps && (
                     <div className="sm:col-span-2">
-                      <span className="text-xs font-medium text-zinc-500">Next Steps</span>
+                      <span className="text-xs font-medium text-zinc-500">Следующие шаги</span>
                       <p className="text-sm text-zinc-800 dark:text-zinc-200">{summary.next_steps}</p>
                     </div>
                   )}
@@ -441,7 +441,7 @@ export default function CallDetailPage() {
 
                 {summary.entities.length > 0 && (
                   <div className="mt-4">
-                    <span className="text-xs font-medium text-zinc-500">Extracted Entities</span>
+                    <span className="text-xs font-medium text-zinc-500">Извлечённые сущности</span>
                     <div className="mt-1 space-y-1">
                       {summary.entities.map((ent, i) => (
                         <div
@@ -464,13 +464,13 @@ export default function CallDetailPage() {
               <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
                   <Target className="h-4 w-4" />
-                  Emotion Analysis
+                  Анализ эмоций
                 </h3>
 
                 <div className="mt-4 grid grid-cols-3 gap-4">
                   {(["overall_sentiment", "agent_sentiment", "client_sentiment"] as const).map(
                     (key) => {
-                      const label = key === "overall_sentiment" ? "Overall" : key === "agent_sentiment" ? "Agent" : "Client";
+                      const label = key === "overall_sentiment" ? "Общая" : key === "agent_sentiment" ? "Оператор" : "Клиент";
                       const val = emotions[key];
                       return (
                         <div key={key} className="text-center">
@@ -494,7 +494,7 @@ export default function CallDetailPage() {
 
                 {emotions.critical_moments.length > 0 && (
                   <div className="mt-4">
-                    <p className="text-xs font-medium text-zinc-500">Critical Moments</p>
+                    <p className="text-xs font-medium text-zinc-500">Критические моменты</p>
                     <div className="mt-2 space-y-2">
                       {emotions.critical_moments.map((m, i) => (
                         <div
@@ -521,7 +521,7 @@ export default function CallDetailPage() {
               <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
                   <Shield className="h-4 w-4" />
-                  Script Compliance
+                  Соблюдение скрипта
                 </h3>
                 <div className="mt-4">
                   <ScriptComplianceCard analysis={scriptAnalysis} />
@@ -534,7 +534,7 @@ export default function CallDetailPage() {
               <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
                   <Target className="h-4 w-4" />
-                  QA Evaluation
+                  Оценка качества
                 </h3>
                 <div className="mt-4">
                   <QAEvaluationCard evaluation={qaEvaluation} />
@@ -547,7 +547,7 @@ export default function CallDetailPage() {
               <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
                   <Mic className="h-4 w-4" />
-                  Conversation Statistics
+                  Статистика диалога
                 </h3>
                 <div className="mt-4">
                   <ConversationStatsComponent stats={convStats} />
@@ -560,7 +560,7 @@ export default function CallDetailPage() {
               <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                 <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
                   <Volume2 className="h-4 w-4" />
-                  Audio Playback
+                  Аудиоплеер
                 </h3>
                 <AudioPlayer
                   src={getCallAudioUrl(callId)}
@@ -576,7 +576,7 @@ export default function CallDetailPage() {
               <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
                   <MessageSquare className="h-4 w-4" />
-                  Conversation Timeline
+                  Хронология диалога
                 </h3>
                 <div className="mt-4">
                   <ConversationTimeline
@@ -593,7 +593,7 @@ export default function CallDetailPage() {
             {call.status !== "completed" && call.status !== "failed" && (
               <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-700 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Call is being processed. Refresh to check for updates.
+                Звонок обрабатывается. Обновите страницу для проверки.
               </div>
             )}
           </div>

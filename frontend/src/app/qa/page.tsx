@@ -23,11 +23,11 @@ import {
 import { formatDistanceToNow } from "date-fns";
 
 const AUTO_SOURCES = [
-  { value: "script_analysis", label: "Script Analysis" },
-  { value: "emotion", label: "Emotion / Sentiment" },
-  { value: "summary", label: "Call Summary" },
-  { value: "conversation_stats", label: "Conversation Stats" },
-  { value: "manual", label: "Manual Review" },
+  { value: "script_analysis", label: "Анализ скрипта" },
+  { value: "emotion", label: "Эмоции / Тональность" },
+  { value: "summary", label: "Резюме звонка" },
+  { value: "conversation_stats", label: "Статистика диалога" },
+  { value: "manual", label: "Ручная проверка" },
 ];
 
 const emptyCriterion = (): QACriterionDef => ({
@@ -67,12 +67,12 @@ export default function QAPage() {
   }, [fetchScorecards]);
 
   const handleDelete = async (id: string, scName: string) => {
-    if (!confirm(`Delete scorecard "${scName}"?`)) return;
+    if (!confirm(`Удалить карту оценки "${scName}"?`)) return;
     try {
       await deleteScorecard(id);
       fetchScorecards();
     } catch {
-      alert("Failed to delete scorecard");
+      alert("Не удалось удалить карту оценки");
     }
   };
 
@@ -104,7 +104,7 @@ export default function QAPage() {
       setShowForm(false);
       fetchScorecards();
     } catch {
-      alert("Failed to create scorecard");
+      alert("Не удалось создать карту оценки");
     } finally {
       setSaving(false);
     }
@@ -120,14 +120,14 @@ export default function QAPage() {
             <div className="flex items-center justify-between">
               <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                 <ClipboardCheck className="h-5 w-5 text-blue-600" />
-                QA Scorecards
+                Карты оценки качества
               </h2>
               <button
                 onClick={() => setShowForm((v) => !v)}
                 className="flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
               >
                 <Plus className="h-4 w-4" />
-                New Scorecard
+                Новая карта
               </button>
             </div>
 
@@ -140,26 +140,26 @@ export default function QAPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                      Name
+                      Название
                     </label>
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
-                      placeholder="e.g., Standard QA Checklist"
+                      placeholder="напр., Стандарт качества"
                       className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                     />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                      Description
+                      Описание
                     </label>
                     <input
                       type="text"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Optional description"
+                      placeholder="Необязательное описание"
                       className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                     />
                   </div>
@@ -169,14 +169,14 @@ export default function QAPage() {
                 <div>
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                      Criteria
+                      Критерии
                     </label>
                     <button
                       type="button"
                       onClick={addCriterion}
                       className="text-xs text-blue-600 hover:underline"
                     >
-                      + Add Criterion
+                      + Добавить критерий
                     </button>
                   </div>
                   <div className="mt-2 space-y-3">
@@ -196,17 +196,17 @@ export default function QAPage() {
                         )}
                         <div className="grid gap-3 sm:grid-cols-3">
                           <div>
-                            <label className="text-xs text-zinc-500">Name</label>
+                            <label className="text-xs text-zinc-500">Название</label>
                             <input
                               type="text"
                               value={crit.name}
                               onChange={(e) => updateCriterion(idx, "name", e.target.value)}
-                              placeholder="e.g., Greeting"
+                              placeholder="напр., Приветствие"
                               className="mt-1 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm dark:border-zinc-600 dark:bg-zinc-700"
                             />
                           </div>
                           <div>
-                            <label className="text-xs text-zinc-500">Auto Source</label>
+                            <label className="text-xs text-zinc-500">Источник оценки</label>
                             <select
                               value={crit.auto_source}
                               onChange={(e) => updateCriterion(idx, "auto_source", e.target.value)}
@@ -220,7 +220,7 @@ export default function QAPage() {
                             </select>
                           </div>
                           <div>
-                            <label className="text-xs text-zinc-500">Weight</label>
+                            <label className="text-xs text-zinc-500">Вес</label>
                             <input
                               type="number"
                               min={1}
@@ -232,12 +232,12 @@ export default function QAPage() {
                           </div>
                         </div>
                         <div className="mt-2">
-                          <label className="text-xs text-zinc-500">Description</label>
+                          <label className="text-xs text-zinc-500">Описание</label>
                           <input
                             type="text"
                             value={crit.description}
                             onChange={(e) => updateCriterion(idx, "description", e.target.value)}
-                            placeholder="What is being evaluated?"
+                            placeholder="Что оценивается?"
                             className="mt-1 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm dark:border-zinc-600 dark:bg-zinc-700"
                           />
                         </div>
@@ -252,7 +252,7 @@ export default function QAPage() {
                     onClick={() => setShowForm(false)}
                     className="rounded-md px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
                   >
-                    Cancel
+                    Отмена
                   </button>
                   <button
                     type="submit"
@@ -260,7 +260,7 @@ export default function QAPage() {
                     className="flex items-center gap-1.5 rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
                   >
                     {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                    Create Scorecard
+                    Создать карту
                   </button>
                 </div>
               </form>
@@ -270,12 +270,12 @@ export default function QAPage() {
             {loading ? (
               <div className="flex items-center justify-center py-12 text-zinc-500">
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Loading scorecards...
+                Загрузка карт оценки...
               </div>
             ) : scorecards.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-12 text-zinc-500">
                 <ClipboardCheck className="h-8 w-8" />
-                <p className="text-sm">No QA scorecards created yet</p>
+                <p className="text-sm">Карты оценки ещё не созданы</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -293,7 +293,7 @@ export default function QAPage() {
                           {sc.name}
                         </Link>
                         <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
-                          <span>{sc.criteria.length} criteria</span>
+                          <span>{sc.criteria.length} критериев</span>
                           <span
                             className={cn(
                               "rounded-full px-1.5 py-0.5",
@@ -302,10 +302,10 @@ export default function QAPage() {
                                 : "bg-zinc-100 text-zinc-500",
                             )}
                           >
-                            {sc.is_active ? "Active" : "Inactive"}
+                            {sc.is_active ? "Активна" : "Неактивна"}
                           </span>
                           <span>
-                            Created{" "}
+                            Создана{" "}
                             {formatDistanceToNow(new Date(sc.created_at), {
                               addSuffix: true,
                             })}

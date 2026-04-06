@@ -26,7 +26,7 @@ export default function LoginPage() {
         err && typeof err === "object" && "response" in err
           ? (err as { response?: { data?: { detail?: string } } }).response?.data?.detail
           : undefined;
-      setError(msg || "Login failed");
+      setError(msg || "Ошибка входа");
     } finally {
       setLoading(false);
     }
@@ -40,13 +40,13 @@ export default function LoginPage() {
           <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
             SpeechLyt
           </h1>
-          <p className="text-sm text-zinc-500">Sign in to your account</p>
+          <p className="text-sm text-zinc-500">Войдите в аккаунт</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-              Email
+              Электронная почта
             </label>
             <input
               type="email"
@@ -59,7 +59,7 @@ export default function LoginPage() {
           </div>
           <div>
             <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-              Password
+              Пароль
             </label>
             <input
               type="password"
@@ -81,14 +81,14 @@ export default function LoginPage() {
             className="flex w-full items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            Sign In
+            Войти
           </button>
         </form>
 
         <p className="text-center text-sm text-zinc-500">
-          Don&apos;t have an account?{" "}
+          Нет аккаунта?{" "}
           <Link href="/register" className="text-blue-600 hover:underline">
-            Register
+            Регистрация
           </Link>
         </p>
       </div>

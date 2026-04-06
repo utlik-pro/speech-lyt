@@ -31,18 +31,18 @@ import {
 import { formatDistanceToNow } from "date-fns";
 
 const METRICS = [
-  { value: "aht", label: "Average Handle Time (sec)" },
-  { value: "avg_script_score", label: "Avg Script Score (%)" },
-  { value: "resolution_rate", label: "Resolution Rate (%)" },
-  { value: "negative_sentiment_pct", label: "Negative Sentiment (%)" },
-  { value: "total_calls", label: "Total Calls" },
-  { value: "failed_calls", label: "Failed Calls" },
+  { value: "aht", label: "Среднее время обработки (сек)" },
+  { value: "avg_script_score", label: "Средний балл скрипта (%)" },
+  { value: "resolution_rate", label: "Процент решений (%)" },
+  { value: "negative_sentiment_pct", label: "Негативная тональность (%)" },
+  { value: "total_calls", label: "Всего звонков" },
+  { value: "failed_calls", label: "Ошибочные звонки" },
 ];
 
 const SEVERITIES = [
-  { value: "info", label: "Info" },
-  { value: "warning", label: "Warning" },
-  { value: "critical", label: "Critical" },
+  { value: "info", label: "Инфо" },
+  { value: "warning", label: "Предупреждение" },
+  { value: "critical", label: "Критический" },
 ];
 
 const severityIcon: Record<string, React.ReactNode> = {
@@ -104,12 +104,12 @@ export default function AlertsPage() {
   }, [fetchRules, fetchHistory]);
 
   const handleDeleteRule = async (id: string, ruleName: string) => {
-    if (!confirm(`Delete rule "${ruleName}"?`)) return;
+    if (!confirm(`Удалить правило "${ruleName}"?`)) return;
     try {
       await deleteAlertRule(id);
       fetchRules();
     } catch {
-      alert("Failed to delete rule");
+      alert("Не удалось удалить правило");
     }
   };
 
@@ -118,7 +118,7 @@ export default function AlertsPage() {
       await updateAlertRule(rule.id, { is_active: !rule.is_active });
       fetchRules();
     } catch {
-      alert("Failed to update rule");
+      alert("Не удалось обновить правило");
     }
   };
 
@@ -127,7 +127,7 @@ export default function AlertsPage() {
       await acknowledgeAlert(id);
       fetchHistory();
     } catch {
-      alert("Failed to acknowledge alert");
+      alert("Не удалось подтвердить алерт");
     }
   };
 
@@ -150,7 +150,7 @@ export default function AlertsPage() {
       setShowForm(false);
       fetchRules();
     } catch {
-      alert("Failed to create rule");
+      alert("Не удалось создать правило");
     } finally {
       setSaving(false);
     }
@@ -166,7 +166,7 @@ export default function AlertsPage() {
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             <Bell className="h-5 w-5 text-blue-600" />
-            Alert Management
+            Управление алертами
           </h2>
           {tab === "rules" && (
             <button
@@ -174,7 +174,7 @@ export default function AlertsPage() {
               className="flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
             >
               <Plus className="h-4 w-4" />
-              New Rule
+              Новое правило
             </button>
           )}
         </div>
@@ -191,7 +191,7 @@ export default function AlertsPage() {
             )}
           >
             <ListChecks className="h-4 w-4" />
-            Rules ({rules.length})
+            Правила ({rules.length})
           </button>
           <button
             onClick={() => setTab("history")}
@@ -203,7 +203,7 @@ export default function AlertsPage() {
             )}
           >
             <History className="h-4 w-4" />
-            History ({history.length})
+            История ({history.length})
           </button>
         </div>
 
@@ -219,20 +219,20 @@ export default function AlertsPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                      Rule Name
+                      Название правила
                     </label>
                     <input
                       type="text"
                       value={formName}
                       onChange={(e) => setFormName(e.target.value)}
                       required
-                      placeholder="e.g., High AHT Alert"
+                      placeholder="напр., Высокое AHT"
                       className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                     />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                      Metric
+                      Метрика
                     </label>
                     <select
                       value={formMetric}
@@ -250,20 +250,20 @@ export default function AlertsPage() {
                 <div className="grid gap-4 sm:grid-cols-4">
                   <div>
                     <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                      Condition
+                      Условие
                     </label>
                     <select
                       value={formCondition}
                       onChange={(e) => setFormCondition(e.target.value)}
                       className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                     >
-                      <option value="above">Above</option>
-                      <option value="below">Below</option>
+                      <option value="above">Выше</option>
+                      <option value="below">Ниже</option>
                     </select>
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                      Threshold
+                      Порог
                     </label>
                     <input
                       type="number"
@@ -276,7 +276,7 @@ export default function AlertsPage() {
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                      Severity
+                      Важность
                     </label>
                     <select
                       value={formSeverity}
@@ -292,7 +292,7 @@ export default function AlertsPage() {
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                      Cooldown (min)
+                      Пауза (мин)
                     </label>
                     <input
                       type="number"
@@ -309,7 +309,7 @@ export default function AlertsPage() {
                     onClick={() => setShowForm(false)}
                     className="rounded-md px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
                   >
-                    Cancel
+                    Отмена
                   </button>
                   <button
                     type="submit"
@@ -317,7 +317,7 @@ export default function AlertsPage() {
                     className="flex items-center gap-1.5 rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
                   >
                     {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                    Create Rule
+                    Создать правило
                   </button>
                 </div>
               </form>
@@ -327,12 +327,12 @@ export default function AlertsPage() {
             {loadingRules ? (
               <div className="flex items-center justify-center py-12 text-zinc-500">
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Loading rules...
+                Загрузка правил...
               </div>
             ) : rules.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-12 text-zinc-500">
                 <Bell className="h-8 w-8" />
-                <p className="text-sm">No alert rules configured</p>
+                <p className="text-sm">Правила алертов не настроены</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -372,7 +372,7 @@ export default function AlertsPage() {
                               : "bg-zinc-100 text-zinc-500",
                           )}
                         >
-                          {rule.is_active ? "Active" : "Inactive"}
+                          {rule.is_active ? "Активно" : "Неактивно"}
                         </button>
                         <button
                           onClick={() => handleDeleteRule(rule.id, rule.name)}
@@ -395,12 +395,12 @@ export default function AlertsPage() {
             {loadingHistory ? (
               <div className="flex items-center justify-center py-12 text-zinc-500">
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Loading history...
+                Загрузка истории...
               </div>
             ) : history.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-12 text-zinc-500">
                 <History className="h-8 w-8" />
-                <p className="text-sm">No alerts triggered yet</p>
+                <p className="text-sm">Алерты ещё не срабатывали</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -428,14 +428,14 @@ export default function AlertsPage() {
                     {h.acknowledged ? (
                       <span className="flex items-center gap-1 text-xs text-green-600">
                         <CheckCircle2 className="h-3.5 w-3.5" />
-                        Acknowledged
+                        Подтверждено
                       </span>
                     ) : (
                       <button
                         onClick={() => handleAcknowledge(h.id)}
                         className="rounded-md border border-zinc-300 px-3 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
                       >
-                        Acknowledge
+                        Подтвердить
                       </button>
                     )}
                   </div>

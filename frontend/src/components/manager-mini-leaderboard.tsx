@@ -16,7 +16,7 @@ export default function ManagerMiniLeaderboard({ entries }: ManagerMiniLeaderboa
 
   if (top5.length === 0) {
     return (
-      <p className="py-4 text-center text-sm text-zinc-400">No manager data</p>
+      <p className="py-4 text-center text-sm text-zinc-400">Нет данных по менеджерам</p>
     );
   }
 
@@ -42,8 +42,8 @@ export default function ManagerMiniLeaderboard({ entries }: ManagerMiniLeaderboa
             <p className="text-[11px] text-zinc-400">{e.team || "-"}</p>
           </div>
           <div className="text-right text-xs text-zinc-500">
-            <div>{e.total_calls} calls</div>
-            <div>{formatDuration(e.avg_handle_time)} AHT</div>
+            <div>{e.total_calls} звонков</div>
+            <div>{formatDuration(e.avg_handle_time)} СрВО</div>
           </div>
         </Link>
       ))}
@@ -52,7 +52,7 @@ export default function ManagerMiniLeaderboard({ entries }: ManagerMiniLeaderboa
         href="/managers"
         className="block pt-1 text-center text-xs text-blue-600 hover:underline"
       >
-        View all managers
+        Все менеджеры
       </Link>
     </div>
   );

@@ -53,7 +53,7 @@ export default function ScriptDetailPage() {
         const data = await getScript(scriptId);
         setScript(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load script");
+        setError(err instanceof Error ? err.message : "Не удалось загрузить скрипт");
       } finally {
         setLoading(false);
       }
@@ -83,19 +83,19 @@ export default function ScriptDetailPage() {
       setScript(updated);
       setEditing(false);
     } catch {
-      alert("Failed to update script");
+      alert("Не удалось обновить скрипт");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!script || !confirm(`Delete script "${script.name}"?`)) return;
+    if (!script || !confirm(`Удалить скрипт "${script.name}"?`)) return;
     try {
       await deleteScript(script.id);
       router.push("/scripts");
     } catch {
-      alert("Failed to delete script");
+      alert("Не удалось удалить скрипт");
     }
   };
 
@@ -111,9 +111,9 @@ export default function ScriptDetailPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-zinc-50 dark:bg-zinc-950">
         <AlertCircle className="h-8 w-8 text-red-500" />
-        <p className="text-sm text-zinc-500">{error || "Script not found"}</p>
+        <p className="text-sm text-zinc-500">{error || "Скрипт не найден"}</p>
         <Link href="/scripts" className="mt-2 text-sm text-blue-600 hover:underline">
-          Back to scripts
+          К списку скриптов
         </Link>
       </div>
     );
@@ -132,7 +132,7 @@ export default function ScriptDetailPage() {
           className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to scripts
+          К списку скриптов
         </Link>
 
         {/* Script header card */}
@@ -141,7 +141,7 @@ export default function ScriptDetailPage() {
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Name</label>
+                  <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Название</label>
                   <input
                     type="text"
                     value={editName}
@@ -150,21 +150,21 @@ export default function ScriptDetailPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Type</label>
+                  <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Тип</label>
                   <select
                     value={editType}
                     onChange={(e) => setEditType(e.target.value)}
                     className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                   >
-                    <option value="support">Support</option>
-                    <option value="sales">Sales</option>
-                    <option value="inbound">Inbound</option>
-                    <option value="outbound">Outbound</option>
+                    <option value="support">Поддержка</option>
+                    <option value="sales">Продажи</option>
+                    <option value="inbound">Входящие</option>
+                    <option value="outbound">Исходящие</option>
                   </select>
                 </div>
               </div>
               <div>
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Description</label>
+                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Описание</label>
                 <input
                   type="text"
                   value={editDescription}
@@ -179,7 +179,7 @@ export default function ScriptDetailPage() {
                   onChange={(e) => setEditActive(e.target.checked)}
                   className="rounded"
                 />
-                Active
+                Активен
               </label>
               <div className="flex gap-2">
                 <button
@@ -188,14 +188,14 @@ export default function ScriptDetailPage() {
                   className="flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
                 >
                   {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-                  Save
+                  Сохранить
                 </button>
                 <button
                   onClick={() => setEditing(false)}
                   className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
                 >
                   <X className="h-3.5 w-3.5" />
-                  Cancel
+                  Отмена
                 </button>
               </div>
             </div>
@@ -220,11 +220,11 @@ export default function ScriptDetailPage() {
                         : "bg-zinc-100 text-zinc-500",
                     )}
                   >
-                    {script.is_active ? "Active" : "Inactive"}
+                    {script.is_active ? "Активен" : "Неактивен"}
                   </span>
-                  <span>{script.stages.length} stages</span>
+                  <span>{script.stages.length} этапов</span>
                   <span>
-                    Created{" "}
+                    Создан{" "}
                     {formatDistanceToNow(new Date(script.created_at), { addSuffix: true })}
                   </span>
                 </div>
@@ -238,14 +238,14 @@ export default function ScriptDetailPage() {
                 <button
                   onClick={startEdit}
                   className="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800"
-                  title="Edit script"
+                  title="Редактировать скрипт"
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
                 <button
                   onClick={handleDelete}
                   className="rounded p-1.5 text-zinc-400 hover:bg-red-50 hover:text-red-500"
-                  title="Delete script"
+                  title="Удалить скрипт"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -257,7 +257,7 @@ export default function ScriptDetailPage() {
         {/* Stages */}
         <div>
           <h3 className="mb-3 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-            Stages ({sortedStages.length})
+            Этапы ({sortedStages.length})
           </h3>
           <div className="space-y-3">
             {sortedStages.map((stage, idx) => (
@@ -278,11 +278,11 @@ export default function ScriptDetailPage() {
                     {stage.is_required ? (
                       <span className="flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
                         <CheckCircle2 className="h-3 w-3" />
-                        Required
+                        Обязательный
                       </span>
                     ) : (
                       <span className="flex items-center gap-1 rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-500 dark:bg-zinc-800">
-                        Optional
+                        Необязательный
                       </span>
                     )}
                     {stage.max_duration_seconds && (
@@ -299,7 +299,7 @@ export default function ScriptDetailPage() {
                   <div>
                     <div className="flex items-center gap-1.5 text-xs font-medium text-zinc-500">
                       <MessageSquare className="h-3.5 w-3.5 text-green-500" />
-                      Required Phrases
+                      Обязательные фразы
                     </div>
                     {stage.required_phrases.length > 0 ? (
                       <div className="mt-2 flex flex-wrap gap-1.5">
@@ -313,7 +313,7 @@ export default function ScriptDetailPage() {
                         ))}
                       </div>
                     ) : (
-                      <p className="mt-1 text-xs text-zinc-400">None specified</p>
+                      <p className="mt-1 text-xs text-zinc-400">Не указано</p>
                     )}
                   </div>
 
@@ -321,7 +321,7 @@ export default function ScriptDetailPage() {
                   <div>
                     <div className="flex items-center gap-1.5 text-xs font-medium text-zinc-500">
                       <Ban className="h-3.5 w-3.5 text-red-500" />
-                      Forbidden Words
+                      Запрещённые слова
                     </div>
                     {stage.forbidden_words.length > 0 ? (
                       <div className="mt-2 flex flex-wrap gap-1.5">
@@ -335,7 +335,7 @@ export default function ScriptDetailPage() {
                         ))}
                       </div>
                     ) : (
-                      <p className="mt-1 text-xs text-zinc-400">None specified</p>
+                      <p className="mt-1 text-xs text-zinc-400">Не указано</p>
                     )}
                   </div>
                 </div>
@@ -347,7 +347,7 @@ export default function ScriptDetailPage() {
         {sortedStages.length === 0 && (
           <div className="flex flex-col items-center gap-2 py-8 text-zinc-400">
             <FileText className="h-8 w-8" />
-            <p className="text-sm">No stages defined for this script</p>
+            <p className="text-sm">Этапы для скрипта не заданы</p>
           </div>
         )}
       </main>

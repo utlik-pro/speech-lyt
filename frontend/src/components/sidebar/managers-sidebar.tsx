@@ -20,7 +20,7 @@ interface ManagersSidebarProps {
 export default function ManagersSidebar({ entries }: ManagersSidebarProps) {
   // Group entries by team
   const teamGroups = entries.reduce<Record<string, number>>((acc, e) => {
-    const team = e.team || "Unassigned";
+    const team = e.team || "Без команды";
     acc[team] = (acc[team] || 0) + 1;
     return acc;
   }, {});
@@ -49,14 +49,14 @@ export default function ManagersSidebar({ entries }: ManagersSidebarProps) {
 
   if (entries.length === 0) {
     return (
-      <div className="text-xs text-zinc-400">No manager data available</div>
+      <div className="text-xs text-zinc-400">Нет данных по менеджерам</div>
     );
   }
 
   return (
     <>
       {/* Team Summary */}
-      <SidebarSection title="Team Summary">
+      <SidebarSection title="По командам">
         <ul className="space-y-1">
           {Object.entries(teamGroups)
             .sort((a, b) => b[1] - a[1])
@@ -76,7 +76,7 @@ export default function ManagersSidebar({ entries }: ManagersSidebarProps) {
 
       {/* Best Manager */}
       {best && (
-        <SidebarSection title="Best Manager">
+        <SidebarSection title="Лучший менеджер">
           <div
             className={cn(
               "rounded-lg border p-2.5",
@@ -87,17 +87,17 @@ export default function ManagersSidebar({ entries }: ManagersSidebarProps) {
               {best.name}
             </div>
             <div className="mt-0.5 text-xs text-zinc-500">
-              {best.team || "Unassigned"}
+              {best.team || "Без команды"}
             </div>
             <div className="mt-2 grid grid-cols-2 gap-2">
               <div>
-                <div className="text-xs text-zinc-500">Total Calls</div>
+                <div className="text-xs text-zinc-500">Звонков</div>
                 <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                   {best.total_calls}
                 </div>
               </div>
               <div>
-                <div className="text-xs text-zinc-500">Script Score</div>
+                <div className="text-xs text-zinc-500">Скрипт</div>
                 <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                   {best.avg_script_score !== null
                     ? `${best.avg_script_score}%`
@@ -105,7 +105,7 @@ export default function ManagersSidebar({ entries }: ManagersSidebarProps) {
                 </div>
               </div>
               <div>
-                <div className="text-xs text-zinc-500">Resolution</div>
+                <div className="text-xs text-zinc-500">Решение</div>
                 <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                   {best.resolution_rate}%
                 </div>
@@ -116,22 +116,22 @@ export default function ManagersSidebar({ entries }: ManagersSidebarProps) {
       )}
 
       {/* Key Metrics */}
-      <SidebarSection title="Key Metrics">
+      <SidebarSection title="Ключевые метрики">
         <div className="grid grid-cols-2 gap-2">
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Avg AHT</div>
+            <div className="text-xs text-zinc-500">Ср. СрВО</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {formatDuration(avgAHT)}
             </div>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Avg Script</div>
+            <div className="text-xs text-zinc-500">Ср. скрипт</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {avgScript !== null ? `${avgScript.toFixed(1)}%` : "--"}
             </div>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="text-xs text-zinc-500">Avg Resolution</div>
+            <div className="text-xs text-zinc-500">Ср. решение</div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               {avgResolution.toFixed(1)}%
             </div>

@@ -84,7 +84,7 @@ export default function CoachingPage() {
       await acknowledgeInsight(id);
       fetchData();
     } catch {
-      alert("Failed to acknowledge insight");
+      alert("Не удалось отметить рекомендацию");
     }
   };
 
@@ -93,7 +93,7 @@ export default function CoachingPage() {
       await dismissInsight(id);
       fetchData();
     } catch {
-      alert("Failed to dismiss insight");
+      alert("Не удалось отклонить рекомендацию");
     }
   };
 
@@ -102,13 +102,13 @@ export default function CoachingPage() {
       await resolveInsight(id);
       fetchData();
     } catch {
-      alert("Failed to resolve insight");
+      alert("Не удалось завершить рекомендацию");
     }
   };
 
   const getManagerName = (managerId: string) => {
     const m = managers.find((mgr) => mgr.id === managerId);
-    return m?.name || "Unknown";
+    return m?.name || "Неизвестно";
   };
 
   // Stats
@@ -124,22 +124,22 @@ export default function CoachingPage() {
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             <GraduationCap className="h-5 w-5 text-purple-600" />
-            Coaching Insights
+            Рекомендации коучинга
           </h2>
         </div>
 
         {/* Stats cards */}
         <div className="grid grid-cols-3 gap-4">
           <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="text-xs font-medium text-zinc-500">Active Insights</div>
+            <div className="text-xs font-medium text-zinc-500">Активные</div>
             <div className="mt-1 text-2xl font-bold text-blue-600">{activeCount}</div>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="text-xs font-medium text-zinc-500">High Priority</div>
+            <div className="text-xs font-medium text-zinc-500">Высокий приоритет</div>
             <div className="mt-1 text-2xl font-bold text-orange-600">{criticalCount}</div>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="text-xs font-medium text-zinc-500">Resolved</div>
+            <div className="text-xs font-medium text-zinc-500">Решённые</div>
             <div className="mt-1 text-2xl font-bold text-green-600">{resolvedCount}</div>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function CoachingPage() {
             onChange={(e) => setFilterManager(e.target.value)}
             className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
           >
-            <option value="">All Managers</option>
+            <option value="">Все менеджеры</option>
             {managers.map((m) => (
               <option key={m.id} value={m.id}>{m.name}</option>
             ))}
@@ -161,11 +161,11 @@ export default function CoachingPage() {
             onChange={(e) => setFilterStatus(e.target.value)}
             className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
           >
-            <option value="">All Statuses</option>
-            <option value="active">Active</option>
-            <option value="acknowledged">Acknowledged</option>
-            <option value="resolved">Resolved</option>
-            <option value="dismissed">Dismissed</option>
+            <option value="">Все статусы</option>
+            <option value="active">Активные</option>
+            <option value="acknowledged">Просмотренные</option>
+            <option value="resolved">Решённые</option>
+            <option value="dismissed">Отклонённые</option>
           </select>
         </div>
 
@@ -173,13 +173,13 @@ export default function CoachingPage() {
         {loading ? (
           <div className="flex items-center justify-center py-12 text-zinc-500">
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            Loading coaching insights...
+            Загрузка рекомендаций...
           </div>
         ) : insights.length === 0 ? (
           <div className="flex flex-col items-center gap-2 py-12 text-zinc-500">
             <GraduationCap className="h-8 w-8" />
-            <p className="text-sm">No coaching insights yet</p>
-            <p className="text-xs">Run a coaching AI agent on manager data to generate insights</p>
+            <p className="text-sm">Рекомендации ещё не созданы</p>
+            <p className="text-xs">Запустите AI-коуча для генерации рекомендаций</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -224,21 +224,21 @@ export default function CoachingPage() {
                         <button
                           onClick={() => handleAcknowledge(insight.id)}
                           className="rounded p-1.5 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20"
-                          title="Acknowledge"
+                          title="Просмотрено"
                         >
                           <Eye className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleResolve(insight.id)}
                           className="rounded p-1.5 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
-                          title="Mark Resolved"
+                          title="Решено"
                         >
                           <CheckCircle2 className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDismiss(insight.id)}
                           className="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                          title="Dismiss"
+                          title="Отклонить"
                         >
                           <XCircle className="h-4 w-4" />
                         </button>
@@ -249,7 +249,7 @@ export default function CoachingPage() {
                         <button
                           onClick={() => handleResolve(insight.id)}
                           className="rounded p-1.5 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
-                          title="Mark Resolved"
+                          title="Решено"
                         >
                           <CheckCircle2 className="h-4 w-4" />
                         </button>

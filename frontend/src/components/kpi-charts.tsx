@@ -46,7 +46,7 @@ export function SentimentChart({
   if (chartData.length === 0) {
     return (
       <div className="flex h-48 items-center justify-center text-sm text-zinc-400">
-        No sentiment data
+        Нет данных о тональности
       </div>
     );
   }
@@ -92,7 +92,7 @@ export function CategoryChart({
   if (chartData.length === 0) {
     return (
       <div className="flex h-48 items-center justify-center text-sm text-zinc-400">
-        No category data
+        Нет данных по категориям
       </div>
     );
   }
@@ -126,7 +126,7 @@ export function TrendChart({
   if (data.length === 0) {
     return (
       <div className="flex h-48 items-center justify-center text-sm text-zinc-400">
-        No trend data
+        Нет данных о трендах
       </div>
     );
   }

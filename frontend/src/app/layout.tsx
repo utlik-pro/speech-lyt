@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SpeechLyt — Speech Analytics",
-  description: "AI-powered speech analytics platform for call centers",
+  title: "SpeechLyt — Речевая аналитика",
+  description: "AI-платформа речевой аналитики для контакт-центров",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
