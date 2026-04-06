@@ -372,7 +372,6 @@ async def seed():
             await db.execute(delete(EmotionAnalysis).where(EmotionAnalysis.call_id.in_(old_call_ids)))
             await db.execute(delete(Transcription).where(Transcription.call_id.in_(old_call_ids)))
             await db.execute(delete(Call).where(Call.organization_id == DANA_PROJECT_ID))
-            from app.models.script import ScriptStage
             old_script_ids = select(Script.id).where(Script.organization_id == DANA_PROJECT_ID)
             await db.execute(delete(ScriptStage).where(ScriptStage.script_id.in_(old_script_ids)))
             await db.execute(delete(Script).where(Script.organization_id == DANA_PROJECT_ID))
