@@ -26,6 +26,15 @@ app = FastAPI(
     openapi_url=f"{settings.API_PREFIX}/openapi.json",
 )
 
+
+@app.on_event("startup")
+async def on_startup():
+    """Create tables if they don't exist (for cloud deployments without alembic)."""
+    from app.core.database import engine
+    from app.models import Base  # noqa: F401
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
