@@ -61,6 +61,14 @@ async def health():
     return {"status": "ok", "service": settings.APP_NAME, "version": settings.APP_VERSION}
 
 
+@app.post("/api/v1/seed-demo")
+async def seed_demo():
+    """Run demo seed (one-time use, remove after seeding)."""
+    from app.scripts.seed_demo import seed
+    await seed()
+    return {"status": "seeded"}
+
+
 @app.get(f"{settings.API_PREFIX}/ping")
 async def ping():
     return {"message": "pong"}
