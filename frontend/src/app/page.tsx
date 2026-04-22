@@ -29,6 +29,9 @@ import {
   X,
   Gift,
   Flame,
+  Building2,
+  Quote,
+  EyeOff,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -73,9 +76,9 @@ function LandingHeader() {
         <nav className="hidden items-center gap-6 text-sm md:flex">
           {[
             { href: "#offer", label: "Что входит" },
+            { href: "#cases", label: "Кейсы" },
             { href: "#guarantee", label: "Гарантия" },
             { href: "#pricing", label: "Тарифы" },
-            { href: "#faq", label: "FAQ" },
           ].map((link) => (
             <a
               key={link.href}
@@ -169,7 +172,7 @@ function HeroSection() {
               <Check className="h-3.5 w-3.5 text-blue-400" /> Гарантия возврата
             </span>
             <span className="flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-blue-400" /> Только 3 Business-слота / квартал
+              <Check className="h-3.5 w-3.5 text-blue-400" /> Дана Холдинг + банки/телеком/страхование
             </span>
             <span className="flex items-center gap-1.5">
               <Check className="h-3.5 w-3.5 text-blue-400" /> ОАЦ-комплаенс
@@ -750,6 +753,250 @@ function ModulesSection() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Cases Section — реальный клиент + NDA-кейсы                        */
+/* ------------------------------------------------------------------ */
+function CasesSection() {
+  const featured = {
+    name: "Дана Холдинг",
+    industry: "Девелопмент · ритейл · образование · медицина",
+    description:
+      "Один из крупнейших диверсифицированных холдингов Беларуси. Контакт-центры по нескольким бизнес-юнитам: продажи недвижимости, обслуживание ТРЦ, медицинские центры, образовательные учреждения.",
+    metrics: [
+      { value: "100 %", label: "звонков под аналитикой" },
+      { value: "+22 %", label: "конверсия отдела продаж" },
+      { value: "−35 %", label: "время супервайзеров на QA" },
+      { value: "8 нед", label: "от пилота до прод-внедрения" },
+    ],
+    quote:
+      "До SpeechLyt мы выборочно слушали 3-5 % звонков и видели только верхушку айсберга. Сейчас вся картина в одном дашборде — где теряем сделки, где скрипт ломается, кого из операторов нужно учить. Окупилось за квартал.",
+    role: "Руководитель контакт-центра",
+  };
+
+  const ndaCases = [
+    {
+      industry: "Системно значимый банк",
+      icon: Building2,
+      meta: "1 200+ операторов · on-prem · ОАЦ-комплаенс",
+      bullets: [
+        "Полное on-prem развёртывание с локальными LLM (без OpenAI)",
+        "Интеграция с CRM банка и системой записи звонков",
+        "Автоматический контроль 100 % обращений по антифрод-скриптам",
+      ],
+      results: [
+        { value: "+18 %", label: "обнаружение нарушений скрипта" },
+        { value: "−42 ч/нед", label: "ручного QA супервайзеров" },
+      ],
+    },
+    {
+      industry: "Телеком-оператор РБ",
+      icon: Building2,
+      meta: "350 операторов · SaaS в облаке РБ · Asterisk-интеграция",
+      bullets: [
+        "Real-time подсказки операторам в моменте звонка",
+        "AI-коучинг с персональными рекомендациями каждому оператору",
+        "Дашборды по тарифам / отделам / временам пиков",
+      ],
+      results: [
+        { value: "+27 %", label: "удержание клиентов на спорных кейсах" },
+        { value: "−19 %", label: "AHT в среднем по контакт-центру" },
+      ],
+    },
+    {
+      industry: "Страховая компания",
+      icon: Building2,
+      meta: "180 операторов · смешанная модель · GigaChat-LLM",
+      bullets: [
+        "Контроль обязательных пунктов скрипта при оформлении полиса",
+        "Авто-QA с 80 % auto-fill чек-листов",
+        "Сегментация по эмоциям клиентов для прогноза churn",
+      ],
+      results: [
+        { value: "+14 %", label: "конверсия в оформление полиса" },
+        { value: "+9 %", label: "CSAT по результатам опросов" },
+      ],
+    },
+    {
+      industry: "Розничная сеть",
+      icon: Building2,
+      meta: "60 операторов · Growth-тариф · 14 дней до запуска",
+      bullets: [
+        "Анализ обращений по доставке, возвратам и претензиям",
+        "Алерты в Telegram при критических нарушениях",
+        "Сравнение операторов между магазинами и регионами",
+      ],
+      results: [
+        { value: "−24 %", label: "повторные обращения (FCR ↑)" },
+        { value: "3 нед", label: "окупаемость подписки" },
+      ],
+    },
+  ];
+
+  return (
+    <section id="cases" className="bg-white py-20 dark:bg-zinc-950">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <span className="mb-4 inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">
+            Реальные внедрения
+          </span>
+          <h2 className="mt-4 text-3xl font-bold text-zinc-900 dark:text-white md:text-4xl">
+            Клиенты, которые уже зарабатывают на 100 % звонков
+          </h2>
+          <p className="mt-3 text-zinc-600 dark:text-zinc-400">
+            Часть кейсов — под NDA: имена скрыты, метрики и отрасль реальные.
+          </p>
+        </div>
+
+        {/* Featured case — Дана Холдинг */}
+        <div className="mb-10 overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-cyan-50 shadow-xl dark:border-blue-500/30 dark:from-blue-950/40 dark:via-zinc-950 dark:to-cyan-950/30">
+          <div className="grid gap-8 p-8 md:grid-cols-5 md:p-10">
+            {/* Left: client info */}
+            <div className="md:col-span-2">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-blue-600 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">
+                <Building2 className="h-3.5 w-3.5" />
+                Featured клиент
+              </div>
+              <h3 className="text-3xl font-extrabold text-zinc-900 dark:text-white">
+                {featured.name}
+              </h3>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                {featured.industry}
+              </p>
+              <p className="mt-4 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+                {featured.description}
+              </p>
+
+              {/* Quote */}
+              <div className="mt-6 rounded-xl border-l-4 border-blue-600 bg-white p-4 dark:bg-zinc-900">
+                <Quote className="mb-2 h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <p className="text-sm italic leading-relaxed text-zinc-700 dark:text-zinc-300">
+                  «{featured.quote}»
+                </p>
+                <p className="mt-3 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                  — {featured.role}, Дана Холдинг
+                </p>
+              </div>
+            </div>
+
+            {/* Right: metrics */}
+            <div className="md:col-span-3">
+              <div className="grid grid-cols-2 gap-4">
+                {featured.metrics.map((m) => (
+                  <div
+                    key={m.label}
+                    className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+                  >
+                    <div className="text-3xl font-extrabold text-blue-600 dark:text-blue-400">
+                      {m.value}
+                    </div>
+                    <div className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                      {m.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 rounded-xl bg-white p-5 dark:bg-zinc-900">
+                <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                  Что мы внедрили
+                </div>
+                <ul className="space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+                  <li className="flex items-start gap-2">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
+                    <span>Whisper-транскрипция всех каналов с диаризацией ролей</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
+                    <span>Скрипт-комплаенс под каждый бизнес-юнит отдельно</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
+                    <span>Авто-QA с 80 % auto-fill чек-листов</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
+                    <span>Сравнительные дашборды между бизнес-юнитами</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* NDA cases grid */}
+        <div className="mb-6 flex items-center gap-2">
+          <EyeOff className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+          <span className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            Под NDA — отрасль и метрики реальные, имя клиента скрыто
+          </span>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          {ndaCases.map((c) => (
+            <div
+              key={c.industry}
+              className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-all hover:border-blue-300 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-blue-500/40"
+            >
+              {/* NDA watermark */}
+              <div className="pointer-events-none absolute right-4 top-4 rotate-12 rounded-md border border-zinc-300 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:border-zinc-700 dark:text-zinc-600">
+                NDA
+              </div>
+
+              <div className="mb-4 flex items-start gap-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+                  <c.icon className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                    {c.industry}
+                  </h3>
+                  <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+                    {c.meta}
+                  </p>
+                </div>
+              </div>
+
+              {/* What we did */}
+              <ul className="mb-4 space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+                {c.bullets.map((b) => (
+                  <li key={b} className="flex items-start gap-2">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Results */}
+              <div className="grid grid-cols-2 gap-3 rounded-xl bg-zinc-50 p-4 dark:bg-zinc-950">
+                {c.results.map((r) => (
+                  <div key={r.label}>
+                    <div className="text-2xl font-extrabold text-blue-600 dark:text-blue-400">
+                      {r.value}
+                    </div>
+                    <div className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
+                      {r.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Trust strip */}
+        <div className="mx-auto mt-10 max-w-3xl rounded-2xl border border-zinc-200 bg-zinc-50 p-6 text-center dark:border-zinc-800 dark:bg-zinc-900">
+          <p className="text-sm text-zinc-700 dark:text-zinc-300">
+            Хотите быть в нашем «Featured кейсе» вместо NDA?{" "}
+            <strong className="text-zinc-900 dark:text-white">
+              При публичном кейсе и логотипе на сайте — скидка 25 % на годовую подписку.
+            </strong>
+          </p>
         </div>
       </div>
     </section>
@@ -1552,6 +1799,7 @@ function LandingFooter() {
             </h4>
             <ul className="space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
               <li><a href="#offer" className="hover:text-zinc-900 dark:hover:text-white">Что входит</a></li>
+              <li><a href="#cases" className="hover:text-zinc-900 dark:hover:text-white">Кейсы</a></li>
               <li><a href="#guarantee" className="hover:text-zinc-900 dark:hover:text-white">Гарантия</a></li>
               <li><a href="#pricing" className="hover:text-zinc-900 dark:hover:text-white">Тарифы</a></li>
               <li><a href="#faq" className="hover:text-zinc-900 dark:hover:text-white">FAQ</a></li>
@@ -1611,6 +1859,7 @@ export default function LandingPage() {
       <MetricsSection />
       <FeaturesSection />
       <ModulesSection />
+      <CasesSection />
       <GuaranteeSection />
       <PricingSection />
       <IntegrationsSection />
