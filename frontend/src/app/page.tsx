@@ -155,7 +155,7 @@ function HeroSection() {
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-zinc-500">
             <span className="flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-blue-400" /> 14 дней trial без карты
+              <Check className="h-3.5 w-3.5 text-blue-400" /> Аудит 100 звонков за 7 дней
             </span>
             <span className="flex items-center gap-1.5">
               <Check className="h-3.5 w-3.5 text-blue-400" /> От 990 BYN/мес
@@ -502,7 +502,7 @@ function PricingSection() {
       minMonths: 6,
       operators: "до 15",
       minutes: "5 000 мин/мес",
-      cta: "Начать триал",
+      cta: "Заказать аудит",
       ctaHref: "#cta",
       featured: false,
       features: [
@@ -524,7 +524,7 @@ function PricingSection() {
       minMonths: 3,
       operators: "до 50",
       minutes: "25 000 мин/мес",
-      cta: "Начать 14-дн триал",
+      cta: "Заказать аудит",
       ctaHref: "#cta",
       featured: true,
       features: [
@@ -603,7 +603,7 @@ function PricingSection() {
           </h2>
           <p className="mt-3 text-zinc-600 dark:text-zinc-400">
             Договор и оплата в белорусских рублях с резидентом ПВТ.
-            Скидка 20 % при годовой предоплате.
+            Скидка 20 % при годовой предоплате. Trial-периодов нет — мы делаем платный аудит, который засчитывается в подписку.
           </p>
 
           {/* Billing toggle */}
@@ -791,7 +791,8 @@ function PricingSection() {
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-blue-500" />
               <span>
-                14 дней self-service trial без карты на тарифе Growth (полный функционал, лимит 500 мин).
+                Платный аудит контакт-центра от 1 500 BYN — анализ 100 ваших звонков с письменным
+                отчётом за 7 дней. При подключении тарифа сумма аудита засчитывается.
               </span>
             </li>
           </ul>
@@ -871,12 +872,12 @@ function FAQSection() {
       a: "WAV, MP3, OGG, FLAC. Размер файла до 500 МБ, пакетная загрузка, потоковая передача через REST API. Готовые интеграции с Bitrix24 BY, amoCRM, Asterisk, 3CX. Webhooks для CRM-уведомлений. Кастомные интеграции (Cisco, ВАТС белорусских операторов) от 2 500 BYN one-time.",
     },
     {
-      q: "Как организован 14-дневный trial?",
-      a: "Self-service регистрация без банковской карты на тарифе Growth с полным функционалом. Лимит 500 минут анализа. По истечении — переход на платный тариф или экспорт всех данных в CSV/JSON. Никаких автосписаний.",
+      q: "Почему у вас нет бесплатного триала?",
+      a: "Бесплатные триалы привлекают «туристов», которые не покупают, а серьёзные заказчики B2B в РБ предпочитают платную проверку — это сигнал, что вендор работает с реальными деньгами и берёт ответственность за результат. Поэтому мы делаем платный аудит контакт-центра: анализ 100 ваших звонков за 7 дней, письменный отчёт с найденными нарушениями скрипта и потенциалом роста KPI. Базовая стоимость — 1 500 BYN, при подключении тарифа сумма засчитывается в первую оплату.",
     },
     {
-      q: "Что входит в PoC для Enterprise за 7 дней?",
-      a: "Вы загружаете 100-500 реальных звонков вашего контакт-центра. Мы за неделю готовим отчёт: найденные нарушения скрипта (с цитатами), сегментацию по эмоциям, оценку KPI (AHT, FCR, CSAT-прокси), потенциал роста конверсии. Результат — конкретные цифры на ваших данных, а не абстрактные кейсы.",
+      q: "Что входит в платный аудит за 7 дней?",
+      a: "Вы загружаете 100 реальных звонков вашего контакт-центра. Мы готовим: (1) отчёт о соблюдении скрипта с цитатами нарушений, (2) сегментацию по эмоциям клиентов, (3) расчёт KPI — AHT, FCR, CSAT-прокси, (4) сравнение операторов между собой, (5) оценку потенциала роста конверсии в деньгах. Базовый аудит — 1 500 BYN, расширенный (500 звонков + кастомные KPI) — 5 000 BYN. Для крупных enterprise-проектов делаем индивидуальный объём.",
     },
     {
       q: "Можно ли оплачивать в рассрочку или с НДС-вычетом?",
@@ -931,57 +932,69 @@ function CTASection() {
       <div className="relative mx-auto max-w-4xl px-6">
         <div className="text-center">
           <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
-            Готовы взять под контроль 100 % звонков?
+            Начните с платного аудита — оплатите только результат
           </h2>
           <p className="mb-10 text-lg text-blue-100">
-            Два пути попробовать SpeechLyt — выбирайте, что подходит вам.
+            Никаких бесплатных триалов. Мы проанализируем ваши звонки и покажем,
+            где теряются деньги. При подключении тарифа стоимость аудита засчитывается.
           </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          {/* Trial card */}
+          {/* Standard audit card */}
           <div className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur">
             <div className="mb-3 flex items-center gap-2">
               <Rocket className="h-5 w-5 text-white" />
               <span className="text-sm font-semibold uppercase tracking-wider text-blue-100">
-                Для SMB и mid-market
+                SMB и mid-market
               </span>
             </div>
-            <h3 className="mb-2 text-2xl font-bold text-white">14 дней trial</h3>
+            <h3 className="mb-2 text-2xl font-bold text-white">
+              Аудит 100 звонков
+            </h3>
+            <div className="mb-3 flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-white">1 500 BYN</span>
+              <span className="text-sm text-blue-100">/ 7 дней</span>
+            </div>
             <p className="mb-4 text-sm text-blue-100">
-              Self-service регистрация без банковской карты. Полный функционал тарифа Growth,
-              лимит 500 минут анализа.
+              Письменный отчёт: нарушения скрипта с цитатами, сегментация по эмоциям,
+              расчёт AHT/FCR/CSAT, сравнение операторов, потенциал роста в BYN.
+              <strong className="block mt-2 text-white">Сумма засчитывается при подключении тарифа.</strong>
             </p>
             <Button
               size="lg"
               className="w-full gap-2 bg-white text-blue-700 hover:bg-blue-50"
-              asChild
             >
-              <Link href="/register">
-                Начать триал
-                <ArrowRight className="h-4 w-4" />
-              </Link>
+              Заказать аудит
+              <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
 
-          {/* PoC card */}
+          {/* Enterprise audit card */}
           <div className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur">
             <div className="mb-3 flex items-center gap-2">
               <Shield className="h-5 w-5 text-white" />
               <span className="text-sm font-semibold uppercase tracking-wider text-blue-100">
-                Для банков, телекома, госов
+                Банки, телеком, госы
               </span>
             </div>
-            <h3 className="mb-2 text-2xl font-bold text-white">PoC за 7 дней</h3>
+            <h3 className="mb-2 text-2xl font-bold text-white">
+              Расширенный аудит
+            </h3>
+            <div className="mb-3 flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-white">от 5 000 BYN</span>
+              <span className="text-sm text-blue-100">/ 7-14 дней</span>
+            </div>
             <p className="mb-4 text-sm text-blue-100">
-              Загружаем 100-500 ваших звонков, готовим отчёт с реальными нарушениями скрипта
-              и потенциалом роста KPI.
+              500 звонков, кастомные KPI под вашу отрасль, демо-развёртывание on-prem,
+              презентация результатов вашему руководству.
+              <strong className="block mt-2 text-white">Засчитывается в первую оплату Business / Enterprise.</strong>
             </p>
             <Button
               size="lg"
               className="w-full gap-2 border-2 border-white bg-transparent text-white hover:bg-white hover:text-blue-700"
             >
-              Запросить PoC
+              Обсудить аудит
               <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
