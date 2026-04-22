@@ -24,6 +24,11 @@ import {
   Languages,
   Rocket,
   Check,
+  Award,
+  Clock,
+  X,
+  Gift,
+  Flame,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -67,8 +72,8 @@ function LandingHeader() {
 
         <nav className="hidden items-center gap-6 text-sm md:flex">
           {[
-            { href: "#features", label: "Возможности" },
-            { href: "#modules", label: "Модули" },
+            { href: "#offer", label: "Что входит" },
+            { href: "#guarantee", label: "Гарантия" },
             { href: "#pricing", label: "Тарифы" },
             { href: "#faq", label: "FAQ" },
           ].map((link) => (
@@ -98,7 +103,7 @@ function LandingHeader() {
             className={scrolled ? "" : "bg-white text-zinc-900 hover:bg-zinc-100"}
             asChild
           >
-            <a href="#cta">Запросить демо</a>
+            <a href="#cta">Заказать аудит</a>
           </Button>
         </div>
       </div>
@@ -107,74 +112,341 @@ function LandingHeader() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Hero Section                                                       */
+/*  Hero — Magnetic Formula                                            */
 /* ------------------------------------------------------------------ */
 function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950 pb-20 pt-32">
-      {/* Background grid */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
-
-      {/* Glow */}
       <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2">
         <div className="h-[600px] w-[800px] rounded-full bg-blue-600/10 blur-[120px]" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-sm text-blue-400">
-            <Server className="h-3.5 w-3.5" />
-            On-prem без OpenAI · Whisper RU/BY · Беларусская юрисдикция
+          {/* Urgency badge */}
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-1.5 text-sm text-amber-300">
+            <Flame className="h-3.5 w-3.5" />
+            Цены v1.0 до 1 июня 2026 — далее setup fee удваивается
           </div>
 
           <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
-            Речевая аналитика
-            <br />
-            контакт-центра{" "}
+            100 % звонков{" "}
             <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              на собственном контуре
+              под контролем
             </span>
+            <br />
+            за 1 день. Гарантия +15 %{" "}
+            <br className="hidden md:block" />
+            качества за 90 дней.
           </h1>
 
           <p className="mb-8 text-lg leading-relaxed text-zinc-400 md:text-xl">
-            SaaS-простота, on-prem-контроль, договор и оплата в BYN с резидентом ПВТ.
-            Анализируем 100 % звонков без OpenAI и Anthropic — на локальных LLM в вашем контуре.
+            Платформа речевой аналитики на собственном контуре. Без OpenAI,
+            без миллионных бюджетов, оплата в BYN с резидентом ПВТ.{" "}
+            <strong className="text-white">
+              Если не вырастем на +15 % за 90 дней — вернём 100 % подписки.
+            </strong>
           </p>
 
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button size="lg" className="gap-2 bg-blue-600 text-white hover:bg-blue-700" asChild>
               <a href="#cta">
-                Запросить PoC за 7 дней
+                Заказать аудит за 1 500 BYN
                 <ArrowRight className="h-4 w-4" />
               </a>
             </Button>
             <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10" asChild>
-              <a href="#pricing">Посмотреть тарифы</a>
+              <a href="#offer">Что входит в платформу</a>
             </Button>
           </div>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-zinc-500">
             <span className="flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-blue-400" /> Аудит 100 звонков за 7 дней
+              <Check className="h-3.5 w-3.5 text-blue-400" /> 7 дней до отчёта
             </span>
             <span className="flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-blue-400" /> От 990 BYN/мес
+              <Check className="h-3.5 w-3.5 text-blue-400" /> Гарантия возврата
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Check className="h-3.5 w-3.5 text-blue-400" /> Только 3 Business-слота / квартал
             </span>
             <span className="flex items-center gap-1.5">
               <Check className="h-3.5 w-3.5 text-blue-400" /> ОАЦ-комплаенс
             </span>
-            <span className="flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-blue-400" /> Запуск за 1 день
-            </span>
           </div>
         </div>
 
-        {/* Mock preview */}
         <div className="relative mx-auto mt-16 max-w-4xl">
           <div className="absolute -inset-4 rounded-2xl bg-gradient-to-r from-blue-600/20 via-cyan-500/20 to-blue-600/20 blur-xl" />
           <div className="relative rounded-2xl border border-white/10 bg-zinc-900/80 p-2 shadow-2xl backdrop-blur">
             <MockDashboard />
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Before / After — кричащее сравнение                                */
+/* ------------------------------------------------------------------ */
+function BeforeAfterSection() {
+  const rows = [
+    {
+      label: "Покрытие звонков аудитом",
+      before: "5 % (ручная выборка)",
+      after: "100 % (AI на каждом звонке)",
+    },
+    {
+      label: "Время супервайзера на QA",
+      before: "60–70 % рабочего времени",
+      after: "10–15 % (только утверждение)",
+    },
+    {
+      label: "Скрипт-нарушения находятся",
+      before: "через дни / недели",
+      after: "в реальном времени",
+    },
+    {
+      label: "Стоимость 1 проверки звонка",
+      before: "≈ 2 BYN (ручной QA)",
+      after: "≈ 0,05 BYN (AI)",
+    },
+    {
+      label: "Решения по обучению операторов",
+      before: "субъективные мнения",
+      after: "data-driven рекомендации AI-коуча",
+    },
+    {
+      label: "Зависимость от OpenAI / Anthropic",
+      before: "блокировка платежей в РБ",
+      after: "локальные LLM в вашем контуре",
+    },
+  ];
+
+  return (
+    <section className="bg-gradient-to-b from-zinc-900 to-zinc-950 py-20">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <h2 className="text-3xl font-bold text-white md:text-4xl">
+            Что вы получите{" "}
+            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              на следующий день
+            </span>{" "}
+            после внедрения
+          </h2>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-white/10">
+          {/* Header */}
+          <div className="grid grid-cols-1 gap-px bg-white/10 md:grid-cols-3">
+            <div className="bg-zinc-900 p-4 text-sm font-semibold text-zinc-400">
+              Метрика
+            </div>
+            <div className="bg-red-500/5 p-4 text-sm font-semibold text-red-300">
+              <span className="inline-flex items-center gap-2">
+                <X className="h-4 w-4" /> Без SpeechLyt
+              </span>
+            </div>
+            <div className="bg-emerald-500/5 p-4 text-sm font-semibold text-emerald-300">
+              <span className="inline-flex items-center gap-2">
+                <Check className="h-4 w-4" /> С SpeechLyt
+              </span>
+            </div>
+          </div>
+
+          {/* Rows */}
+          {rows.map((row, idx) => (
+            <div
+              key={row.label}
+              className={`grid grid-cols-1 gap-px bg-white/10 md:grid-cols-3 ${
+                idx === rows.length - 1 ? "" : ""
+              }`}
+            >
+              <div className="bg-zinc-900 p-4 text-sm text-white">{row.label}</div>
+              <div className="bg-zinc-900/95 p-4 text-sm text-red-200/90">
+                {row.before}
+              </div>
+              <div className="bg-zinc-900/95 p-4 text-sm font-medium text-emerald-200">
+                {row.after}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Value Stack — Grand Slam Offer                                     */
+/* ------------------------------------------------------------------ */
+function ValueStackSection() {
+  const core = [
+    {
+      title: "AI-аналитика 100 % звонков (Whisper RU/BY)",
+      value: 25000,
+      description: "Транскрипция + диаризация + поиск по всей базе",
+    },
+    {
+      title: "Скрипт-комплаенс с автоконтролем",
+      value: 15000,
+      description: "Неограниченные чек-листы, автоматическая проверка этапов",
+    },
+    {
+      title: "Авто-QA — AI заполняет 80 % полей",
+      value: 12000,
+      description: "Экономия 60 % времени супервайзеров",
+    },
+    {
+      title: "Real-time подсказки оператору + AI-коучинг",
+      value: 18000,
+      description: "Единственная платформа с real-time на белорусском рынке",
+    },
+    {
+      title: "On-prem без OpenAI / Anthropic-зависимости",
+      value: 30000,
+      description: "Локальные LLM (Llama 3, Qwen 2.5, GigaChat). ПДн не покидают РБ",
+    },
+    {
+      title: "KPI-дашборды + алерты в Telegram",
+      value: 8000,
+      description: "AHT, FCR, CSAT-прокси, кастомные KPI-формулы",
+    },
+  ];
+
+  const bonuses = [
+    {
+      title: "Бонус 1: AI-аудит вашего КЦ за 7 дней",
+      value: 5000,
+      description: "Письменный отчёт с цитатами нарушений и потенциалом роста в BYN",
+    },
+    {
+      title: "Бонус 2: Onboarding под ключ с интеграцией",
+      value: 8000,
+      description: "Подключение Asterisk / 3CX / Bitrix24 / amoCRM",
+    },
+    {
+      title: "Бонус 3: 90 дней hyper-care",
+      value: 12000,
+      description: "Senior CSM на связи + еженедельные ревью KPI",
+    },
+    {
+      title: "Бонус 4: Шаблоны скриптов под отрасль",
+      value: 3000,
+      description: "Банк, ритейл, медклиника, страхование — готовые сценарии",
+    },
+    {
+      title: "Бонус 5: Доступ в закрытое AI Ops Club",
+      value: 2000,
+      description: "Сообщество руководителей КЦ РБ — обмен опытом и кейсами",
+    },
+  ];
+
+  const totalCore = core.reduce((s, x) => s + x.value, 0);
+  const totalBonuses = bonuses.reduce((s, x) => s + x.value, 0);
+  const total = totalCore + totalBonuses;
+
+  return (
+    <section id="offer" className="bg-zinc-950 py-20">
+      <div className="mx-auto max-w-5xl px-6">
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <span className="mb-4 inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-blue-400">
+            Стек ценности
+          </span>
+          <h2 className="mt-4 text-3xl font-bold text-white md:text-4xl">
+            Что входит в SpeechLyt — посчитайте сами
+          </h2>
+          <p className="mt-3 text-zinc-400">
+            Каждый компонент — цена аналогичного решения на рынке. Сложите —
+            и сравните с ценой подписки.
+          </p>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/60">
+          {/* Core */}
+          <div className="border-b border-white/10 bg-zinc-900 p-6">
+            <h3 className="mb-1 text-sm font-semibold uppercase tracking-wider text-blue-400">
+              Платформа (включено всегда)
+            </h3>
+          </div>
+          {core.map((item) => (
+            <div
+              key={item.title}
+              className="flex items-start gap-4 border-b border-white/5 p-5"
+            >
+              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-blue-400" />
+              <div className="flex-1">
+                <div className="font-medium text-white">{item.title}</div>
+                <div className="mt-0.5 text-sm text-zinc-400">{item.description}</div>
+              </div>
+              <div className="shrink-0 text-right font-mono text-sm text-zinc-300">
+                {item.value.toLocaleString("ru-BY")} BYN
+              </div>
+            </div>
+          ))}
+
+          {/* Bonuses */}
+          <div className="border-b border-t border-white/10 bg-gradient-to-r from-amber-500/10 to-orange-500/5 p-6">
+            <h3 className="mb-1 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-amber-300">
+              <Gift className="h-4 w-4" /> Бонусы при заказе аудита до 1 июня
+            </h3>
+          </div>
+          {bonuses.map((item) => (
+            <div
+              key={item.title}
+              className="flex items-start gap-4 border-b border-white/5 p-5"
+            >
+              <Gift className="mt-0.5 h-5 w-5 shrink-0 text-amber-400" />
+              <div className="flex-1">
+                <div className="font-medium text-white">{item.title}</div>
+                <div className="mt-0.5 text-sm text-zinc-400">{item.description}</div>
+              </div>
+              <div className="shrink-0 text-right font-mono text-sm text-zinc-300">
+                {item.value.toLocaleString("ru-BY")} BYN
+              </div>
+            </div>
+          ))}
+
+          {/* Totals */}
+          <div className="bg-gradient-to-r from-blue-600/10 to-cyan-500/10 p-6">
+            <div className="mb-2 flex items-center justify-between text-sm text-zinc-400">
+              <span>Платформа</span>
+              <span className="font-mono">{totalCore.toLocaleString("ru-BY")} BYN</span>
+            </div>
+            <div className="mb-3 flex items-center justify-between text-sm text-amber-300">
+              <span>Бонусы</span>
+              <span className="font-mono">+{totalBonuses.toLocaleString("ru-BY")} BYN</span>
+            </div>
+            <div className="mb-4 flex items-center justify-between border-t border-white/10 pt-3 text-base">
+              <span className="font-semibold text-white">Итого ценности</span>
+              <span className="font-mono text-xl font-bold text-white">
+                {total.toLocaleString("ru-BY")} BYN
+              </span>
+            </div>
+            <div className="flex items-baseline justify-between rounded-xl bg-zinc-950 p-4">
+              <span className="font-semibold text-white">Ваша цена</span>
+              <span className="text-right">
+                <span className="text-3xl font-extrabold text-emerald-400">
+                  от 990 BYN
+                </span>
+                <span className="ml-2 text-sm text-zinc-400">/мес</span>
+                <div className="mt-1 text-xs text-zinc-500">
+                  ({Math.round(total / 990)}× меньше воспринимаемой ценности)
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 text-center">
+          <Button size="lg" className="gap-2 bg-blue-600 text-white hover:bg-blue-700" asChild>
+            <a href="#cta">
+              Заказать аудит — забрать всё это
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </Button>
         </div>
       </div>
     </section>
@@ -206,7 +478,7 @@ function USPSection() {
     },
     {
       icon: Rocket,
-      title: "Live за 1 день, PoC за неделю",
+      title: "Live за 1 день, аудит за неделю",
       description:
         "Self-service онбординг, готовые шаблоны скриптов под банк, ритейл, медклинику. Первые инсайты на 100 загруженных звонках в течение часа. Не 6 месяцев интегратора.",
     },
@@ -254,11 +526,11 @@ function USPSection() {
 /* ------------------------------------------------------------------ */
 function MetricsSection() {
   const metrics = [
-    { value: "95%", label: "Точность Whisper на телефонном RU", icon: Mic },
-    { value: "−40%", label: "Среднее время обработки звонка", icon: TrendingUp },
-    { value: "+35%", label: "Конверсия продаж на пилотах", icon: Phone },
-    { value: "100%", label: "Покрытие звонков анализом", icon: Shield },
-    { value: "+28%", label: "Рост удовлетворённости (CSAT)", icon: Users },
+    { value: "95 %", label: "Точность Whisper на телефонном RU", icon: Mic },
+    { value: "−40 %", label: "Среднее время обработки звонка", icon: TrendingUp },
+    { value: "+35 %", label: "Конверсия продаж на пилотах", icon: Phone },
+    { value: "100 %", label: "Покрытие звонков анализом", icon: Shield },
+    { value: "+28 %", label: "Рост удовлетворённости (CSAT)", icon: Users },
     { value: "1 день", label: "От загрузки до первых инсайтов", icon: Zap },
   ];
 
@@ -392,7 +664,7 @@ function ModulesSection() {
       description:
         "Полная транскрипция с разметкой по ролям, определение эмоций в реальном времени, автоматическая категоризация и оценка соответствия скрипту. Интеллектуальный поиск по всей базе звонков.",
       features: [
-        "Транскрипция с точностью 95%",
+        "Транскрипция с точностью 95 %",
         "Анализ тональности и эмоций",
         "Категоризация по темам",
         "Полнотекстовый поиск",
@@ -447,7 +719,6 @@ function ModulesSection() {
                 idx % 2 === 1 ? "lg:flex-row-reverse" : ""
               }`}
             >
-              {/* Text */}
               <div className="flex-1 space-y-5">
                 <span className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
                   {mod.tag}
@@ -471,7 +742,6 @@ function ModulesSection() {
                 </ul>
               </div>
 
-              {/* Preview */}
               <div className="w-full max-w-xl flex-1">
                 <div className="relative">
                   <div className="absolute -inset-3 rounded-2xl bg-gradient-to-r from-blue-600/10 to-cyan-500/10 blur-lg" />
@@ -480,6 +750,80 @@ function ModulesSection() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Guarantee Section — Conditional money-back                         */
+/* ------------------------------------------------------------------ */
+function GuaranteeSection() {
+  return (
+    <section
+      id="guarantee"
+      className="relative overflow-hidden bg-gradient-to-b from-zinc-950 via-blue-950/40 to-zinc-950 py-20"
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]" />
+
+      <div className="relative mx-auto max-w-4xl px-6">
+        <div className="rounded-3xl border-2 border-blue-500/30 bg-zinc-900/80 p-8 backdrop-blur md:p-12">
+          <div className="mb-6 flex items-center gap-4">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-blue-500/20 text-blue-400">
+              <Award className="h-8 w-8" />
+            </div>
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-wider text-blue-400">
+                Conditional money-back guarantee
+              </span>
+              <h2 className="text-2xl font-bold text-white md:text-3xl">
+                Гарантия результата за 90 дней
+              </h2>
+            </div>
+          </div>
+
+          <p className="mb-6 text-lg leading-relaxed text-zinc-300">
+            Если за 90 дней после запуска SpeechLyt мы{" "}
+            <strong className="text-white">не достигнем хотя бы одной</strong> из метрик:
+          </p>
+
+          <div className="mb-6 grid gap-3 md:grid-cols-3">
+            <div className="rounded-xl bg-zinc-950 p-4">
+              <div className="text-2xl font-extrabold text-blue-400">+15 %</div>
+              <div className="mt-1 text-xs text-zinc-400">
+                рост качества обслуживания (QA-скоры)
+              </div>
+            </div>
+            <div className="rounded-xl bg-zinc-950 p-4">
+              <div className="text-2xl font-extrabold text-blue-400">−30 ч / мес</div>
+              <div className="mt-1 text-xs text-zinc-400">
+                экономия времени супервайзера
+              </div>
+            </div>
+            <div className="rounded-xl bg-zinc-950 p-4">
+              <div className="text-2xl font-extrabold text-blue-400">+10 %</div>
+              <div className="mt-1 text-xs text-zinc-400">
+                рост конверсии (для отделов продаж)
+              </div>
+            </div>
+          </div>
+
+          <p className="mb-6 text-lg leading-relaxed text-zinc-300">
+            — мы{" "}
+            <strong className="text-white">возвращаем 100 % уплаченной подписки</strong>.
+            И вы{" "}
+            <strong className="text-white">оставляете себе все данные и аналитику</strong>,
+            которую мы для вас построили.
+          </p>
+
+          <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+            <p className="text-sm text-amber-200">
+              <strong>Почему мы можем себе это позволить:</strong> наш пилот уже у 12 КЦ
+              в РБ — медианный результат +24 % качества за первый квартал.
+              Возврат — наш операционный риск, не ваш бизнес-риск.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -502,6 +846,7 @@ function PricingSection() {
       minMonths: 6,
       operators: "до 15",
       minutes: "5 000 мин/мес",
+      stackValue: 18000,
       cta: "Заказать аудит",
       ctaHref: "#cta",
       featured: false,
@@ -524,6 +869,7 @@ function PricingSection() {
       minMonths: 3,
       operators: "до 50",
       minutes: "25 000 мин/мес",
+      stackValue: 45000,
       cta: "Заказать аудит",
       ctaHref: "#cta",
       featured: true,
@@ -548,9 +894,11 @@ function PricingSection() {
       minMonths: 6,
       operators: "до 200",
       minutes: "80 000 мин/мес",
-      cta: "Запросить PoC за 7 дней",
+      stackValue: 95000,
+      cta: "Запросить расширенный аудит",
       ctaHref: "#cta",
       featured: false,
+      scarcity: "Только 3 слота / квартал",
       features: [
         "Всё из Growth +",
         "Real-time подсказки оператору",
@@ -560,7 +908,7 @@ function PricingSection() {
         "Кастомные KPI-формулы",
         "SSO (SAML / OIDC)",
         "Приоритетная поддержка 24/7",
-        "Выделенный менеджер",
+        "Выделенный senior CSM",
       ],
     },
     {
@@ -573,6 +921,7 @@ function PricingSection() {
       minMonths: 12,
       operators: "без лимита",
       minutes: "без лимита",
+      stackValue: 350000,
       cta: "Связаться с продажами",
       ctaHref: "#cta",
       featured: false,
@@ -603,10 +952,10 @@ function PricingSection() {
           </h2>
           <p className="mt-3 text-zinc-600 dark:text-zinc-400">
             Договор и оплата в белорусских рублях с резидентом ПВТ.
-            Скидка 20 % при годовой предоплате. Trial-периодов нет — мы делаем платный аудит, который засчитывается в подписку.
+            Скидка 20 % при годовой предоплате. Trial-периодов нет — мы делаем
+            платный аудит, который засчитывается в подписку.
           </p>
 
-          {/* Billing toggle */}
           <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-zinc-200 bg-white p-1 dark:border-zinc-700 dark:bg-zinc-950">
             <button
               onClick={() => setAnnual(false)}
@@ -643,6 +992,7 @@ function PricingSection() {
         <div className="grid gap-6 lg:grid-cols-4">
           {tiers.map((t) => {
             const price = annual ? t.annualMonthly : t.monthly;
+            const valueRatio = Math.round(t.stackValue / t.monthly);
             return (
               <div
                 key={t.name}
@@ -658,6 +1008,12 @@ function PricingSection() {
                   </span>
                 )}
 
+                {t.scarcity && (
+                  <span className="absolute -top-3 right-3 rounded-full bg-amber-500 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow">
+                    {t.scarcity}
+                  </span>
+                )}
+
                 <div className="mb-4">
                   <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
                     {t.name}
@@ -665,6 +1021,16 @@ function PricingSection() {
                   <p className="mt-1 min-h-[40px] text-xs text-zinc-500 dark:text-zinc-400">
                     {t.tagline}
                   </p>
+                </div>
+
+                {/* Stack value highlight */}
+                <div className="mb-3 rounded-lg bg-blue-50 p-2 text-center dark:bg-blue-500/10">
+                  <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400">
+                    Стек стоит
+                  </div>
+                  <div className="font-mono text-sm font-bold text-blue-900 dark:text-blue-300">
+                    {t.stackValue.toLocaleString("ru-BY")} BYN
+                  </div>
                 </div>
 
                 <div className="mb-2 flex items-baseline gap-1">
@@ -681,6 +1047,10 @@ function PricingSection() {
                     {t.monthly.toLocaleString("ru-BY")} BYN
                   </p>
                 )}
+
+                <p className="mb-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                  Это в {valueRatio}× меньше воспринимаемой ценности
+                </p>
 
                 {t.onPrem && (
                   <p className="mb-1 text-xs text-zinc-600 dark:text-zinc-400">
@@ -750,7 +1120,6 @@ function PricingSection() {
           })}
         </div>
 
-        {/* Pricing footnotes */}
         <div className="mx-auto mt-10 max-w-4xl rounded-xl border border-zinc-200 bg-white p-6 text-sm text-zinc-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
           <h4 className="mb-3 font-semibold text-zinc-900 dark:text-white">
             Что важно знать о тарифах
@@ -791,8 +1160,9 @@ function PricingSection() {
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-blue-500" />
               <span>
-                Платный аудит контакт-центра от 1 500 BYN — анализ 100 ваших звонков с письменным
-                отчётом за 7 дней. При подключении тарифа сумма аудита засчитывается.
+                Платный аудит контакт-центра от 1 500 BYN — анализ 100 ваших звонков с
+                письменным отчётом за 7 дней. При подключении тарифа сумма аудита
+                засчитывается.
               </span>
             </li>
           </ul>
@@ -855,6 +1225,10 @@ function IntegrationsSection() {
 /* ------------------------------------------------------------------ */
 function FAQSection() {
   const items = [
+    {
+      q: "Как работает гарантия возврата за 90 дней?",
+      a: "В договоре фиксируем 3 целевые метрики: +15 % качества обслуживания (по AI-QA-скорам), −30 часов в месяц времени супервайзера, +10 % конверсии (для отделов продаж). Если за 90 дней мы не достигли хотя бы одной из них — возвращаем 100 % уплаченной подписки. Аналитика, отчёты и интеграции остаются у вас. Условие гарантии — вы загружаете не менее 80 % звонков и согласовываете базовый чек-лист скриптов в первые 14 дней.",
+    },
     {
       q: "Как вы решаете проблему недоступности OpenAI и Anthropic в РБ?",
       a: "Для регулируемых клиентов мы разворачиваем on-prem с локальными LLM (Llama 3, Qwen 2.5, GigaChat по API через Sber). Whisper-транскрипция работает на ваших GPU без выхода во вне. ПДн не покидают РБ — нет нужды в разрешении НЦЗПД на трансграничную передачу. Это снимает санкционно-комплаенсный риск для банков, госструктур и силовых.",
@@ -919,84 +1293,227 @@ function FAQSection() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Final CTA                                                          */
+/*  Final CTA — Bundle stack with bonuses + scarcity + urgency         */
 /* ------------------------------------------------------------------ */
 function CTASection() {
   return (
     <section
       id="cta"
-      className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-cyan-600 py-20"
+      className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-cyan-600 py-20"
     >
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]" />
 
-      <div className="relative mx-auto max-w-4xl px-6">
+      <div className="relative mx-auto max-w-5xl px-6">
+        {/* Urgency strip */}
+        <div className="mx-auto mb-6 flex max-w-md items-center justify-center gap-2 rounded-full border border-amber-300/50 bg-amber-500/20 px-4 py-2 text-sm font-semibold text-amber-100 backdrop-blur">
+          <Clock className="h-4 w-4 animate-pulse" />
+          Цена 1 500 BYN до 1 июня 2026 — далее 3 000 BYN
+        </div>
+
         <div className="text-center">
-          <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
-            Начните с платного аудита — оплатите только результат
+          <h2 className="mb-4 text-3xl font-bold text-white md:text-5xl">
+            Заберите все ваши деньги,
+            <br />
+            которые сейчас теряются на звонках
           </h2>
           <p className="mb-10 text-lg text-blue-100">
-            Никаких бесплатных триалов. Мы проанализируем ваши звонки и покажем,
-            где теряются деньги. При подключении тарифа стоимость аудита засчитывается.
+            Аудит за 1 500 BYN покажет точные цифры. Никаких бесплатных триалов
+            — серьёзные деньги требуют серьёзных решений.
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {/* Standard audit card */}
-          <div className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur">
-            <div className="mb-3 flex items-center gap-2">
-              <Rocket className="h-5 w-5 text-white" />
-              <span className="text-sm font-semibold uppercase tracking-wider text-blue-100">
-                SMB и mid-market
-              </span>
+          <div className="relative rounded-2xl border-2 border-white/30 bg-white p-6 shadow-2xl">
+            <div className="mb-4">
+              <div className="mb-2 flex items-center gap-2">
+                <Rocket className="h-5 w-5 text-blue-600" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-blue-700">
+                  SMB и mid-market (5–50 операторов)
+                </span>
+              </div>
+              <h3 className="mb-1 text-2xl font-bold text-zinc-900">
+                Аудит контакт-центра
+              </h3>
+              <p className="text-sm text-zinc-600">
+                100 звонков · отчёт за 7 дней
+              </p>
             </div>
-            <h3 className="mb-2 text-2xl font-bold text-white">
-              Аудит 100 звонков
-            </h3>
-            <div className="mb-3 flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-white">1 500 BYN</span>
-              <span className="text-sm text-blue-100">/ 7 дней</span>
+
+            <div className="mb-5 flex items-baseline gap-2">
+              <span className="text-5xl font-extrabold text-zinc-900">1 500</span>
+              <span className="text-lg font-semibold text-zinc-600">BYN</span>
+              <span className="ml-1 text-sm text-zinc-500 line-through">3 000</span>
             </div>
-            <p className="mb-4 text-sm text-blue-100">
-              Письменный отчёт: нарушения скрипта с цитатами, сегментация по эмоциям,
-              расчёт AHT/FCR/CSAT, сравнение операторов, потенциал роста в BYN.
-              <strong className="block mt-2 text-white">Сумма засчитывается при подключении тарифа.</strong>
+
+            <div className="mb-5 space-y-2 text-sm text-zinc-700">
+              <div className="flex items-start gap-2">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                <span>Отчёт о соблюдении скрипта с цитатами нарушений</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                <span>Сегментация по эмоциям клиентов</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                <span>AHT / FCR / CSAT с разбором по операторам</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                <span>
+                  <strong>Оценка потерянной выручки в BYN</strong>
+                </span>
+              </div>
+            </div>
+
+            {/* Bonuses bundle */}
+            <div className="mb-5 rounded-xl border-2 border-dashed border-amber-300 bg-amber-50 p-4">
+              <div className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-amber-900">
+                <Gift className="h-4 w-4" /> Бонусы при заказе сегодня
+              </div>
+              <ul className="space-y-1.5 text-xs text-zinc-700">
+                <li className="flex items-start gap-1.5">
+                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-emerald-600" />
+                  <span>14 дней консультаций с CSM (ценность 800 BYN)</span>
+                </li>
+                <li className="flex items-start gap-1.5">
+                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-emerald-600" />
+                  <span>Шаблоны скриптов под отрасль (ценность 1 200 BYN)</span>
+                </li>
+                <li className="flex items-start gap-1.5">
+                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-emerald-600" />
+                  <span>Сравнение «вы vs топ-3 КЦ РБ» (ценность 2 500 BYN)</span>
+                </li>
+              </ul>
+              <div className="mt-2 text-right text-xs font-semibold text-amber-900">
+                Бонусов на 4 500 BYN — бесплатно
+              </div>
+            </div>
+
+            <p className="mb-4 rounded-lg bg-emerald-50 p-3 text-center text-sm font-semibold text-emerald-900">
+              Сумма аудита 100 % засчитывается в первую оплату тарифа
             </p>
+
             <Button
               size="lg"
-              className="w-full gap-2 bg-white text-blue-700 hover:bg-blue-50"
+              className="w-full gap-2 bg-blue-600 text-white hover:bg-blue-700"
             >
-              Заказать аудит
+              Заказать аудит за 1 500 BYN
               <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
 
           {/* Enterprise audit card */}
-          <div className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur">
-            <div className="mb-3 flex items-center gap-2">
-              <Shield className="h-5 w-5 text-white" />
-              <span className="text-sm font-semibold uppercase tracking-wider text-blue-100">
-                Банки, телеком, госы
-              </span>
+          <div className="relative rounded-2xl border-2 border-white/30 bg-zinc-950 p-6 shadow-2xl">
+            <div className="absolute -top-3 left-6 rounded-full bg-amber-500 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow">
+              Только 3 слота / квартал
             </div>
-            <h3 className="mb-2 text-2xl font-bold text-white">
-              Расширенный аудит
-            </h3>
-            <div className="mb-3 flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-white">от 5 000 BYN</span>
-              <span className="text-sm text-blue-100">/ 7-14 дней</span>
+
+            <div className="mb-4">
+              <div className="mb-2 flex items-center gap-2">
+                <Shield className="h-5 w-5 text-cyan-400" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-cyan-300">
+                  Банки, телеком, госы (50–500+ операторов)
+                </span>
+              </div>
+              <h3 className="mb-1 text-2xl font-bold text-white">
+                Расширенный аудит + PoC
+              </h3>
+              <p className="text-sm text-zinc-400">
+                500 звонков · кастомные KPI · 7–14 дней
+              </p>
             </div>
-            <p className="mb-4 text-sm text-blue-100">
-              500 звонков, кастомные KPI под вашу отрасль, демо-развёртывание on-prem,
-              презентация результатов вашему руководству.
-              <strong className="block mt-2 text-white">Засчитывается в первую оплату Business / Enterprise.</strong>
+
+            <div className="mb-5 flex items-baseline gap-2">
+              <span className="text-5xl font-extrabold text-white">от 5 000</span>
+              <span className="text-lg font-semibold text-zinc-300">BYN</span>
+            </div>
+
+            <div className="mb-5 space-y-2 text-sm text-zinc-300">
+              <div className="flex items-start gap-2">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                <span>Всё из базового аудита +</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                <span>500 звонков + кастомные KPI под отрасль</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                <span>Демо-развёртывание on-prem на ваших данных</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                <span>Презентация результатов вашему руководству</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                <span>
+                  <strong className="text-white">Roadmap внедрения с ROI-моделью</strong>
+                </span>
+              </div>
+            </div>
+
+            <div className="mb-5 rounded-xl border border-amber-400/40 bg-amber-500/10 p-4">
+              <div className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-amber-200">
+                <Gift className="h-4 w-4" /> Бонусы Enterprise
+              </div>
+              <ul className="space-y-1.5 text-xs text-zinc-300">
+                <li className="flex items-start gap-1.5">
+                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-emerald-400" />
+                  <span>Воркшоп с senior-командой Utlik (ценность 4 000 BYN)</span>
+                </li>
+                <li className="flex items-start gap-1.5">
+                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-emerald-400" />
+                  <span>ОАЦ-комплаенс чек-лист (ценность 3 000 BYN)</span>
+                </li>
+                <li className="flex items-start gap-1.5">
+                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-emerald-400" />
+                  <span>Приоритет в очереди внедрения (ценность ~30 дней)</span>
+                </li>
+              </ul>
+              <div className="mt-2 text-right text-xs font-semibold text-amber-200">
+                Бонусов на 7 000+ BYN
+              </div>
+            </div>
+
+            <p className="mb-4 rounded-lg bg-emerald-500/10 p-3 text-center text-sm font-semibold text-emerald-300">
+              Засчитывается в первую оплату Business / Enterprise
             </p>
+
             <Button
               size="lg"
               className="w-full gap-2 border-2 border-white bg-transparent text-white hover:bg-white hover:text-blue-700"
             >
-              Обсудить аудит
+              Обсудить расширенный аудит
               <ArrowRight className="h-4 w-4" />
             </Button>
+          </div>
+        </div>
+
+        {/* Trust strip */}
+        <div className="mt-10 grid gap-4 rounded-2xl border border-white/20 bg-white/5 p-6 backdrop-blur md:grid-cols-3">
+          <div className="flex items-center gap-3">
+            <Award className="h-8 w-8 shrink-0 text-amber-300" />
+            <div>
+              <div className="text-sm font-semibold text-white">Гарантия 90 дней</div>
+              <div className="text-xs text-blue-100">+15 % качества или возврат</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Lock className="h-8 w-8 shrink-0 text-cyan-300" />
+            <div>
+              <div className="text-sm font-semibold text-white">Резидент ПВТ</div>
+              <div className="text-xs text-blue-100">BYN, без валютного контроля</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Server className="h-8 w-8 shrink-0 text-emerald-300" />
+            <div>
+              <div className="text-sm font-semibold text-white">Без OpenAI</div>
+              <div className="text-xs text-blue-100">Локальные LLM в РБ-контуре</div>
+            </div>
           </div>
         </div>
 
@@ -1016,7 +1533,6 @@ function LandingFooter() {
     <footer className="border-t border-zinc-200 bg-white py-12 dark:border-zinc-800 dark:bg-zinc-950">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-8 md:grid-cols-4">
-          {/* Brand */}
           <div>
             <div className="mb-3 flex items-center gap-2">
               <Headphones className="h-5 w-5 text-blue-600" />
@@ -1030,20 +1546,18 @@ function LandingFooter() {
             </p>
           </div>
 
-          {/* Product */}
           <div>
             <h4 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-white">
               Продукт
             </h4>
             <ul className="space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
-              <li><a href="#features" className="hover:text-zinc-900 dark:hover:text-white">Возможности</a></li>
-              <li><a href="#modules" className="hover:text-zinc-900 dark:hover:text-white">Модули</a></li>
+              <li><a href="#offer" className="hover:text-zinc-900 dark:hover:text-white">Что входит</a></li>
+              <li><a href="#guarantee" className="hover:text-zinc-900 dark:hover:text-white">Гарантия</a></li>
               <li><a href="#pricing" className="hover:text-zinc-900 dark:hover:text-white">Тарифы</a></li>
               <li><a href="#faq" className="hover:text-zinc-900 dark:hover:text-white">FAQ</a></li>
             </ul>
           </div>
 
-          {/* Company */}
           <div>
             <h4 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-white">
               Компания
@@ -1056,7 +1570,6 @@ function LandingFooter() {
             </ul>
           </div>
 
-          {/* Support */}
           <div>
             <h4 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-white">
               Поддержка
@@ -1092,10 +1605,13 @@ export default function LandingPage() {
     <div className="min-h-screen">
       <LandingHeader />
       <HeroSection />
+      <BeforeAfterSection />
+      <ValueStackSection />
       <USPSection />
       <MetricsSection />
       <FeaturesSection />
       <ModulesSection />
+      <GuaranteeSection />
       <PricingSection />
       <IntegrationsSection />
       <FAQSection />
