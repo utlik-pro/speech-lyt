@@ -18,6 +18,13 @@ node_modules/
 out/
 .turbo/
 
+# Video pipeline — keep config/scripts, ignore generated artifacts
+!video/voiceover/out/
+!video/voiceover/out/segments.json
+video/clips/
+video/out/
+video/recorder/node_modules/
+
 # Environment
 .env
 .env.local
@@ -55,3 +62,4 @@ media/
 # Task Master
 .taskmaster/tasks/*.txt
 .taskmaster/reports/
+.vercel
