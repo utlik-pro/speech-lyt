@@ -52,6 +52,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Load user on mount if token exists
   useEffect(() => {
     async function loadUser() {
+      // Demo mode: ?demo=1 in URL → fake user for screencast recording
+      // No network call, no auth needed. Used by video/recorder/.
+      if (
+        typeof window !== "undefined" &&
+        new URLSearchParams(window.location.search).get("demo") === "1"
+      ) {
+        setUser({
+          id: "00000000-0000-0000-0000-000000000099",
+          organization_id: "00000000-0000-0000-0000-000000000002",
+          email: "demo@dana.by",
+          name: "Дмитрий (Дана Холдинг)",
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        } as UserResponse);
+        setLoading(false);
+        return;
+      }
+
       const token =
         typeof window !== "undefined"
           ? localStorage.getItem(TOKEN_KEY)

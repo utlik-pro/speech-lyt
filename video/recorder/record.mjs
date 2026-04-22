@@ -38,7 +38,10 @@ const VIEWPORT = { width: 1920, height: 1080 };
 const CURSOR_COLOR = "59,130,246"; // tailwind blue-500
 const CURSOR_BORDER = "#3B82F6";
 
-// Inject fake-cursor + caption overlay поверх любой страницы
+// Demo-mode query param to bypass auth in frontend
+const DEMO = "?demo=1";
+
+// Inject fake-cursor + caption + fade-overlay поверх любой страницы
 const OVERLAY_JS = `
 (() => {
   if (document.querySelector('.__fake-cursor')) return;
@@ -89,6 +92,18 @@ const OVERLAY_JS = `
   });
   document.documentElement.appendChild(caption);
 
+  // Fade-overlay для smooth transitions между страницами
+  const fade = document.createElement('div');
+  fade.className = '__fade';
+  Object.assign(fade.style, {
+    position: 'fixed', inset: '0', background: '#0a0a0f',
+    opacity: '0', pointerEvents: 'none', zIndex: '99996',
+    transition: 'opacity 0.45s cubic-bezier(0.4,0,0.2,1)'
+  });
+  document.documentElement.appendChild(fade);
+  window.__fadeOut = () => { fade.style.opacity = '1'; };
+  window.__fadeIn = () => { fade.style.opacity = '0'; };
+
   const style = document.createElement('style');
   style.textContent = '@keyframes __ring-pulse{0%,100%{opacity:0.7;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.2;transform:translate(-50%,-50%) scale(1.4)}}';
   document.head.appendChild(style);
@@ -121,6 +136,22 @@ const OVERLAY_JS = `
 async function injectOverlay(page, cursor) {
   await page.evaluate(OVERLAY_JS);
   if (cursor) await page.evaluate((p) => window.__setCursorPos(p.x, p.y), cursor);
+}
+async function fadeOut(page) {
+  await page.evaluate(() => window.__fadeOut && window.__fadeOut());
+  await page.waitForTimeout(450);
+}
+async function fadeIn(page) {
+  await page.evaluate(() => window.__fadeIn && window.__fadeIn());
+  await page.waitForTimeout(450);
+}
+async function navigate(page, path) {
+  await fadeOut(page);
+  await page.goto(`${APP_URL}${path}${path.includes("?") ? "&" : "?"}demo=1`, {
+    waitUntil: "networkidle",
+  });
+  await injectOverlay(page);
+  await fadeIn(page);
 }
 async function showCaption(page, text) {
   await page.evaluate((t) => window.__showCaption && window.__showCaption(t), text);
@@ -190,7 +221,7 @@ async function main() {
   };
 
   // ═════════ PHASE 1: dashboard / kabinet ═════════
-  await page.goto(`${APP_URL}/dashboard`, { waitUntil: "networkidle" });
+  await page.goto(`${APP_URL}/dashboard${DEMO}`, { waitUntil: "networkidle" });
   await injectOverlay(page, cursor);
   await wait(page, 300);
 
@@ -241,8 +272,7 @@ async function main() {
   await wait(page, 300);
   const callsLink = await hoverAt(page, 'a[href="/calls"], a[href*="/calls"]');
   if (callsLink) await move(callsLink);
-  await page.goto(`${APP_URL}/calls`, { waitUntil: "networkidle" });
-  await injectOverlay(page, cursor);
+  await navigate(page, "/calls");
   await showCaption(page, segById["03_calls_list"].caption);
   await wait(page, 1500);
   // Hover на нескольких строках таблицы
@@ -297,8 +327,7 @@ async function main() {
 
   // SEG 5 — QA DASHBOARD
   console.log("[5/7] qa");
-  await page.goto(`${APP_URL}/qa`, { waitUntil: "networkidle" });
-  await injectOverlay(page, cursor);
+  await navigate(page, "/qa");
   await showCaption(page, segById["05_qa_dashboard"].caption);
   await wait(page, 1500);
   for (const sel of [
@@ -318,8 +347,7 @@ async function main() {
 
   // ═════════ PHASE 2: landing — pricing + CTA ═════════
   console.log("[→] switching to landing");
-  await page.goto(`${APP_URL}/#pricing`, { waitUntil: "networkidle" });
-  await injectOverlay(page, cursor);
+  await navigate(page, "/#pricing");
   await wait(page, 500);
 
   // SEG 6 — PRICING
@@ -344,8 +372,7 @@ async function main() {
 
   // SEG 7 — CTA
   console.log("[7/7] cta");
-  await page.goto(`${APP_URL}/#cta`, { waitUntil: "networkidle" });
-  await injectOverlay(page, cursor);
+  await navigate(page, "/#cta");
   await scrollTo(page, "#cta", -40);
   await wait(page, 800);
   await showCaption(page, segById["07_cta"].caption);
