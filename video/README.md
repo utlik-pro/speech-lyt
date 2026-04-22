@@ -1,6 +1,23 @@
 # Видео для speech.utlik.co
 
-Hero-ролик 60-75 сек: **Seedance 2.0** (cinematic сцены) + Remotion (UI/графика дашборда) + ElevenLabs (озвучка). Архитектура pipeline скопирована с `tender-ai/video/`.
+Hero-ролик 60 сек. Два параллельных подхода (как у `tender-ai/video/`):
+
+## A. Скринкаст реального кабинета — **рекомендуемый** (как у тендеров)
+
+📁 **`recorder/`** — Playwright headless chromium записывает прохождение
+по реальному dev-кабинету `frontend` (dashboard → calls → call detail →
+qa → лендинг pricing → CTA), с инжектированным синим fake-cursor и
+caption-overlay'ями, синхронизированными с voiceover-сегментами.
+
+Это **то же самое что у тендеров** — там видео в Hero собрано именно
+скринкастом реального dev-приложения, а не AI-генерацией.
+
+См. `recorder/README.md` для запуска.
+
+## B. Seedance 2.0 (cinematic AI-генерация)
+
+Альтернативный путь если нет работающего dev-кабинета или хочется
+cinematic-постановку с реальными «офисными» сценами.
 
 ## Файлы
 

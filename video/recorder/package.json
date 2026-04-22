@@ -1,0 +1,12 @@
+{
+  "name": "speech-lyt-recorder",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "record": "node record.mjs",
+    "install-browser": "npx playwright install chromium"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}
