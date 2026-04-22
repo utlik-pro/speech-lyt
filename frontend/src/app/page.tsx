@@ -44,6 +44,7 @@ import {
 import MockDashboard from "@/components/landing/mock-dashboard";
 import MockCalls from "@/components/landing/mock-calls";
 import MockQA from "@/components/landing/mock-qa";
+import { HeroVideo } from "@/components/landing/hero-video";
 
 /* ------------------------------------------------------------------ */
 /*  Landing Header                                                     */
@@ -182,8 +183,8 @@ function HeroSection() {
 
         <div className="relative mx-auto mt-16 max-w-4xl">
           <div className="absolute -inset-4 rounded-2xl bg-gradient-to-r from-blue-600/20 via-cyan-500/20 to-blue-600/20 blur-xl" />
-          <div className="relative rounded-2xl border border-white/10 bg-zinc-900/80 p-2 shadow-2xl backdrop-blur">
-            <MockDashboard />
+          <div className="relative">
+            <HeroVideo src="/video/hero_60s.mp4" />
           </div>
         </div>
       </div>

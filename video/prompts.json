@@ -1,0 +1,44 @@
+{
+  "project": "speech-lyt-hero-60s",
+  "version": "1.0",
+  "model_default": "seedance-2.0-fast",
+  "resolution": "1920x1080",
+  "scenes": [
+    {
+      "id": "scene_1_silent_office",
+      "duration_sec": 8,
+      "prompt": "A modern open-plan call center in Minsk. Wide shot from above. Twenty operators at sleek glass desks, headsets on, talking calmly into microphones. Soft daylight from floor-to-ceiling windows. The camera slowly pushes forward through the rows. One supervisor stands behind a glass wall, looking helpless at a small laptop screen showing only 5 highlighted call rows out of 200. Cinematic, blue-cyan grade, shallow depth of field, 35mm, 4K.",
+      "negative_prompt": "chaotic, neon, cyberpunk, anime, cartoon, text overlays"
+    },
+    {
+      "id": "scene_2_lost_money",
+      "duration_sec": 8,
+      "prompt": "Close-up on an operator's face — frustrated, biting lip, looking at a CRM screen showing a deal moving from 'Negotiation' to 'Lost'. Phone is pressed to ear. Background blurred but suggests open office. Light flickers from screen onto her face. Then quick cut: another operator stuttering on a sales script, pages of paper falling. Then: supervisor reading a complaint email three days late, hand on forehead. Three quick beats, each 2.5 sec. Cinematic, dramatic but restrained, blue-cyan grade.",
+      "negative_prompt": "angry shouting, blood, cartoon, exaggerated faces"
+    },
+    {
+      "id": "scene_3_speechlyt_appears",
+      "duration_sec": 10,
+      "prompt": "Smooth transition: dark screen, then a sleek dashboard interface materializes — clean white-on-dark UI with blue accents. The dashboard shows 100% of calls being analyzed in real time, with waveforms, KPI tiles (AHT, CSAT, FCR), and a sentiment heatmap. Camera slowly pulls back to reveal the dashboard is on a server rack screen, in a server room with rows of GPUs. A small Belarusian flag pin sits on the rack. Cool blue lighting, high-tech aesthetic, cinematic.",
+      "negative_prompt": "generic stock footage, cartoon, low-res, watermarks, sci-fi laser effects"
+    },
+    {
+      "id": "scene_4_features_tour",
+      "duration_sec": 12,
+      "prompt": "Fast-paced UI montage. Five quick beats, each 2.4 sec: (1) Live transcription appearing word-by-word with speaker labels Operator/Client. (2) Script compliance checklist auto-checking each item green as the conversation progresses. (3) Emotion timeline — green/yellow/red ribbon following customer sentiment. (4) QA scorecard auto-filling 80% of fields with AI-generated values. (5) Real-time prompt popup on operator screen: 'Mention the warranty period'. All in same dashboard style — dark UI, blue accents, sharp typography. Smooth transitions between beats. Cinematic, modern, 4K.",
+      "negative_prompt": "stock UI templates, cartoon, anime UI, cluttered design"
+    },
+    {
+      "id": "scene_5_proof_clients",
+      "duration_sec": 10,
+      "prompt": "Three-panel split screen, like a documentary. Each panel shows a different Belarusian business setting: (1) Дана Холдинг — modern shopping mall (TRC) with people walking, professional-looking woman in business suit smiling at her phone showing positive metrics. (2) Bank — marble lobby, sharp business attire, customer at desk, phone consultation with smile. (3) Telecom — call center floor with operator using headset, screen visible showing real-time AI prompts, looking confident. Slow pan across panels. Subtle KPI stats float in corners (+22%, +18%, +27%). Cinematic, warm but professional, blue-cyan grade.",
+      "negative_prompt": "logos of real companies, cartoon, exaggerated diversity stereotypes"
+    },
+    {
+      "id": "scene_6_cta_offer",
+      "duration_sec": 8,
+      "prompt": "Slow push-in on a clean dashboard reveal: 'Аудит контакт-центра — 1 500 BYN — 7 дней'. Below it, three guarantee chips light up one by one: 'Гарантия 90 дней', 'Резидент ПВТ', 'Без OpenAI'. Background is the operator-floor of scene 1, but now bright and busy with smiling operators. Camera ends on the call-to-action button 'Заказать аудит' pulsing softly. Cinematic, hopeful, blue-cyan grade.",
+      "negative_prompt": "generic CTA buttons, comic-sans, neon, cyberpunk overlays"
+    }
+  ]
+}
