@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>SpeechLyt — выбор русскоязычного голоса ElevenLabs</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: #0a0a0f; color: #e4e4e7;
+    padding: 40px 20px; min-height: 100vh;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 28px; margin-bottom: 8px; }
+  p.intro { color: #a1a1aa; margin-bottom: 16px; font-size: 14px; }
+  .badge {
+    display: inline-block; padding: 4px 10px; border-radius: 12px;
+    background: rgba(59,130,246,0.15); color: #60a5fa;
+    font-size: 11px; font-weight: 600; margin-bottom: 24px;
+    border: 1px solid rgba(59,130,246,0.3);
+  }
+  .phrase {
+    background: #18181b; border: 1px solid #27272a;
+    padding: 16px 20px; border-radius: 12px;
+    font-style: italic; color: #d4d4d8; margin-bottom: 32px;
+    font-size: 14px; line-height: 1.6;
+  }
+  .group-label {
+    color: #71717a; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin: 24px 0 8px; padding-left: 4px;
+  }
+  .voice {
+    background: #18181b; border: 1px solid #27272a;
+    border-radius: 12px; padding: 18px 20px; margin-bottom: 12px;
+    transition: border-color 0.15s;
+  }
+  .voice:hover { border-color: #3b82f6; }
+  .voice-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .voice-name { font-weight: 700; font-size: 16px; color: #fff; }
+  .voice-id {
+    font-family: ui-monospace, monospace; font-size: 11px;
+    color: #71717a; background: #27272a; padding: 2px 8px; border-radius: 4px;
+  }
+  .voice-desc { color: #a1a1aa; font-size: 13px; margin-bottom: 12px; }
+  audio { width: 100%; height: 36px; }
+  .pick {
+    display: inline-block; margin-top: 10px;
+    padding: 6px 12px; background: #3b82f6; color: white;
+    border-radius: 6px; font-size: 12px; font-weight: 600;
+    cursor: pointer; user-select: none;
+    transition: background 0.15s;
+  }
+  .pick:hover { background: #2563eb; }
+  .footer {
+    margin-top: 32px; padding: 20px;
+    background: #18181b; border-radius: 12px;
+    text-align: center; color: #a1a1aa; font-size: 13px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🇷🇺 Русскоязычные голоса ElevenLabs</h1>
+  <p class="intro">10 нативных русских голосов из shared library — без английского акцента.</p>
+  <span class="badge">Все семплы — одна и та же фраза для честного сравнения</span>
+
+  <div class="phrase">
+    «От девятисот девяноста белорусских рублей в месяц.
+    Аудит вашего контакт-центра — тысяча пятьсот рублей, семь дней.
+    Гарантия плюс пятнадцать процентов качества за девяносто дней.»
+  </div>
+
+  <div class="group-label">Мужские голоса</div>
+
+  <div class="voice">
+    <div class="voice-header">
+      <span class="voice-name">1. Petr</span>
+      <span class="voice-id">PX4ZIDp1D0OFpm76rx1Y</span>
+    </div>
+    <p class="voice-desc">Нативный русский мужской — чистая речь без акцента.</p>
+    <audio controls preload="metadata"><source src="ru01_petrkh.mp3" type="audio/mpeg"></audio>
+    <div class="pick" onclick="pick('PX4ZIDp1D0OFpm76rx1Y','Petr')">Выбрать Petr</div>
+  </div>
+
+  <div class="voice">
+    <div class="voice-header">
+      <span class="voice-name">2. Roman</span>
+      <span class="voice-id">O88Glmkh2nWihrGwNsFd</span>
+    </div>
+    <p class="voice-desc">Тёплый баритон — для рассказа, сторителлинга, ASMR.</p>
+    <audio controls preload="metadata"><source src="ru02_roman.mp3" type="audio/mpeg"></audio>
+    <div class="pick" onclick="pick('O88Glmkh2nWihrGwNsFd','Roman')">Выбрать Roman</div>
+  </div>
+
+  <div class="voice">
+    <div class="voice-header">
+      <span class="voice-name">3. Leonid Fomichev</span>
+      <span class="voice-id">bg9LrEYQkRYwqkxA8VOy</span>
+    </div>
+    <p class="voice-desc">Реалистичный русский мужской — звучит как живой человек.</p>
+    <audio controls preload="metadata"><source src="ru03_leonid.mp3" type="audio/mpeg"></audio>
+    <div class="pick" onclick="pick('bg9LrEYQkRYwqkxA8VOy','Leonid')">Выбрать Leonid</div>
+  </div>
+
+  <div class="voice">
+    <div class="voice-header">
+      <span class="voice-name">4. Anton</span>
+      <span class="voice-id">13JzN9jg1ViUP8Pf3uet</span>
+    </div>
+    <p class="voice-desc">Чистый русский мужской — нейтральный, для бизнес-видео.</p>
+    <audio controls preload="metadata"><source src="ru04_anton.mp3" type="audio/mpeg"></audio>
+    <div class="pick" onclick="pick('13JzN9jg1ViUP8Pf3uet','Anton')">Выбрать Anton</div>
+  </div>
+
+  <div class="voice">
+    <div class="voice-header">
+      <span class="voice-name">5. Max</span>
+      <span class="voice-id">Uv3rf12Omd9Asyv54Bqw</span>
+    </div>
+    <p class="voice-desc">Живой и эмоциональный — энергичный, для продажи.</p>
+    <audio controls preload="metadata"><source src="ru05_max.mp3" type="audio/mpeg"></audio>
+    <div class="pick" onclick="pick('Uv3rf12Omd9Asyv54Bqw','Max')">Выбрать Max</div>
+  </div>
+
+  <div class="voice">
+    <div class="voice-header">
+      <span class="voice-name">6. Paul</span>
+      <span class="voice-id">O9f5Hqzk8FPymrA0cAZq</span>
+    </div>
+    <p class="voice-desc">Телефонный — звучит как оператор саппорта (тематично!).</p>
+    <audio controls preload="metadata"><source src="ru06_paul.mp3" type="audio/mpeg"></audio>
+    <div class="pick" onclick="pick('O9f5Hqzk8FPymrA0cAZq','Paul')">Выбрать Paul</div>
+  </div>
+
+  <div class="group-label">Женские голоса</div>
+
+  <div class="voice">
+    <div class="voice-header">
+      <span class="voice-name">7. Arina</span>
+      <span class="voice-id">ELWVgJ5Mo9lF5Tha9ahW</span>
+    </div>
+    <p class="voice-desc">Нативный русский женский — мягкий, чистый.</p>
+    <audio controls preload="metadata"><source src="ru07_arina.mp3" type="audio/mpeg"></audio>
+    <div class="pick" onclick="pick('ELWVgJ5Mo9lF5Tha9ahW','Arina')">Выбрать Arina</div>
+  </div>
+
+  <div class="voice">
+    <div class="voice-header">
+      <span class="voice-name">8. Elena Tymanova</span>
+      <span class="voice-id">dJLURfd0OIfcFXn6H1Hq</span>
+    </div>
+    <p class="voice-desc">Профессиональный женский — для корп-видео, презентаций.</p>
+    <audio controls preload="metadata"><source src="ru08_elena_t.mp3" type="audio/mpeg"></audio>
+    <div class="pick" onclick="pick('dJLURfd0OIfcFXn6H1Hq','Elena Tymanova')">Выбрать Elena T.</div>
+  </div>
+
+  <div class="voice">
+    <div class="voice-header">
+      <span class="voice-name">9. Lisa</span>
+      <span class="voice-id">CamFZN2KIaqnyvcaFe3E</span>
+    </div>
+    <p class="voice-desc">Уверенный с эмоциями — продающий, динамичный.</p>
+    <audio controls preload="metadata"><source src="ru09_lisa.mp3" type="audio/mpeg"></audio>
+    <div class="pick" onclick="pick('CamFZN2KIaqnyvcaFe3E','Lisa')">Выбрать Lisa</div>
+  </div>
+
+  <div class="voice">
+    <div class="voice-header">
+      <span class="voice-name">10. Elena Gromova</span>
+      <span class="voice-id">0ArNnoIAWKlT4WweaVMY</span>
+    </div>
+    <p class="voice-desc">Подкастовый стиль — глубокий, разговорный.</p>
+    <audio controls preload="metadata"><source src="ru10_elena_g.mp3" type="audio/mpeg"></audio>
+    <div class="pick" onclick="pick('0ArNnoIAWKlT4WweaVMY','Elena Gromova')">Выбрать Elena G.</div>
+  </div>
+
+  <div class="footer">
+    Кликни «Выбрать …» и просто скажи Claude в чате имя голоса.<br>
+    Я перегенерирую voiceover, перезапишу видео и задеплою.
+  </div>
+</div>
+
+<script>
+function pick(id, name) {
+  navigator.clipboard?.writeText(name);
+  alert(`Выбран: ${name}\nID: ${id}\n\nИмя скопировано в буфер. Вернись в чат и скажи: «Выбрал ${name}»`);
+}
+</script>
+</body>
+</html>
