@@ -211,6 +211,18 @@ async function main() {
     deviceScaleFactor: 2,
     recordVideo: { dir: OUT_DIR, size: VIEWPORT },
   });
+
+  // Force "Дана Холдинг" project before any page loads — the frontend
+  // reads localStorage["speechlyt-project-id"] in api.ts interceptor and
+  // sends it as X-Project-Id header. Без этого UI открывается на пустом
+  // Default-проекте и таблицы пустые.
+  const DANA_PROJECT_ID = "00000000-0000-0000-0000-000000000002";
+  await context.addInitScript((projectId) => {
+    try {
+      localStorage.setItem("speechlyt-project-id", projectId);
+    } catch {}
+  }, DANA_PROJECT_ID);
+
   const page = await context.newPage();
 
   let cursor = { x: VIEWPORT.width / 2, y: VIEWPORT.height / 2 };
@@ -227,76 +239,60 @@ async function main() {
 
   const t0 = Date.now();
 
-  // SEG 1 — HOOK (dashboard hold, hover на тревожной метрике)
-  console.log("[1/7] hook: dashboard");
-  await showCaption(page, segById["01_hook"].caption);
-  await wait(page, 1500);
-  // Пытаемся найти тревожную метрику — например "критические алерты" или "необработанные звонки"
-  for (const sel of [
-    'text=/критические/i',
-    'text=/необработ/i',
-    'text=/требует внимания/i',
-    'text=/AHT/i',
-  ]) {
-    const target = await hoverAt(page, sel);
-    if (target) {
-      await move(target);
-      await wait(page, 1500);
-      break;
+  // Helper: 1 hover на сегмент с ранним выходом, потом ждём до end_sec
+  const hoverFirst = async (selectors) => {
+    for (const sel of selectors) {
+      const t = await hoverAt(page, sel);
+      if (t) {
+        await move(t);
+        return true;
+      }
     }
-  }
+    return false;
+  };
+
+  // SEG 1 — HOOK (dashboard, тревожная метрика)
+  console.log("[1/7] hook");
+  await showCaption(page, segById["01_hook"].caption);
+  await hoverFirst([
+    "text=/AHT/i",
+    "text=/критические/i",
+    "text=/необработ/i",
+    "text=/требует внимания/i",
+  ]);
   await waitUntil(t0, segById["01_hook"].end_sec, page);
   await hideCaption(page);
 
-  // SEG 2 — SOLUTION (hover на ключевых KPI)
-  console.log("[2/7] solution: KPI tour");
-  await wait(page, 300);
+  // SEG 2 — SOLUTION (KPI tour)
+  console.log("[2/7] solution");
   await showCaption(page, segById["02_solution"].caption);
-  for (const sel of [
-    'text=/100/i',
-    'text=/CSAT/i',
-    'text=/конверс/i',
-    'text=/качеств/i',
-  ]) {
-    const target = await hoverAt(page, sel);
-    if (target) {
-      await move(target);
-      await wait(page, 1200);
-    }
-  }
+  await hoverFirst([
+    "text=/CSAT/i",
+    "text=/конверс/i",
+    "text=/качеств/i",
+    "text=/100/i",
+  ]);
   await waitUntil(t0, segById["02_solution"].end_sec, page);
   await hideCaption(page);
 
   // SEG 3 — CALLS LIST
   console.log("[3/7] calls list");
-  await wait(page, 300);
-  const callsLink = await hoverAt(page, 'a[href="/calls"], a[href*="/calls"]');
-  if (callsLink) await move(callsLink);
   await navigate(page, "/calls");
   await showCaption(page, segById["03_calls_list"].caption);
-  await wait(page, 1500);
-  // Hover на нескольких строках таблицы
-  for (let i = 1; i <= 3; i++) {
-    const row = await hoverAt(page, `tbody tr:nth-child(${i})`);
-    if (row) {
-      await move(row);
-      await wait(page, 800);
-    }
-  }
+  await hoverFirst(["tbody tr:nth-child(2)", "tbody tr:first-child"]);
   await waitUntil(t0, segById["03_calls_list"].end_sec, page);
   await hideCaption(page);
 
   // SEG 4 — CALL DETAIL
   console.log("[4/7] call detail");
-  // Кликаем на первую строку или первую ссылку звонка
   let opened = false;
   for (const sel of [
-    'tbody tr:first-child a',
-    'tbody tr:first-child',
+    "tbody tr:first-child a",
+    "tbody tr:first-child",
     'a[href*="/calls/"]',
   ]) {
     try {
-      await page.locator(sel).first().click({ timeout: 2000 });
+      await page.locator(sel).first().click({ timeout: 1500 });
       opened = true;
       break;
     } catch {}
@@ -304,24 +300,13 @@ async function main() {
   if (opened) {
     await page.waitForLoadState("networkidle");
     await injectOverlay(page, cursor);
-    await showCaption(page, segById["04_call_detail"].caption);
-    await wait(page, 1500);
-    // Пробегаем по характерным секциям детали звонка
-    for (const sel of [
-      'text=/транскрипц/i',
-      'text=/эмоци/i',
-      'text=/скрипт/i',
-      'text=/комплаенс/i',
-    ]) {
-      const target = await hoverAt(page, sel);
-      if (target) {
-        await move(target);
-        await wait(page, 1200);
-      }
-    }
-  } else {
-    await showCaption(page, segById["04_call_detail"].caption);
   }
+  await showCaption(page, segById["04_call_detail"].caption);
+  await hoverFirst([
+    "text=/транскрипц/i",
+    "text=/эмоци/i",
+    "text=/скрипт/i",
+  ]);
   await waitUntil(t0, segById["04_call_detail"].end_sec, page);
   await hideCaption(page);
 
@@ -329,44 +314,27 @@ async function main() {
   console.log("[5/7] qa");
   await navigate(page, "/qa");
   await showCaption(page, segById["05_qa_dashboard"].caption);
-  await wait(page, 1500);
-  for (const sel of [
-    'text=/чек-лист/i',
-    'text=/auto/i',
-    'text=/AI/i',
-    'tbody tr:first-child',
-  ]) {
-    const target = await hoverAt(page, sel);
-    if (target) {
-      await move(target);
-      await wait(page, 1000);
-    }
-  }
+  await hoverFirst([
+    "text=/чек-лист/i",
+    "text=/auto/i",
+    "text=/AI/i",
+    "tbody tr:first-child",
+  ]);
   await waitUntil(t0, segById["05_qa_dashboard"].end_sec, page);
   await hideCaption(page);
 
-  // ═════════ PHASE 2: landing — pricing + CTA ═════════
-  console.log("[→] switching to landing");
-  await navigate(page, "/#pricing");
-  await wait(page, 500);
-
+  // ═════════ PHASE 2: landing ═════════
   // SEG 6 — PRICING
   console.log("[6/7] pricing");
-  await showCaption(page, segById["06_pricing"].caption);
+  await navigate(page, "/#pricing");
   await scrollTo(page, "#pricing", -40);
-  await wait(page, 1000);
-  for (const sel of [
-    'text=/Growth/i',
-    'text=/990/i',
-    'text=/2 490/i',
-    'text=/Гарантия 90/i',
-  ]) {
-    const target = await hoverAt(page, sel);
-    if (target) {
-      await move(target);
-      await wait(page, 1200);
-    }
-  }
+  await showCaption(page, segById["06_pricing"].caption);
+  await hoverFirst([
+    "text=/Growth/i",
+    "text=/Гарантия 90/i",
+    "text=/2 490/i",
+    "text=/990/i",
+  ]);
   await waitUntil(t0, segById["06_pricing"].end_sec, page);
   await hideCaption(page);
 
@@ -374,22 +342,14 @@ async function main() {
   console.log("[7/7] cta");
   await navigate(page, "/#cta");
   await scrollTo(page, "#cta", -40);
-  await wait(page, 800);
   await showCaption(page, segById["07_cta"].caption);
-  for (const sel of [
-    'text=/1 500 BYN/i',
-    'text=/Заказать аудит/i',
-    'text=/сегодня/i',
-  ]) {
-    const target = await hoverAt(page, sel);
-    if (target) {
-      await move(target);
-      await wait(page, 1200);
-    }
-  }
+  await hoverFirst([
+    "text=/Заказать аудит/i",
+    "text=/1 500 BYN/i",
+  ]);
   await waitUntil(t0, segById["07_cta"].end_sec, page);
   await hideCaption(page);
-  await wait(page, 500);
+  await wait(page, 300);
 
   await context.close();
   await browser.close();
